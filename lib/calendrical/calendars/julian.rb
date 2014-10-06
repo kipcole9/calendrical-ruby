@@ -1,7 +1,16 @@
 require "#{File.dirname(__FILE__)}/gregorian.rb"
 
 class JulianDate < Calendar
+  include Calendrical::Ecclesiastical
   include Calendrical::Calculations
+  
+  def set_elements(*args)
+    @date_elements = DateStruct.new(args.first, args.second, args.third)
+  end
+  
+  def set_fixed(arg)
+    @fixed = arg
+  end
 
   # see lines 1042-1045 in calendrica-3.0.cl
   def epoch

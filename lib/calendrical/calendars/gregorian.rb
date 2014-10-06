@@ -1,7 +1,16 @@
 require "#{File.dirname(__FILE__)}/../calendar.rb"
 
 class GregorianDate < Calendar
+  include Calendrical::Ecclesiastical
   include Calendrical::Calculations
+  
+  def set_elements(*args)
+    @date_elements = args.first.is_a?(DateStruct) ? args.first : DateStruct.new(args.first, args.second, args.third)
+  end
+  
+  def set_fixed(arg)
+    @fixed = arg
+  end
   
   def to_date
     Date.new(gregorian_date.year, gregorian_date.month, gregorian_date.day)
@@ -42,10 +51,10 @@ class GregorianDate < Calendar
   
   # see lines 735-756 in calendrica-3.0.cl
   # Return the Gregorian date corresponding to fixed date 'date'.
-  def to_calendar(f_date = self.to_fixed)
+  def to_calendar(f_date = self.fixed)
     year        = year_from_fixed(f_date)
-    prior_days  = f_date - new_year(year).to_fixed
-    correction = (if f_date < date(year, MARCH, 1).to_fixed
+    prior_days  = f_date - new_year(year).fixed
+    correction = (if f_date < date(year, MARCH, 1).fixed
                     0
                   elsif leap_year?(year)
                     1
@@ -53,7 +62,7 @@ class GregorianDate < Calendar
                     2
                   end)
     month = quotient((12 * (prior_days + correction)) + 373, 367)
-    day = 1 + f_date - date(year, month, 1).to_fixed
+    day = 1 + f_date - date(year, month, 1).fixed
     DateStruct.new(year, month, day)
   end
 
@@ -118,7 +127,30 @@ protected
       quotient(approx, 400))
     (date < start) ? approx : (approx + 1)
   end
+end
 
+class GregorianYear < Calendar
+  attr_accessor :year
+  
+  include Calendrical::Ecclesiastical
+  include Calendrical::Calculations
+  
+  def initialize(year)
+    @year = year
+  end
+  
+  def date(g_year, g_month = nil, g_day = nil)
+    the_year = g_year.is_a?(Fixnum) ? g_year : g_year.year
+    if g_month && g_day
+      GregorianDate[the_year, g_month, g_day]
+    else
+      GregorianDate[the_year]
+    end
+  end 
+  
+  def to_fixed
+    GregorianDate[year, 1, 1].to_fixed
+  end 
 end
 
   

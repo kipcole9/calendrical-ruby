@@ -4,11 +4,13 @@ module Calendrical
     include Calendrical::Months
     
     def +(other)
-      self.class[self.to_fixed + other]
+      value = other.respond_to?(:fixed) ? other.fixed : other
+      date(self.fixed + other)
     end
     
     def -(other)
-      self.class[self.to_fixed - other]
+      value = other.respond_to?(:fixed) ? other.fixed : other
+      date(self.fixed - value)
     end
     
     # Conversion handy when doing date arithmetic
@@ -19,30 +21,30 @@ module Calendrical
     # Convert to date, but since the system works only in Gregorian
     # we convert to that first
     def to_d
-      GregorianDate[self.to_fixed].to_date
+      GregorianDate[self.fixed].to_date
     end
     
     # see lines 717-721 in calendrica-3.0.cl
     # Return the fixed date of January 1 in Gregorian year 'g_year'.
-    def new_year(g_year = self.gregorian_date.year)
+    def new_year(g_year = self.year)
       date(g_year, JANUARY, 1)
     end
 
     # see lines 723-727 in calendrica-3.0.cl
     # Return the fixed date of December 31 in Gregorian year 'g_year'."""
-    def year_end(g_year = self.gregorian_date.year)
+    def year_end(g_year = self.year)
       date(g_year, DECEMBER, 31)
     end
 
     # see lines 42-49 in calendrica-3.0.errata.cl
     # Return the day number in the year of Gregorian date 'g_date'."""
-    def day_number(g_date = self.gregorian_date)
+    def day_number(g_date = self)
       date_difference(date(g_date.year - 1, DECEMBER, 31), g_date)
     end
 
     # see lines 53-58 in calendrica-3.0.cl
     # Return the days remaining in the year after Gregorian date 'g_date'.
-    def days_remaining(g_date = self.gregorian_date)
+    def days_remaining(g_date = self)
       date_difference(g_date, date(g_date.year, DECEMBER, 31))
     end
 
@@ -89,9 +91,9 @@ module Calendrical
     # A k-day of 0 means Sunday, 1 means Monday, and so on.
     def nth_kday(n, k, g_date = self)
       if n > 0
-        date(kday_before(k, g_date).to_fixed + 7*n)
+        date(kday_before(k, g_date).fixed + 7*n)
       elsif n < 0
-        date(kday_after(k, g_date).to_fixed + 7*n)
+        date(kday_after(k, g_date).fixed + 7*n)
       else
         return BOGUS
       end
@@ -114,25 +116,25 @@ module Calendrical
     # see lines 729-733 in calendrica-3.0.cl
     # Return the range of fixed dates in Gregorian year 'g_year'.
     def year_range(g_year = self.year)
-      interval(new_year(g_year).to_fixed, year_end(g_year).to_fixed)
+      interval(new_year(g_year).fixed, year_end(g_year).fixed)
     end
 
     # see lines 758-763 in calendrica-3.0.cl
     # Return the number of days from Gregorian date 'g_date1'
     # till Gregorian date 'g_date2'.
     def date_difference(g_date1, g_date2 = self)
-      g_date2.to_fixed - g_date1.to_fixed
+      g_date2.fixed - g_date1.fixed
     end
 
     # Return sunset time in Urbana, Ill, on Gregorian date 'gdate'."""
     def urbana_sunset(gdate)
-      time_from_moment(sunset(to_fixed(gdate), URBANA))
+      time_from_moment(sunset(gdate.fixed), URBANA)
     end
 
     # from eq 13.38 pag. 191
     # Return standard time of the winter solstice in Urbana, Illinois, USA.
     def urbana_winter(g_year)
-      standard_from_universal(solar_longitude_after(WINTER, to_fixed(date(g_year, JANUARY, 1))), URBANA)
+      standard_from_universal(solar_longitude_after(WINTER, date(g_year, JANUARY, 1).fixed), URBANA)
     end
   end
 end

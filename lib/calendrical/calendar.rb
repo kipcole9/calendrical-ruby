@@ -13,9 +13,8 @@ class Calendar
   include Calendrical::Astro
   include Calendrical::Days
   include Calendrical::Months
-  include Calendrical::Eccesiastical
   
-  attr_accessor :date_elements
+  attr_accessor :date_elements, :fixed
   delegate :day, :month, :year, to: :date_elements
 
   def self.[](*args)
@@ -24,18 +23,44 @@ class Calendar
   
   def initialize(*args)
     if args.first.is_a?(Date)
-      @date_elements = DateStruct.new(args.first.year, args.first.month, args.first.day)
-    elsif args.first.is_a? self.class
-      @date_elements = args.first.date_elements
+      set_elements(args.first.year, args.first.month, args.first.day)
+    elsif args.first.is_a?(self.class)
+      dup_instance(args.first)
     elsif args.first.is_a?(Fixnum) && args.length == 1
-      @date_elements = to_calendar(args.first)
+      set_fixed(args.first)
+      set_elements(self.to_calendar)
     else
-      @date_elements = DateStruct.new(*args)
+      set_elements(*args)
     end
+  end
+  
+  def set_elements(*args)
+    @date_elements = args
+  end
+  
+  def set_fixed(arg)
+    @fixed = arg
+  end
+  
+  def dup_instance(instance)
+    self.fixed = instance.fixed
+    self.date_elements = instance.date_elements
   end
   
   def date(*args)
     self.class[*args]
+  end
+  
+  def fixed
+    @fixed ||= self.to_fixed
+  end
+  
+  def calendar
+    self.to_calendar
+  end
+  
+  def to_date
+    raise "Implement to_date in inherited class"
   end
   
 end
