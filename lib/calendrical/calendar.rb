@@ -1,14 +1,17 @@
 require "#{File.dirname(__FILE__)}/base.rb"
 require "#{File.dirname(__FILE__)}/astro.rb"
 require "#{File.dirname(__FILE__)}/days.rb"
+require "#{File.dirname(__FILE__)}/dates.rb"
 require "#{File.dirname(__FILE__)}/months.rb"
 require "#{File.dirname(__FILE__)}/numeric.rb"
-require "#{File.dirname(__FILE__)}/calculations.rb"
+require "#{File.dirname(__FILE__)}/kday_calculations.rb"
 require "#{File.dirname(__FILE__)}/calendars/ecclesiastical.rb"
 
 class Calendar
   DateStruct = Struct.new(:year, :month, :day)
   
+  include Enumerable
+  include Comparable
   include Calendrical::Base
   include Calendrical::Astro
   include Calendrical::Days
@@ -32,6 +35,35 @@ class Calendar
     else
       set_elements(*args)
     end
+  end
+  
+  def +(other)
+    value = other.respond_to?(:fixed) ? other.fixed : other
+    date(self.fixed + other)
+  end
+  
+  def -(other)
+    value = other.respond_to?(:fixed) ? other.fixed : other
+    date(self.fixed - value)
+  end
+  
+  def <=>(other)
+    fixed <=> other.fixed
+  end
+  
+  def succ
+    date(fixed + 1)
+  end
+  
+  # Conversion handy when doing date arithmetic
+  def to_i
+    to_fixed
+  end
+  
+  # Convert to date, but since the system works only in Gregorian
+  # we convert to that first
+  def to_d
+    [self.fixed].to_date
   end
   
   def set_elements(*args)

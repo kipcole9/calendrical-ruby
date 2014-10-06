@@ -2,8 +2,13 @@ require "#{File.dirname(__FILE__)}/../calendar.rb"
 
 class GregorianDate < Calendar
   include Calendrical::Ecclesiastical
-  include Calendrical::Calculations
+  include Calendrical::KdayCalculations
+  include Calendrical::Dates
   
+  def inspect
+    Date.new(@date_elements.year, @date_elements.month, @date_elements.day)
+  end
+     
   def set_elements(*args)
     @date_elements = args.first.is_a?(DateStruct) ? args.first : DateStruct.new(args.first, args.second, args.third)
   end
@@ -130,15 +135,27 @@ protected
 end
 
 class GregorianYear < Calendar
-  attr_accessor :year
-  
+  attr_accessor :year, :fixed
+
+  include Calendrical::KdayCalculations
   include Calendrical::Ecclesiastical
-  include Calendrical::Calculations
+  include Calendrical::Dates
   
   def initialize(year)
     @year = year
   end
   
+  def <=>(other)
+    year <=> other.year
+  end
+  
+  def succ
+    self.class[year + 1]
+  end
+  
+  # Need to do a little traffic managment here since
+  # we're going to be called sometimes with just a year
+  # and sometimes with a date formation from the super class
   def date(g_year, g_month = nil, g_day = nil)
     the_year = g_year.is_a?(Fixnum) ? g_year : g_year.year
     if g_month && g_day
@@ -148,9 +165,21 @@ class GregorianYear < Calendar
     end
   end 
   
+  def range
+    new_year..year_end
+  end
+  
+  def fixed
+    @fixed ||= to_fixed
+  end
+  
   def to_fixed
-    GregorianDate[year, 1, 1].to_fixed
+    new_year.fixed
   end 
+  
+  def each_day(&block)
+    range.each(&block)
+  end
 end
 
   

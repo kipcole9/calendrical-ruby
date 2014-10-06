@@ -1,6 +1,12 @@
+require "#{File.dirname(__FILE__)}/../dates.rb"
+require "#{File.dirname(__FILE__)}/../months.rb"
+
 module Calendrical
-  module Holidays
+  module Dates
     module US
+      include Calendrical::Days
+      include Calendrical::Months
+      
       # see lines 843-847 in calendrica-3.0.cl
       # Return the fixed date of United States Independence Day in
       # Gregorian year 'g_year'.
@@ -24,7 +30,7 @@ module Calendrical
 
       # see lines 918-923 in calendrica-3.0.cl
       # Return the fixed date of United States' Election Day in Gregorian
-      # year 'g_year' (the Tuesday after the first Monday in November)."""
+      # year 'g_year' (the Tuesday after the first Monday in November).
       def election_day(g_year = self.year)
         first_kday(TUESDAY, date(g_year, NOVEMBER, 2))
       end

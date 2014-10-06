@@ -2,7 +2,7 @@ require "#{File.dirname(__FILE__)}/gregorian.rb"
 
 class JulianDate < Calendar
   include Calendrical::Ecclesiastical
-  include Calendrical::Calculations
+  include Calendrical::KdayCalculations
   
   def set_elements(*args)
     @date_elements = DateStruct.new(args.first, args.second, args.third)
