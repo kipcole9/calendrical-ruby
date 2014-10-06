@@ -156,7 +156,7 @@ module Calendrical
   protected
     # Seconds in angle x
     def seconds_in_angle(x)
-      x / 3600
+      x / 3600.0
     end
 
     # see lines 440-451 in calendrica-3.0.errata.cl

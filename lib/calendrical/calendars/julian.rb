@@ -1,20 +1,19 @@
-require "#{File.dirname(__FILE__)}/gregorian.rb"
-
 class JulianDate < Calendar
   include Calendrical::Ecclesiastical
   include Calendrical::KdayCalculations
-  
+  include Calendrical::Dates
+    
   def set_elements(*args)
-    @date_elements = DateStruct.new(args.first, args.second, args.third)
+    @date_elements = args.first.is_a?(DateStruct) ? args.first : DateStruct.new(args.first, args.second, args.third)
   end
-  
+
   def set_fixed(arg)
     @fixed = arg
   end
-
+  
   # see lines 1042-1045 in calendrica-3.0.cl
   def epoch
-    GregorianDate[0, DECEMBER, 30].to_fixed
+    GregorianDate[0, DECEMBER, 30].fixed
   end
 
   # see lines 1057-1060 in calendrica-3.0.cl
@@ -39,7 +38,7 @@ class JulianDate < Calendar
             else
               -2
             end) +
-            day)
+    day)
   end
 
   # see lines 1084-1111 in calendrica-3.0.cl
@@ -47,8 +46,8 @@ class JulianDate < Calendar
   def to_calendar(f_date = self.to_fixed)
     approx     = quotient(((4 * (f_date - epoch))) + 1464, 1461)
     year       = approx <= 0 ? approx - 1 : approx
-    prior_days = f_date - date(year, JANUARY, 1).to_fixed
-    correction = if f_date < date(year, MARCH, 1).to_fixed
+    prior_days = f_date - date(year, JANUARY, 1).fixed
+    correction = if f_date < date(year, MARCH, 1).fixed
                    0
                  elsif leap_year?(year)
                    1
@@ -56,23 +55,23 @@ class JulianDate < Calendar
                    2
                  end
     month      = quotient(12*(prior_days + correction) + 373, 367)
-    day        = 1 + (f_date - date(year, month, 1).to_fixed)
-    Date.new(year, month, day)
+    day        = 1 + (f_date - date(year, month, 1).fixed)
+    DateStruct.new(year, month, day)
   end
   
   def to_gregorian
-    GregorianDate[self.to_fixed]
+    GregorianDate[self.fixed]
   end
 
   # see lines 1250-1266 in calendrica-3.0.cl
   # Return the list of the fixed dates of Julian month 'j_month', day
-  # 'j_day' that occur in Gregorian year 'g_year'."""
+  # 'j_day' that occur in Gregorian year 'g_year'.
   def julian_in_gregorian
-    jan1 = new_year(self.year).to_fixed
+    jan1 = new_year(self.year).fixed
     y    = to_calendar(jan1).year
     y_prime = (y == -1) ? 1 : (y + 1)
-    date1 = date(y, self.month, self.day).to_fixed
-    date2 = date(y_prime, self.month, self.day).to_fixed
+    date1 = date(y, self.month, self.day).fixed
+    date2 = date(y_prime, self.month, self.day).fixed
     list_range(date1..date2, year_range(self.year))
   end
 

@@ -1,24 +1,22 @@
-require "#{File.dirname(__FILE__)}/../calendar.rb"
-
 class GregorianDate < Calendar
   include Calendrical::Ecclesiastical
   include Calendrical::KdayCalculations
   include Calendrical::Dates
   
   def inspect
-    Date.new(@date_elements.year, @date_elements.month, @date_elements.day)
-  end
-     
-  def set_elements(*args)
-    @date_elements = args.first.is_a?(DateStruct) ? args.first : DateStruct.new(args.first, args.second, args.third)
-  end
-  
-  def set_fixed(arg)
-    @fixed = arg
+    self.to_date
   end
   
   def to_date
-    Date.new(gregorian_date.year, gregorian_date.month, gregorian_date.day)
+    Date.new(@date_elements.year, @date_elements.month, @date_elements.day)
+  end
+  
+  def set_elements(*args)
+    @date_elements = args.first.is_a?(DateStruct) ? args.first : DateStruct.new(args.first, args.second, args.third)
+  end
+
+  def set_fixed(arg)
+    @fixed = arg
   end
   
   def epoch
@@ -140,7 +138,8 @@ class GregorianYear < Calendar
   include Calendrical::KdayCalculations
   include Calendrical::Ecclesiastical
   include Calendrical::Dates
-  
+  include Calendrical::Dates::US
+    
   def initialize(year)
     @year = year
   end
@@ -179,6 +178,10 @@ class GregorianYear < Calendar
   
   def each_day(&block)
     range.each(&block)
+  end
+  
+  def inspect
+    self.year
   end
 end
 
