@@ -3,6 +3,7 @@ require "#{File.dirname(__FILE__)}/astro.rb"
 require "#{File.dirname(__FILE__)}/days.rb"
 require "#{File.dirname(__FILE__)}/dates.rb"
 require "#{File.dirname(__FILE__)}/months.rb"
+require "#{File.dirname(__FILE__)}/seasons.rb"
 require "#{File.dirname(__FILE__)}/numeric.rb"
 require "#{File.dirname(__FILE__)}/kday_calculations.rb"
 require "#{File.dirname(__FILE__)}/calendars/ecclesiastical.rb"
@@ -38,13 +39,12 @@ class Calendar
   end
   
   def +(other)
-    value = other.respond_to?(:fixed) ? other.fixed : other
     date(self.fixed + other)
   end
   
   def -(other)
     value = other.respond_to?(:fixed) ? other.fixed : other
-    date(self.fixed - value)
+    self.fixed - value
   end
   
   def <=>(other)

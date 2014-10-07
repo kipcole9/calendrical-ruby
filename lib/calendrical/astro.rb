@@ -1,6 +1,12 @@
+require "#{File.dirname(__FILE__)}/locations.rb"
+require "#{File.dirname(__FILE__)}/months.rb"
+require "#{File.dirname(__FILE__)}/seasons.rb"
+
 module Calendrical
   module Astro
-    Location = Struct.new(:latitude, :longitude, :elevation, :zone)
+    include Calendrical::Months
+    include Calendrical::Locations
+    include Calendrical::Seasons
 
     MORNING     = true
     EVENING     = false
@@ -38,7 +44,7 @@ module Calendrical
     # Return BOGUS if there is no dusk on date 'date'.
     def dusk(date, location, alpha)
       result = moment_of_depression(date + 18.hrs, location, alpha, EVENING)
-      return BOGUS if result.nil?
+      raise "Dusk:  moment of depression #{date + 18.hrs}, #{location}, #{alpha}, #{EVENING}" if result.nil?
       standard_from_local(result, location)
     end
     
@@ -108,7 +114,7 @@ module Calendrical
     # Return the difference between UT and local mean time at longitude
     # 'phi' as a fraction of a day.
     def zone_from_longitude(phi)
-      phi / deg(360)
+      phi / 360.degrees
     end
 
     # see lines 2817-2820 in calendrica-3.0.cl
@@ -148,24 +154,30 @@ module Calendrical
     end
 
     # see lines 2866-2870 in calendrica-3.0.cl
-    # Return Julian centuries since 2000 at moment tee."""
+    # Return Julian centuries since 2000 at moment tee.
     def julian_centuries(tee)
-      (dynamical_from_universal(tee) - J2000) / mpf(36525)
+      (dynamical_from_universal(tee) - j2000) / mpf(36525.0)
+    end
+    
+    # Return sunset time in Urbana, Ill, on Gregorian date 'gdate'."""
+    def urbana_sunset(gdate = self)
+      time_from_moment(sunset(gdate.fixed, URBANA))
+    end
+
+    # from eq 13.38 pag. 191
+    # Return standard time of the winter solstice in Urbana, Illinois, USA.
+    def urbana_winter(g_year = self.year)
+      standard_from_universal(solar_longitude_after(WINTER, date(g_year, JANUARY, 1).fixed), URBANA)
     end
 
   protected
-    # Seconds in angle x
-    def seconds_in_angle(x)
-      x / 3600.0
-    end
-
     # see lines 440-451 in calendrica-3.0.errata.cl
     # Return refraction angle at location 'location' and time 'tee'.
     def refraction(tee, location)
-      h     = max(meters(0), location.elevation)
-      cap_R = meters(6.372E6)
+      h     = [0.meters, location.elevation].max
+      cap_R = 6.372E6.meters
       dip   = arccos_degrees(cap_R / (cap_R + h))
-      angle(0, 50, 0) + dip + secs(19) * Math.sqrt(h)
+      angle(0, 50, 0) + dip + 19.secs * Math.sqrt(h)
     end
 
     # see lines 453-458 in calendrica-3.0.errata.cl
@@ -212,13 +224,26 @@ module Calendrical
     # local time tee and when its depression is alpha at location, location.
     # Out of range when it does not occur.
     def sine_offset(tee, location, alpha)
-      phi = latitude(location)
+      phi = location.latitude
       tee_prime = universal_from_local(tee, location)
-      delta = declination(tee_prime, deg(mpf(0)), solar_longitude(tee_prime))
-      ((tangent_degrees(phi) * tangent_degrees(delta)) +
-          (sin_degrees(alpha) / (cosine_degrees(delta) *
-          cosine_degrees(phi))))
+      delta = declination(tee_prime, mpf(0).degrees, solar_longitude(tee_prime))
+      result = (tangent_degrees(phi) * tangent_degrees(delta)) +
+        (sin_degrees(alpha) / (cosine_degrees(delta) * cosine_degrees(phi)))
+      result
     end
+    
+    # # see lines 2905-2920 in calendrica-3.0.cl
+    # def sine_offset(tee, location, alpha):
+    #     """Return sine of angle between position of sun at 
+    #     local time tee and when its depression is alpha at location, location.
+    #     Out of range when it does not occur."""
+    #     phi = latitude(location)
+    #     tee_prime = universal_from_local(tee, location)
+    #     delta = declination(tee_prime, deg(mpf(0)), solar_longitude(tee_prime))
+    #     return ((tangent_degrees(phi) * tangent_degrees(delta)) +
+    #             (sin_degrees(alpha) / (cosine_degrees(delta) *
+    #                                    cosine_degrees(phi))))
+                                       
 
     # see lines 2922-2947 in calendrica-3.0.cl
     # Return the moment in local time near tee when depression angle
@@ -228,26 +253,21 @@ module Calendrical
     def approx_moment_of_depression(tee, location, alpha, early)
       ttry  = sine_offset(tee, location, alpha)
       date = fixed_from_moment(tee)
-
-      if alpha >= 0
-        alt = early ? date : date + 1
+      
+      alt = if alpha >= 0
+        early ? date : date + 1
       else
-        alt = date + 12.hrs
+        date + 12.hrs
       end
-
-      if abs(ttry) > 1
-        value = sine_offset(alt, location, alpha)
-      else
-        value = ttry
-      end
-
-      if (abs(value) <= 1)
+      value = ttry.abs > 1 ? sine_offset(alt, location, alpha) : ttry
+      
+      if value.abs <= 1
         temp = early ? -1 : 1
         temp *= ((12.hrs + arcsin_degrees(value)) / 360.degrees % 1) - 6.hrs
         temp += date + 12.hrs
-        return local_from_apparent(temp, location)
+        local_from_apparent(temp, location)
       else
-        return BOGUS
+        raise "Approx Moment of Depression: No value available (value is #{value.abs})"
       end
     end
 
@@ -259,7 +279,7 @@ module Calendrical
     def moment_of_depression(approx, location, alpha, early)
       tee = approx_moment_of_depression(approx, location, alpha, early)
       return BOGUS if tee.nil?
-      if (abs(approx - tee) < 30.secs)
+      if (approx - tee).abs < 30.secs
         tee
       else
         moment_of_depression(tee, location, alpha, early)
@@ -325,13 +345,13 @@ module Calendrical
     # Return arcsine of x in degrees.
     def arcsin_degrees(x)
       #from math import asin
-      degrees(asin(x).to_degrees)
+      degrees(Math.asin(x).to_degrees)
     end
 
     # see lines 2746-2749 in calendrica-3.0.cl
     # Return arccosine of x in degrees."""
     def arccos_degrees(x)
-      degrees(acos(x).to_degrees)
+      degrees(Math.acos(x).to_degrees)
     end
 
     # see lines 2777-2797 in calendrica-3.0.cl
@@ -354,5 +374,133 @@ module Calendrical
         return arctan_degrees(y, x)
       end
     end
+    
+    # see lines 3209-3259 in calendrica-3.0.cl
+    # Return the longitude of sun at moment 'tee'.
+    # Adapted from 'Planetary Programs and Tables from -4000 to +2800'
+    # by Pierre Bretagnon and Jean_Louis Simon, Willmann_Bell, Inc., 1986.
+    # See also pag 166 of 'Astronomical Algorithms' by Jean Meeus, 2nd Ed 1998,
+    # with corrections Jun 2005."""
+    def solar_longitude(tee)
+      c = julian_centuries(tee)
+      coefficients = [403406, 195207, 119433, 112392, 3891, 2819, 1721,
+                      660, 350, 334, 314, 268, 242, 234, 158, 132, 129, 114,
+                      99, 93, 86, 78,72, 68, 64, 46, 38, 37, 32, 29, 28, 27, 27,
+                      25, 24, 21, 21, 20, 18, 17, 14, 13, 13, 13, 12, 10, 10, 10,
+                      10]
+      multipliers = [mpf(0.9287892), mpf(35999.1376958), mpf(35999.4089666),
+                     mpf(35998.7287385), mpf(71998.20261), mpf(71998.4403),
+                     mpf(36000.35726), mpf(71997.4812), mpf(32964.4678),
+                     mpf(-19.4410), mpf(445267.1117), mpf(45036.8840), mpf(3.1008),
+                     mpf(22518.4434), mpf(-19.9739), mpf(65928.9345),
+                     mpf(9038.0293), mpf(3034.7684), mpf(33718.148), mpf(3034.448),
+                     mpf(-2280.773), mpf(29929.992), mpf(31556.493), mpf(149.588),
+                     mpf(9037.750), mpf(107997.405), mpf(-4444.176), mpf(151.771),
+                     mpf(67555.316), mpf(31556.080), mpf(-4561.540),
+                     mpf(107996.706), mpf(1221.655), mpf(62894.167),
+                     mpf(31437.369), mpf(14578.298), mpf(-31931.757),
+                     mpf(34777.243), mpf(1221.999), mpf(62894.511),
+                     mpf(-4442.039), mpf(107997.909), mpf(119.066), mpf(16859.071),
+                     mpf(-4.578), mpf(26895.292), mpf(-39.127), mpf(12297.536),
+                     mpf(90073.778)]
+      addends = [mpf(270.54861), mpf(340.19128), mpf(63.91854), mpf(331.26220),
+                 mpf(317.843), mpf(86.631), mpf(240.052), mpf(310.26), mpf(247.23),
+                 mpf(260.87), mpf(297.82), mpf(343.14), mpf(166.79), mpf(81.53),
+                 mpf(3.50), mpf(132.75), mpf(182.95), mpf(162.03), mpf(29.8),
+                 mpf(266.4), mpf(249.2), mpf(157.6), mpf(257.8),mpf(185.1),
+                 mpf(69.9),  mpf(8.0), mpf(197.1), mpf(250.4), mpf(65.3),
+                 mpf(162.7), mpf(341.5), mpf(291.6), mpf(98.5), mpf(146.7),
+                 mpf(110.0), mpf(5.2), mpf(342.6), mpf(230.9), mpf(256.1),
+                 mpf(45.3), mpf(242.9), mpf(115.2), mpf(151.8), mpf(285.3),
+                 mpf(53.3), mpf(126.6), mpf(205.7), mpf(85.9), mpf(146.1)]
+      lam = (mpf(282.7771834).degrees +
+             mpf(36000.76953744).degrees * c +
+             mpf(0.000005729577951308232).degrees *
+             sigma([coefficients, addends, multipliers],
+                   lambda{|x, y, z|  x * sin_degrees(y + (z * c))}))           
+      (lam + aberration(tee) + nutation(tee)) % 360
+    end
+
+    # see lines 3261-3271 in calendrica-3.0.cl
+    # Return the longitudinal nutation at moment, tee.
+    def nutation(tee)
+      c = julian_centuries(tee)
+      cap_A = poly(c, [mpf(124.90), mpf(-1934.134), mpf(0.002063)])
+      cap_B = poly(c, [mpf(201.11), mpf(72001.5377), mpf(0.00057)])
+      return (mpf(-0.004778).degrees  * sin_degrees(cap_A) + 
+              mpf(-0.0003667).degrees * sin_degrees(cap_B))
+    end
+    
+    # see lines 3106-3109 in calendrica-3.0.cl
+    # Return Dynamical time at Universal moment, tee."""
+    def dynamical_from_universal(tee)
+      tee + ephemeris_correction(tee)
+    end
+
+    # see lines 3111-3114 in calendrica-3.0.cl
+    def j2000
+      mpf(12).hrs + GregorianYear[2000].new_year.fixed
+    end
+    
+    # see lines 3140-3176 in calendrica-3.0.cl
+    # Return Dynamical Time minus Universal Time (in days) for
+    # moment, tee.  Adapted from "Astronomical Algorithms"
+    # by Jean Meeus, Willmann_Bell, Inc., 1991.
+    def ephemeris_correction(tee)
+      yyear = GregorianDate[tee.floor].year
+      c = (GregorianDate[yyear, JULY, 1] - GregorianDate[1900, JANUARY, 1]) / mpf(36525.0)
+      if 1988..2019.include?(yyear)
+        return 1/86400.0 * (yyear - 1933)
+      elsif 1900..1987.include?(yyear)
+        return poly(c, [mpf(-0.00002), mpf(0.000297), mpf(0.025184),
+                        mpf(-0.181133), mpf(0.553040), mpf(-0.861938),
+                        mpf(0.677066), mpf(-0.212591)])
+      elsif 1800..1899.include?(year)
+        return poly(c, [mpf(-0.000009), mpf(0.003844), mpf(0.083563),
+                        mpf(0.865736), mpf(4.867575), mpf(15.845535),
+                        mpf(31.332267), mpf(38.291999), mpf(28.316289),
+                        mpf(11.636204), mpf(2.043794)])
+      elsif 1700..1799.include?(yyear)
+        return (1/86400 * poly(year - 1700, [8.118780842, -0.005092142, 0.003336121, -0.0000266484]))
+      elsif 1620..1699.include?(yyear)
+        return (1/86400 *
+                poly(yyear - 1600,
+                     [mpf(196.58333), mpf(-4.0675), mpf(0.0219167)]))
+      else
+        x = mpf(12).hrs + (GregorianDate[yyear, JANUARY, 1] - GregorianDate[1810, JANUARY, 1])
+        return 1/86400.0 * (((x * x) / mpf(41048480.0)) - 15)
+      end
+    end
+    
+    # see lines 3273-3281 in calendrica-3.0.cl
+    # Return the aberration at moment, tee.
+    def aberration(tee)
+      c = julian_centuries(tee)
+      return ((mpf(0.0000974).degrees *
+               cosine_degrees(mpf(177.63).degrees + mpf(35999.01848)) * c).degrees -
+              mpf(0.005575).degrees)
+    end
+    
+    # see lines 3178-3207 in calendrica-3.0.cl
+    # Return the equation of time (as fraction of day) for moment, tee.
+    # Adapted from "Astronomical Algorithms" by Jean Meeus,
+    # Willmann_Bell, Inc., 1991."""
+    def equation_of_time(tee)
+      c = julian_centuries(tee)
+      lamb = poly(c, [mpf(280.46645), mpf(36000.76983), mpf(0.0003032)])
+      anomaly = poly(c, [mpf(357.52910), mpf(35999.05030), mpf(-0.0001559), mpf(-0.00000048)])
+      eccentricity = poly(c, [mpf(0.016708617), mpf(-0.000042037), mpf(-0.0000001236)])
+      varepsilon = obliquity(tee)
+      y = tangent_degrees(varepsilon / 2) ** 2
+      equation = ((1/2 / Math::PI) *
+                  (y * sin_degrees(2 * lamb) +
+                   -2 * eccentricity * sin_degrees(anomaly) +
+                   (4 * eccentricity * y * sin_degrees(anomaly) *
+                    cosine_degrees(2 * lamb)) +
+                   -0.5 * y * y * sin_degrees(4 * lamb) +
+                   -1.25 * eccentricity * eccentricity * sin_degrees(2 * anomaly)))
+      signum(equation) * [equation.abs, mpf(12).hrs].min
+    end
+    
   end
 end

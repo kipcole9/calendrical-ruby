@@ -1,10 +1,10 @@
 class Numeric
   def to_degrees
-    self * Math::PI / 180
+    self / Math::PI * 180
   end
   
   def to_radians
-    self / Math::PI * 180
+    self * Math::PI / 180
   end
   
   # Just tagging the value as meters
@@ -43,7 +43,7 @@ class Float
   
   # Seconds expressed as fraction of a day
   def secs
-    self / 24 / 60 / 60
+    self / 3600
   end
   alias :sec :secs
 end

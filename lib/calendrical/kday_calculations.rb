@@ -80,16 +80,5 @@ module Calendrical
     def date_difference(g_date1, g_date2 = self)
       g_date2.fixed - g_date1.fixed
     end
-
-    # Return sunset time in Urbana, Ill, on Gregorian date 'gdate'."""
-    def urbana_sunset(gdate)
-      time_from_moment(sunset(gdate.fixed), URBANA)
-    end
-
-    # from eq 13.38 pag. 191
-    # Return standard time of the winter solstice in Urbana, Illinois, USA.
-    def urbana_winter(g_year)
-      standard_from_universal(solar_longitude_after(WINTER, date(g_year, JANUARY, 1).fixed), URBANA)
-    end
   end
 end

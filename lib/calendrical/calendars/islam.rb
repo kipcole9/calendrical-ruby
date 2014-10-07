@@ -53,3 +53,63 @@ def mawlid_an_nabi(g_year):
     year g_year."""
     return islamic_in_gregorian(3, 12, g_year)
 
+    ###########################################
+    # astronomical lunar calendars algorithms #
+    ###########################################
+    # see lines 5829-5845 in calendrica-3.0.cl
+    # Return S. K. Shaukat's criterion for likely
+    # visibility of crescent moon on eve of date 'date',
+    # at location 'location'.
+    def visible_crescent(date, location):
+      tee = universal_from_standard(dusk(date - 1, location, deg(mpf(4.5))),
+                                    location)
+      phase = lunar_phase(tee)
+      altitude = lunar_altitude(tee, location)
+      arc_of_light = arccos_degrees(cosine_degrees(lunar_latitude(tee)) *
+                                    cosine_degrees(phase))
+      return ((NEW < phase < FIRST_QUARTER) and
+              (deg(mpf(10.6)) <= arc_of_light <= deg(90)) and
+              (altitude > deg(mpf(4.1))))
+    end
+
+    # see lines 5847-5860 in calendrica-3.0.cl
+    # Return the closest fixed date on or before date 'date', when crescent
+    # moon first became visible at location 'location'.
+    def phasis_on_or_before(date, location):
+      mean = date - ifloor(lunar_phase(date + 1) / deg(360) *
+                           MEAN_SYNODIC_MONTH)
+      tau = ((mean - 30)
+             if (((date - mean) <= 3) and (not visible_crescent(date, location)))
+             else (mean - 2))
+      return  next(tau, lambda d: visible_crescent(d, location))
+    end
+
+    # see lines 5862-5866 in calendrica-3.0.cl
+    # see lines 220-221 in calendrica-3.0.errata.cl
+    # Sample location for Observational Islamic calendar
+    # (Cairo, Egypt).
+    ISLAMIC_LOCATION = location(deg(mpf(30.1)), deg(mpf(31.3)), mt(200), hr(2))
+
+    # see lines 5868-5882 in calendrica-3.0.cl
+    # Return fixed date equivalent to Observational Islamic date, i_date."""
+    def fixed_from_observational_islamic(i_date):
+      month    = standard_month(i_date)
+      day      = standard_day(i_date)
+      year     = standard_year(i_date)
+      midmonth = ISLAMIC_EPOCH + ifloor((((year - 1) * 12) + month - 0.5) *
+                                        MEAN_SYNODIC_MONTH)
+      return (phasis_on_or_before(midmonth, ISLAMIC_LOCATION) +
+              day - 1)
+    end
+
+    # see lines 5884-5896 in calendrica-3.0.cl
+    def observational_islamic_from_fixed(date):
+        """Return Observational Islamic date (year month day)
+        corresponding to fixed date, date."""
+        crescent = phasis_on_or_before(date, ISLAMIC_LOCATION)
+        elapsed_months = iround((crescent - ISLAMIC_EPOCH) / MEAN_SYNODIC_MONTH)
+        year = quotient(elapsed_months, 12) + 1
+        month = mod(elapsed_months, 12) + 1
+        day = (date - crescent) + 1
+        return islamic_date(year, month, day)
+

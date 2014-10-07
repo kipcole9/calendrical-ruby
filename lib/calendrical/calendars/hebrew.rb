@@ -367,3 +367,76 @@ def possible_hebrew_days(h_month, h_day):
     ell.extend(mon)
     return shift_days(ell, n)
 
+    # see lines 5898-5901 in calendrica-3.0.cl
+    JERUSALEM = location(deg(mpf(31.8)), deg(mpf(35.2)), mt(800), hr(2))
+
+    # see lines 5903-5918 in calendrica-3.0.cl
+    def astronomical_easter(g_year):
+        """Return date of (proposed) astronomical Easter in Gregorian
+        year, g_year."""
+        jan1 = gregorian_new_year(g_year)
+        equinox = solar_longitude_after(SPRING, jan1)
+        paschal_moon = ifloor(apparent_from_local(
+                                 local_from_universal(
+                                    lunar_phase_at_or_after(FULL, equinox),
+                                    JERUSALEM),
+                                 JERUSALEM))
+        # Return the Sunday following the Paschal moon.
+        return kday_after(SUNDAY, paschal_moon)
+
+    # see lines 5920-5923 in calendrica-3.0.cl
+    JAFFA = location(angle(32, 1, 60), angle(34, 45, 0), mt(0), hr(2))
+
+    # see lines 5925-5938 in calendrica-3.0.cl
+    def phasis_on_or_after(date, location):
+        """Return closest fixed date on or after date, date, on the eve
+        of which crescent moon first became visible at location, location."""
+        mean = date - ifloor(lunar_phase(date + 1) / deg(mpf(360)) *
+                            MEAN_SYNODIC_MONTH)
+        tau = (date if (((date - mean) <= 3) and
+                        (not visible_crescent(date - 1, location)))
+               else (mean + 29))
+        return next(tau, lambda d: visible_crescent(d, location))
+
+    # see lines 5940-5955 in calendrica-3.0.cl
+    def observational_hebrew_new_year(g_year):
+        """Return fixed date of Observational (classical)
+        Nisan 1 occurring in Gregorian year, g_year."""
+        jan1 = gregorian_new_year(g_year)
+        equinox = solar_longitude_after(SPRING, jan1)
+        sset = universal_from_standard(sunset(ifloor(equinox), JAFFA), JAFFA)
+        return phasis_on_or_after(ifloor(equinox) - (14 if (equinox < sset) else 13),
+                                  JAFFA)
+
+    # see lines 5957-5973 in calendrica-3.0.cl
+    def fixed_from_observational_hebrew(h_date):
+        """Return fixed date equivalent to Observational Hebrew date."""
+        month = standard_month(h_date)
+        day = standard_day(h_date)
+        year = standard_year(h_date)
+        year1 = (year - 1) if (month >= TISHRI) else year
+        start = fixed_from_hebrew(hebrew_date(year1, NISAN, 1))
+        g_year = gregorian_year_from_fixed(start + 60)
+        new_year = observational_hebrew_new_year(g_year)
+        midmonth = new_year + iround(29.5 * (month - 1)) + 15
+        return phasis_on_or_before(midmonth, JAFFA) + day - 1
+
+    # see lines 5975-5991 in calendrica-3.0.cl
+    def observational_hebrew_from_fixed(date):
+        """Return Observational Hebrew date (year month day)
+        corresponding to fixed date, date."""
+        crescent = phasis_on_or_before(date, JAFFA)
+        g_year = gregorian_year_from_fixed(date)
+        ny = observational_hebrew_new_year(g_year)
+        new_year = observational_hebrew_new_year(g_year - 1) if (date < ny) else ny
+        month = iround((crescent - new_year) / 29.5) + 1
+        year = (standard_year(hebrew_from_fixed(new_year)) +
+                (1 if (month >= TISHRI) else 0))
+        day = date - crescent + 1
+        return hebrew_date(year, month, day)
+
+    # see lines 5993-5997 in calendrica-3.0.cl
+    def classical_passover_eve(g_year):
+        """Return fixed date of Classical (observational) Passover Eve
+        (Nisan 14) occurring in Gregorian year, g_year."""
+        return observational_hebrew_new_year(g_year) + 13

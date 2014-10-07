@@ -180,7 +180,7 @@ module Calendrical
       # This implementation is also known as Horner's Rule.
       n = a.length - 1
       p = a[n]
-      for i in 1..n+1 do
+      for i in 1..n do
         p = p * x + a[n-i]
       end
       p
@@ -191,7 +191,7 @@ module Calendrical
     # precision which Ruby will give on all
     # 64 bit platforms I use
     def mpf(x)
-      x
+      x.to_f
     end
   end
 end

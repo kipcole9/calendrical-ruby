@@ -3,11 +3,12 @@ class GregorianDate < Calendar
   include Calendrical::KdayCalculations
   include Calendrical::Dates
   
-  def inspect
-    self.to_date
-  end
+  # def inspect
+  #   self.to_date
+  # end
   
   def to_date
+    return nil unless @date_elements.year.present?
     Date.new(@date_elements.year, @date_elements.month, @date_elements.day)
   end
   
@@ -25,7 +26,7 @@ class GregorianDate < Calendar
   
   # see lines 657-663 in calendrica-3.0.cl
   # Return True if Gregorian year 'g_year' is leap.
-  def leap_year?(g_year = self.gregorian_date.year)
+  def leap_year?(g_year = self.year)
     (g_year % 4 == 0) && ![100, 200, 300].include?(g_year % 400)
   end
   alias :leap? :leap_year?
@@ -35,16 +36,16 @@ class GregorianDate < Calendar
   def to_fixed(g_date = self)
     month = g_date.month
     day   = g_date.day
-    year  = g_date.year
+    yyear  = g_date.year
     ((epoch - 1) + 
-      (365 * (year - 1)) + 
-      quotient(year - 1, 4) - 
-      quotient(year - 1, 100) + 
-      quotient(year - 1, 400) + 
+      (365 * (yyear - 1)) + 
+      quotient(yyear - 1, 4) - 
+      quotient(yyear - 1, 100) + 
+      quotient(yyear - 1, 400) + 
       quotient((367 * month) - 362, 12) +
         (if month <= 2
           0
-        elsif leap_year?(year)
+        elsif leap_year?(yyear)
           -1
         else
           -2
@@ -54,20 +55,33 @@ class GregorianDate < Calendar
   
   # see lines 735-756 in calendrica-3.0.cl
   # Return the Gregorian date corresponding to fixed date 'date'.
-  def to_calendar(f_date = self.fixed)
-    year        = year_from_fixed(f_date)
-    prior_days  = f_date - new_year(year).fixed
-    correction = (if f_date < date(year, MARCH, 1).fixed
+  def to_calendar
+    yyear   = year_from_fixed(self.fixed)
+    prior_days  = self.fixed - GregorianDate[yyear, 1, 1].fixed
+    correction  = (if self.fixed < date(yyear, MARCH, 1).fixed
                     0
-                  elsif leap_year?(year)
+                  elsif leap_year?(yyear)
                     1
                   else
                     2
                   end)
     month = quotient((12 * (prior_days + correction)) + 373, 367)
-    day = 1 + f_date - date(year, month, 1).fixed
-    DateStruct.new(year, month, day)
+    day = 1 + self.fixed - date(yyear, month, 1).fixed
+    @date_elements = DateStruct.new(yyear, month, day)
   end
+  
+  # def gregorian_from_fixed(date):
+  #     """Return the Gregorian date corresponding to fixed date 'date'."""
+  #     year = gregorian_year_from_fixed(date)
+  #     prior_days = date - gregorian_new_year(year)
+  #     correction = (0
+  #                   if (date < fixed_from_gregorian(gregorian_date(year,
+  #                                                                  MARCH,
+  #                                                                  1)))
+  #                   else (1 if is_gregorian_leap_year(year) else 2))
+  #     month = quotient((12 * (prior_days + correction)) + 373, 367)
+  #     day = 1 + (date - fixed_from_gregorian(gregorian_date(year, month, 1)))
+  #     return gregorian_date(year, month, day)
 
 protected
   
@@ -160,7 +174,7 @@ class GregorianYear < Calendar
     if g_month && g_day
       GregorianDate[the_year, g_month, g_day]
     else
-      GregorianDate[the_year]
+      GregorianYear[the_year]
     end
   end 
   

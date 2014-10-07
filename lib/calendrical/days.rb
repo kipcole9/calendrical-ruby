@@ -52,7 +52,7 @@ module Calendrical
     # see lines 402-405 in calendrica-3.0.cl
     # Return fixed date from moment 'tee'.
     def fixed_from_moment(tee)
-      floor(tee)
+      tee.floor
     end
 
     # see lines 407-410 in calendrica-3.0.cl
