@@ -168,6 +168,7 @@ module Calendrical
       # >>> reduce(add, temp)
       # 780
       # return sum(b(*e) for e in zip(*l))
+      # puts "Zipped: #{l.first.zip(*l[1..-1]).map{|x| b.call(*x)}}"
       l.first.zip(*l[1..-1]).map{|x| b.call(*x)}.sum
     end
 
@@ -184,14 +185,6 @@ module Calendrical
         p = p * x + a[n-i]
       end
       p
-    end
-    
-    # Python mpf() does arbitrary real calc
-    # but I believe we need a minimum 50 bits of
-    # precision which Ruby will give on all
-    # 64 bit platforms I use
-    def mpf(x)
-      x.to_f
     end
   end
 end

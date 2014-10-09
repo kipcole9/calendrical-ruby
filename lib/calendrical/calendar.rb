@@ -5,6 +5,7 @@ require "#{File.dirname(__FILE__)}/dates.rb"
 require "#{File.dirname(__FILE__)}/months.rb"
 require "#{File.dirname(__FILE__)}/seasons.rb"
 require "#{File.dirname(__FILE__)}/numeric.rb"
+require "#{File.dirname(__FILE__)}/mpf.rb"
 require "#{File.dirname(__FILE__)}/kday_calculations.rb"
 require "#{File.dirname(__FILE__)}/calendars/ecclesiastical.rb"
 
@@ -17,7 +18,8 @@ class Calendar
   include Calendrical::Astro
   include Calendrical::Days
   include Calendrical::Months
-  
+  include Calendrical::Mpf
+    
   attr_accessor :date_elements, :fixed
   delegate :day, :month, :year, to: :date_elements
 

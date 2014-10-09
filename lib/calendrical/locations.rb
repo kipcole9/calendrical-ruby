@@ -1,12 +1,10 @@
 require "#{File.dirname(__FILE__)}/numeric.rb"
+require "#{File.dirname(__FILE__)}/astro/angle.rb"
 
 module Calendrical
   module Locations
+    extend Calendrical::Astro::Angle
     Location = Struct.new(:latitude, :longitude, :elevation, :zone)
-    
-    def self.angle(degrees, minutes, seconds)
-      degrees.to_f + ((minutes.to_f + (seconds.to_f / 60)) / 60)
-    end
     
     MECCA       = Location.new(angle(21, 25, 24), angle(39, 49, 24), 298.meters, 3.hrs)
     JERUSALEM   = Location.new(31.8, 35.2, 800.meters, 2.hrs)

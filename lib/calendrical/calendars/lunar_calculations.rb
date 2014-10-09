@@ -67,7 +67,7 @@ module Calendrical
     def standard_from_sundial(tee, location)
       date = fixed_from_moment(tee)
       hour = 24 * mod(tee, 1)
-      h = if (6..18.include?(hour))
+      h = if (6..18).include?(hour)
         daytime_temporal_hour(date, location)
       elsif (hour < 6)
         nighttime_temporal_hour(date - 1, location)

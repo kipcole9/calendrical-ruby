@@ -1,10 +1,10 @@
 class Numeric
   def to_degrees
-    self / Math::PI * 180
+    self / Math::PI * 180.0
   end
   
   def to_radians
-    self * Math::PI / 180
+    self * Math::PI / 180.0
   end
   
   # Just tagging the value as meters
@@ -16,34 +16,20 @@ class Numeric
   def degrees
     self
   end
-end
 
-class Fixnum
-  def hrs
-    self.to_f.hrs
-  end
-  alias :hr :hrs
-  
-  def secs
-    self.to_f.secs
-  end
-  alias :sec :secs
-  
   def to_gregorian
-    GregorianDate[self]
+    GregorianDate[self.to_i]
   end
-end
 
-class Float
   # Hours expressed as fraction of day
   def hrs
-    self / 24
+    self / 24.0
   end
   alias :hr :hrs
   
   # Seconds expressed as fraction of a day
   def secs
-    self / 3600
+    self / 3600.0
   end
   alias :sec :secs
 end

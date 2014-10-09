@@ -65,8 +65,8 @@ module Calendrical
     # Return clock time hour:minute:second from moment 'tee'.
     def clock_from_moment(tee)
       time = time_from_moment(tee)
-      hour = floor(time * 24)
-      minute = floor(mod(time * 24 * 60, 60))
+      hour = (time * 24).floor
+      minute = ((time * 24 * 60) % 60).floor
       second = (time * 24 * 60 * 60) % 60
       time_of_day(hour, minute, second)
     end
