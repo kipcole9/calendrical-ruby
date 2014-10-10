@@ -49,35 +49,13 @@ module Calendrical
       clock[2]
     end
 
-    # see lines 402-405 in calendrica-3.0.cl
-    # Return fixed date from moment 'tee'.
-    def fixed_from_moment(tee)
-      tee.floor
-    end
-
-    # see lines 407-410 in calendrica-3.0.cl
-    # Return time from moment 'tee'."""
-    def time_from_moment(tee)
-      tee % 1
-    end
-
-    # see lines 412-419 in calendrica-3.0.cl
-    # Return clock time hour:minute:second from moment 'tee'.
-    def clock_from_moment(tee)
-      time = time_from_moment(tee)
-      hour = (time * 24).floor
-      minute = ((time * 24 * 60) % 60).floor
-      second = (time * 24 * 60 * 60) % 60
-      time_of_day(hour, minute, second)
-    end
-
     # see lines 421-427 in calendrica-3.0.cl
     # Return time of day from clock time 'hms'."""
     def time_from_clock(hms)
       h = hour(hms)
       m = minute(hms)
       s = seconds(hms)
-      (1/24 * (h + ((m + (s / 60)) / 60)))
+      (1/24.0 * (h + ((m + (s / 60.0)) / 60.0)))
     end
 
     # see lines 429-431 in calendrica-3.0.cl

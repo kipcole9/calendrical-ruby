@@ -1,11 +1,11 @@
 class GregorianDate < Calendar
   include Calendrical::Ecclesiastical
-  include Calendrical::KdayCalculations
+  include Calendrical::Kday
   include Calendrical::Dates
   
-  # def inspect
-  #   self.to_date
-  # end
+  def inspect
+    self.to_date
+  end
   
   def to_date
     return nil unless @date_elements.year.present?
@@ -69,19 +69,6 @@ class GregorianDate < Calendar
     day = 1 + self.fixed - date(yyear, month, 1).fixed
     @date_elements = DateStruct.new(yyear, month, day)
   end
-  
-  # def gregorian_from_fixed(date):
-  #     """Return the Gregorian date corresponding to fixed date 'date'."""
-  #     year = gregorian_year_from_fixed(date)
-  #     prior_days = date - gregorian_new_year(year)
-  #     correction = (0
-  #                   if (date < fixed_from_gregorian(gregorian_date(year,
-  #                                                                  MARCH,
-  #                                                                  1)))
-  #                   else (1 if is_gregorian_leap_year(year) else 2))
-  #     month = quotient((12 * (prior_days + correction)) + 373, 367)
-  #     day = 1 + (date - fixed_from_gregorian(gregorian_date(year, month, 1)))
-  #     return gregorian_date(year, month, day)
 
 protected
   
@@ -149,7 +136,7 @@ end
 class GregorianYear < Calendar
   attr_accessor :year, :fixed
 
-  include Calendrical::KdayCalculations
+  include Calendrical::Kday
   include Calendrical::Ecclesiastical
   include Calendrical::Dates
   include Calendrical::Dates::US

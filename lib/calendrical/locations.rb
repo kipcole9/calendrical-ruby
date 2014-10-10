@@ -4,7 +4,29 @@ require "#{File.dirname(__FILE__)}/astro/angle.rb"
 module Calendrical
   module Locations
     extend Calendrical::Astro::Angle
-    Location = Struct.new(:latitude, :longitude, :elevation, :zone)
+    class Location 
+      attr_accessor :latitude, :longitude, :elevation, :zone
+      
+      def initialize(latitude, longitude, elevation, zone)
+        @latitude = latitude
+        @longitude = longitude
+        @elevation = elevation
+        @zone = zone
+      end
+      
+      def zone_in_seconds
+        zone_in_minutes * 60
+      end
+      
+      def zone_in_minutes
+        zone_in_hours * 60
+      end
+      
+      def zone_in_hours
+        (zone * 24).floor
+      end
+      
+    end
     
     MECCA       = Location.new(angle(21, 25, 24), angle(39, 49, 24), 298.meters, 3.hrs)
     JERUSALEM   = Location.new(31.8, 35.2, 800.meters, 2.hrs)

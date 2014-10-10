@@ -1,12 +1,13 @@
 require "#{File.dirname(__FILE__)}/base.rb"
-require "#{File.dirname(__FILE__)}/astro.rb"
+require "#{File.dirname(__FILE__)}/moment.rb"
 require "#{File.dirname(__FILE__)}/days.rb"
 require "#{File.dirname(__FILE__)}/dates.rb"
 require "#{File.dirname(__FILE__)}/months.rb"
 require "#{File.dirname(__FILE__)}/seasons.rb"
 require "#{File.dirname(__FILE__)}/numeric.rb"
 require "#{File.dirname(__FILE__)}/mpf.rb"
-require "#{File.dirname(__FILE__)}/kday_calculations.rb"
+require "#{File.dirname(__FILE__)}/kday.rb"
+require "#{File.dirname(__FILE__)}/astro.rb"
 require "#{File.dirname(__FILE__)}/calendars/ecclesiastical.rb"
 
 class Calendar
@@ -16,6 +17,8 @@ class Calendar
   include Comparable
   include Calendrical::Base
   include Calendrical::Astro
+  include Calendrical::Astro::Solar
+  include Calendrical::Astro::Lunar
   include Calendrical::Days
   include Calendrical::Months
   include Calendrical::Mpf

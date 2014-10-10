@@ -1,5 +1,5 @@
 module Calendrical
-  module KdayCalculations
+  module Kday
     include Calendrical::Days
     include Calendrical::Months
         

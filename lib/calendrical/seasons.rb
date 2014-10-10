@@ -1,3 +1,5 @@
+require "#{File.dirname(__FILE__)}/numeric.rb"
+
 module Calendrical
   module Seasons    
     # see lines 3297-3300 in calendrica-3.0.cl

@@ -1,6 +1,6 @@
 class JulianDate < Calendar
   include Calendrical::Ecclesiastical
-  include Calendrical::KdayCalculations
+  include Calendrical::Kday
   include Calendrical::Dates
     
   def set_elements(*args)
