@@ -48,6 +48,29 @@ ADARII = 13
 # see lines 1581-1585 in calendrica-3.0.cl
 HEBREW_EPOCH = fixed_from_julian(julian_date(bce(3761),  OCTOBER, 7))
 
+
+# see lines 3021-3025 in calendrica-3.0.cl
+# Return standard time of Jewish dusk on fixed date, date,
+# at location, location, (as per Vilna Gaon).
+def jewish_dusk(date, location)
+  dusk(date, location, angle(4, 40, 0))
+end
+
+# see lines 3027-3031 in calendrica-3.0.cl
+# Return standard time of end of Jewish sabbath on fixed date, date,
+# at location, location, (as per Berthold Cohn).
+def jewish_sabbath_ends(date, location)
+  dusk(date, location, angle(7, 5, 0)) 
+end
+
+
+# see lines 3075-3079 in calendrica-3.0.cl
+# Return standard time on fixed date, date, at location, location,
+# of end of morning according to Jewish ritual."""
+def jewish_morning_end(date, location)
+  standard_from_sundial(date + 10.hrs, location)
+end
+
 # see lines 1587-1590 in calendrica-3.0.cl
 def is_hebrew_leap_year(h_year):
     """Return True if h_year is a leap year on Hebrew calendar."""
@@ -378,14 +401,11 @@ def possible_hebrew_days(h_month, h_day):
         equinox = solar_longitude_after(SPRING, jan1)
         paschal_moon = ifloor(apparent_from_local(
                                  local_from_universal(
-                                    lunar_phase_at_or_after(FULL, equinox),
+                                    lunar_phase_at_or_after(FULL_MOON, equinox),
                                     JERUSALEM),
                                  JERUSALEM))
         # Return the Sunday following the Paschal moon.
         return kday_after(SUNDAY, paschal_moon)
-
-    # see lines 5920-5923 in calendrica-3.0.cl
-    JAFFA = location(angle(32, 1, 60), angle(34, 45, 0), mt(0), hr(2))
 
     # see lines 5925-5938 in calendrica-3.0.cl
     def phasis_on_or_after(date, location):

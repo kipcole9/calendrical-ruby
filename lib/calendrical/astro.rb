@@ -55,6 +55,21 @@ module Calendrical
       tee_ell - zone_from_longitude(location.longitude)
     end
 
+    # see lines 3101-3104 in calendrica-3.0.cl
+    # Return Universal moment from Dynamical time, tee.
+    def universal_from_dynamical(tee)
+      tee - ephemeris_correction(tee)
+    end
+
+    # see lines 3116-3126 in calendrica-3.0.cl
+    # Return the mean sidereal time of day from moment tee expressed
+    # as hour angle.  Adapted from "Astronomical Algorithms"
+    # by Jean Meeus, Willmann_Bell, Inc., 1991.
+    def sidereal_from_moment(tee)
+      c = (tee - j2000) / mpf(36525)
+      poly(c, [mpf(280.46061837), mpf(36525) * mpf(360.98564736629), mpf(0.000387933), mpf(-1.0) / mpf(38710000)]) % 360
+    end
+
     # see lines 2827-2832 in calendrica-3.0.cl
     # Return standard time from local tee_ell at locale, location.
     def standard_from_local(tee_ell, location)
@@ -77,6 +92,17 @@ module Calendrical
     # Return local time from sundial time tee at location, location.
     def local_from_apparent(tee, location)
       tee - equation_of_time(universal_from_local(tee, location))
+    end
+    
+    # see lines 2893-2903 in calendrica-3.0.cl
+    # Return right ascension at moment UT 'tee' of object at
+    # latitude 'lam' and longitude 'beta'."""
+    def right_ascension(tee, beta, lam)
+      varepsilon = obliquity(tee)
+      arctan_degrees(
+          (sin_degrees(lam) * cosine_degrees(varepsilon)) -
+          (tangent_degrees(beta) * sin_degrees(varepsilon)),
+          cosine_degrees(lam))
     end
     
     # see lines 3178-3207 in calendrica-3.0.cl
@@ -122,6 +148,22 @@ module Calendrical
       cap_R = 6.372E6.meters
       dip   = arccos_degrees(cap_R / (cap_R + h))
       angle(0, 50, 0) + dip + 19.secs * Math.sqrt(h)
+    end
+    
+    # see lines 3317-3339 in calendrica-3.0.cl
+    # Return the precession at moment tee using 0,0 as J2000 coordinates.
+    # Adapted from "Astronomical Algorithms" by Jean Meeus,
+    # Willmann-Bell, Inc., 1991.
+    def precession(tee)
+      c = julian_centuries(tee)
+      eta   = poly(c, [0, mpf(47.0029).secs, mpf(-0.03302).secs, mpf(0.000060).secs]) % 360
+      cap_P = poly(c, [mpf(174.876384).degrees, mpf(-869.8089).secs, mpf(0.03536).secs]) % 360
+      p     = poly(c, [0, secs(mpf(5029.0966)), secs(mpf(1.11113)), mpf(0.000006).secs]) % 360
+      cap_A = cosine_degrees(eta) * sin_degrees(cap_P)
+      cap_B = cosine_degrees(cap_P)
+      arg   = arctan_degrees(cap_A, cap_B)
+
+      return (p + cap_P - arg) % 360
     end
     
     # see lines 2713-2716 in calendrica-3.0.cl

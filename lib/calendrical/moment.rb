@@ -1,12 +1,19 @@
 module Calendrical
   class Moment
-    attr_accessor :moment, :zone
+    attr_reader :moment, :zone
+    alias :to_f :moment
     
     def initialize(moment, location = nil)
       @moment = moment
       @zone = location.zone_in_seconds if location
     end
     
+    def to_time
+      d = GregorianDate[date]
+      c = clock
+      Time.new(d.year, d.month, d.day, c.first, c.second, c.third, zone)
+    end
+
     # see lines 402-405 in calendrica-3.0.cl
     # Return fixed date from moment 'tee'.
     def date
@@ -20,6 +27,8 @@ module Calendrical
       moment % 1
     end
 
+  private
+
     # see lines 412-419 in calendrica-3.0.cl
     # Return clock time hour:minute:second from moment 'tee'.
     def clock
@@ -28,11 +37,6 @@ module Calendrical
       second = (time * 24 * 60 * 60) % 60
       [hour, minute, second]
     end
-    
-    def to_time
-      d = GregorianDate[date]
-      c = clock
-      Time.new(d.year, d.month, d.day, c.first, c.second, c.third, zone)
-    end
+
   end
 end

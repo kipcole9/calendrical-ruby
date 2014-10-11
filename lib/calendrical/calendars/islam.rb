@@ -61,15 +61,15 @@ def mawlid_an_nabi(g_year):
     # visibility of crescent moon on eve of date 'date',
     # at location 'location'.
     def visible_crescent(date, location):
-      tee = universal_from_standard(dusk(date - 1, location, deg(mpf(4.5))),
+      tee = universal_from_standard(dusk(date - 1, location, mpf(4.5).degrees),
                                     location)
       phase = lunar_phase(tee)
       altitude = lunar_altitude(tee, location)
       arc_of_light = arccos_degrees(cosine_degrees(lunar_latitude(tee)) *
                                     cosine_degrees(phase))
-      return ((NEW < phase < FIRST_QUARTER) and
-              (deg(mpf(10.6)) <= arc_of_light <= deg(90)) and
-              (altitude > deg(mpf(4.1))))
+      return ((NEW_MOON < phase < FIRST_QUARTER) &&
+              (mpf(10.6).degrees <= arc_of_light <= 90.degrees) &&
+              (altitude > mpf(4.1).degrees))
     end
 
     # see lines 5847-5860 in calendrica-3.0.cl

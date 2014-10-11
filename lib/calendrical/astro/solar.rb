@@ -13,10 +13,6 @@ module Calendrical
       include Calendrical::Seasons
       include Calendrical::Astro::Angle
       include Constants
-
-      MORNING     = true
-      EVENING     = false
-      BOGUS       = nil
     
       # see lines 2997-3007 in calendrica-3.0.cl
       # Return Standard time of sunrise on fixed date 'date' at
@@ -47,29 +43,21 @@ module Calendrical
       def midday(date, location)
         Moment.new(standard_from_local(local_from_apparent(date + mpf(12).hrs, location), location))
       end
-    
-      # see lines 460-467 in calendrica-3.0.errata.cl
-      # Return the standard time of moonrise on fixed, date,
-      # and location, location.
-      def moonrise(date, location)
-        t = universal_from_standard(date, location)
-        waning = (lunar_phase(t) > 180.degrees)
-        alt = observed_lunar_altitude(t, location)
-        offset = alt / 360.0
-        if (waning && (offset > 0))
-          approx =  t + 1 - offset
-        elsif waning
-          approx = t - offset
-        else
-          approx = t + (1 / 2.0) + offset
-        end
-        rise = binary_search(
-          approx - 3.hrs,
-          approx + 3.hrs,
-          lambda {|u, l| (u - l) < (1.0 / 60).hrs },
-          lambda {|x| observed_lunar_altitude(x, location) > 0.degrees}
-        )
-        (rise < (t + 1)) ? Moment.new(standard_from_universal(rise, location)) : BOGUS
+      
+      # see lines 3033-3042 in calendrica-3.0.cl
+      # Return the length of daytime temporal hour on fixed date, date
+      # at location, location.
+      # Return BOGUS if there no sunrise or sunset on date, date.
+      def daytime_temporal_hour(date, location)
+        (sunset(date, location) - sunrise(date, location)) / 12
+      end
+
+      # see lines 3044-3053 in calendrica-3.0.cl
+      # Return the length of nighttime temporal hour on fixed date, date,
+      # at location, location.
+      # Return BOGUS if there no sunrise or sunset on date, date.
+      def nighttime_temporal_hour(date, location)
+        (sunrise(date + 1, location) - sunset(date, location)) / 12
       end
       
       # Return sunset time in Urbana, Ill, on Gregorian date 'gdate'."""
@@ -133,17 +121,6 @@ module Calendrical
             (cosine_degrees(beta) * sin_degrees(varepsilon) * sin_degrees(lam)))
       end
 
-      # see lines 2893-2903 in calendrica-3.0.cl
-      # Return right ascension at moment UT 'tee' of object at
-      # latitude 'lam' and longitude 'beta'."""
-      def right_ascension(tee, beta, lam)
-        varepsilon = obliquity(tee)
-        arctan_degrees(
-            (sin_degrees(lam) * cosine_degrees(varepsilon)) -
-            (tangent_degrees(beta) * sin_degrees(varepsilon)),
-            cosine_degrees(lam))
-      end
-
       # see lines 2905-2920 in calendrica-3.0.cl
       # Return sine of angle between position of sun at 
       # local time tee and when its depression is alpha at location, location.
@@ -152,7 +129,6 @@ module Calendrical
         phi = location.latitude
         tee_prime = universal_from_local(tee, location)
         delta = declination(tee_prime, mpf(0).degrees, solar_longitude(tee_prime))
-        # puts "Sine_offset: tee_prime: #{tee_prime}, delta: #{delta}, solar_longitude: #{solar_longitude(tee_prime)}"
         result = (tangent_degrees(phi) * tangent_degrees(delta)) +
           (sin_degrees(alpha) / (cosine_degrees(delta) * cosine_degrees(phi)))
         result
@@ -165,9 +141,7 @@ module Calendrical
       # Returns BOGUS if depression angle is not reached.
       def approx_moment_of_depression(tee, location, alpha, early)
         ttry  = sine_offset(tee, location, alpha)
-        # puts "Approx Moment: Sine_offset: tee: #{tee} => #{ttry}"
         date = fixed_from_moment(tee)
-        # puts "Approx moment:  date: #{date}"
       
         alt = if alpha >= 0
           early ? date : date + 1
@@ -175,7 +149,6 @@ module Calendrical
           date + 12.hrs
         end
         value = ttry.abs > 1 ? sine_offset(alt, location, alpha) : ttry
-        # puts "Approx moment:  value: #{value}"
             
         if value.abs <= 1
           temp = (early ? -1 : 1) 
@@ -196,7 +169,6 @@ module Calendrical
         tee = approx_moment_of_depression(approx, location, alpha, early)
         raise "Moment of Depression: Cannot be reached (Tee: #{tee}, Approx: #{approx}, Location: #{location}, Alpha: #{alpha}, Early: #{early})" if tee.nil?
         mod = (approx - tee).abs < 30.secs ? tee : moment_of_depression(tee, location, alpha, early)
-        # puts "Moment of depression: #{mod}"
         mod
       end
     
@@ -232,10 +204,9 @@ module Calendrical
         lam = (mpf(282.7771834).degrees +
                mpf(36000.76953744).degrees * c +
                mpf(0.000005729577951308232).degrees *
-               sigma([COEFFICIENTS, ADDENDS, MULTIPLIERS], lambda{|x, y, z|  mpf(x) * sin_degrees(mpf(y) + (mpf(z) * c))})
+               sigma([SOLAR_COEFFICIENTS, SOLAR_ADDENDS, SOLAR_MULTIPLIERS], lambda{|x, y, z|  mpf(x) * sin_degrees(mpf(y) + (mpf(z) * c))})
               )
-        lon = (lam + aberration(tee) + nutation(tee)) % 360
-        return lon
+        (lam + aberration(tee) + nutation(tee)) % 360
       end
       
       # see lines 3283-3295 in calendrica-3.0.cl
@@ -286,8 +257,32 @@ module Calendrical
           x = mpf(12).hrs + (GregorianDate[yyear, JANUARY, 1] - GregorianDate[1810, JANUARY, 1])
           corr = 1.0/86400.0 * (((x * x) / mpf(41048480.0)) - 15)
         end
-        # puts "Ephemeris correction: #{corr}"
         return corr
+      end
+      
+      # see lines 3389-3398 in calendrica-3.0.cl
+      # Return mean anomaly of sun (in degrees) at moment
+      # given in Julian centuries c.
+      # Adapted from eq. 47.3 in "Astronomical Algorithms" by Jean Meeus,
+      # Willmann_Bell, Inc., 2nd ed. with corrections, 2005.
+      def solar_anomaly(c)
+        degrees(poly(c, [mpf(357.5291092), mpf(35999.0502909), mpf(-0.0001536), mpf(1.0/24490000)]))
+      end
+      
+      # see lines 3341-3347 in calendrica-3.0.cl
+      # Return sidereal solar longitude at moment, tee.
+      def sidereal_solar_longitude(tee)
+        mod(solar_longitude(tee) - precession(tee) + SIDEREAL_START, 360)
+      end
+
+      # see lines 3349-3365 in calendrica-3.0.cl
+      # Return approximate moment at or before tee
+      # when solar longitude just exceeded lam degrees.
+      def estimate_prior_solar_longitude(lam, tee)
+        rate = MEAN_TROPICAL_YEAR / deg(360)
+        tau = tee - (rate * mod(solar_longitude(tee) - lam, 360))
+        cap_Delta = mod(solar_longitude(tau) - lam + deg(180), 360) - deg(180)
+        return min(tee, tau - (rate * cap_Delta))
       end
     end
   end

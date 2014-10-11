@@ -2,6 +2,15 @@ class JulianDate < Calendar
   include Calendrical::Ecclesiastical
   include Calendrical::Kday
   include Calendrical::Dates
+  
+  def inspect
+    self.to_date
+  end
+  
+  def to_date
+    return nil unless @date_elements.year.present?
+    Date.new(@date_elements.year, @date_elements.month, @date_elements.day)
+  end
     
   def set_elements(*args)
     @date_elements = args.first.is_a?(DateStruct) ? args.first : DateStruct.new(args.first, args.second, args.third)

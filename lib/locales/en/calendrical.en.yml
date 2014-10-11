@@ -1,0 +1,10 @@
+en:
+    moon_phase:
+        new_moon:           'New Moon'
+        waxing_cresent:     'Waxing Cresent'      
+        first_quarter:      'First Quarter' 
+        waxing_gibbous:     'Waxing Gibbous'
+        full_moon:          'Full Moon'
+        waning_gibbous:     'Waning Gibbous'
+        last_quarter:       'Last Quarter'      
+        waning_crescent:    'Waning Crescent'
