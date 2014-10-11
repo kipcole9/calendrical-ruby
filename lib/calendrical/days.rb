@@ -89,19 +89,19 @@ module Calendrical
     # see lines 447-450 in calendrica-3.0.cl
     # Return the moment corresponding to the Julian day number 'jd'."""
     def moment_from_jd(jd)
-      jd + JD_EPOCH
+      jd + jd_epoch
     end
 
     # see lines 452-455 in calendrica-3.0.cl
     # Return the Julian day number corresponding to moment 'tee'.
     def jd_from_moment(tee)
-      tee - JD_EPOCH
+      tee - jd_epoch
     end
 
     # see lines 457-460 in calendrica-3.0.cl
     # Return the fixed date corresponding to Julian day number 'jd'.
     def fixed_from_jd(jd)
-      floor(moment_from_jd(jd))
+      moment_from_jd(jd).floor
     end
 
     # see lines 462-465 in calendrica-3.0.cl

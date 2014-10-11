@@ -32,4 +32,13 @@ class Numeric
     self / 3600.0
   end
   alias :sec :secs
+  
+  # Julian Date markers
+  def ce
+    self
+  end
+  
+  def bce
+    -self
+  end
 end

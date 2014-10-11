@@ -46,9 +46,9 @@ module Calendrical
     # A k-day of 0 means Sunday, 1 means Monday, and so on.
     def nth_kday(n, k, g_date = self)
       if n > 0
-        date(kday_before(k, g_date).fixed + 7*n)
+        kday_before(k, g_date) + 7*n
       elsif n < 0
-        date(kday_after(k, g_date).fixed + 7*n)
+        kday_after(k, g_date) + 7*n
       else
         return BOGUS
       end

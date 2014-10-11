@@ -4,24 +4,11 @@ class JulianDate < Calendar
   include Calendrical::Dates
   
   def inspect
-    self.to_date
-  end
-  
-  def to_date
-    return nil unless @date_elements.year.present?
-    Date.new(@date_elements.year, @date_elements.month, @date_elements.day)
-  end
-    
-  def set_elements(*args)
-    @date_elements = args.first.is_a?(DateStruct) ? args.first : DateStruct.new(args.first, args.second, args.third)
-  end
-
-  def set_fixed(arg)
-    @fixed = arg
+    "#{year}-#{month}-#{day} Julian"
   end
   
   # see lines 1042-1045 in calendrica-3.0.cl
-  def epoch
+  def self.epoch
     GregorianDate[0, DECEMBER, 30].fixed
   end
 
@@ -52,7 +39,7 @@ class JulianDate < Calendar
 
   # see lines 1084-1111 in calendrica-3.0.cl
   # Return the Julian date corresponding to fixed date 'date'.
-  def to_calendar(f_date = self.to_fixed)
+  def to_calendar(f_date = self.fixed)
     approx     = quotient(((4 * (f_date - epoch))) + 1464, 1461)
     year       = approx <= 0 ? approx - 1 : approx
     prior_days = f_date - date(year, JANUARY, 1).fixed
@@ -65,11 +52,7 @@ class JulianDate < Calendar
                  end
     month      = quotient(12*(prior_days + correction) + 373, 367)
     day        = 1 + (f_date - date(year, month, 1).fixed)
-    DateStruct.new(year, month, day)
-  end
-  
-  def to_gregorian
-    GregorianDate[self.fixed]
+    Date.new(year, month, day)
   end
 
   # see lines 1250-1266 in calendrica-3.0.cl
@@ -83,12 +66,4 @@ class JulianDate < Calendar
     date2 = date(y_prime, self.month, self.day).fixed
     list_range(date1..date2, year_range(self.year))
   end
-
-  # see lines 1268-1272 in calendrica-3.0.cl
-  # Return the list of zero or one fixed dates of Eastern Orthodox Christmas
-  # in Gregorian year 'g_year'.
-  def eastern_orthodox_christmas(g_year)
-    date(DECEMBER, 25, g_year).to_gregorian
-  end
-  alias :christmas :eastern_orthodox_christmas
 end

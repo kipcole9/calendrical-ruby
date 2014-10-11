@@ -6,31 +6,38 @@ module Calendrical
     # see lines 939-943 in calendrica-3.0.cl
     # Return the fixed date of Christmas in Gregorian year 'g_year'.
     def christmas(g_year = self.year)
-      date(g_year, DECEMBER, 25)
+      date(GregorianDate[g_year, DECEMBER, 25].fixed)
+    end
+    
+    # see lines 1268-1272 in calendrica-3.0.cl
+    # Return the list of zero or one fixed dates of Eastern Orthodox Christmas
+    # in Gregorian year 'g_year'.
+    def eastern_orthodox_christmas(g_year = self.year)
+      JulianDate[g_year, DECEMBER, 25]
     end
 
     # see lines 945-951 in calendrica-3.0.cl
     # Return the fixed date of Advent in Gregorian year 'g_year'
     # (the Sunday closest to November 30).
     def advent(g_year = self.year)
-      kday_nearest(SUNDAY, date(g_year, NOVEMBER, 30))
+      date(GregorianDate[kday_nearest(SUNDAY, date(g_year, NOVEMBER, 30).fixed)].fixed)
     end
 
     # see lines 953-957 in calendrica-3.0.cl
     # Return the fixed date of Epiphany in U.S. in Gregorian year 'g_year'
     # (the first Sunday after January 1).
     def epiphany(g_year = self.year)
-      first_kday(SUNDAY, date(g_year, JANUARY, 2))
+      date(GregorianDate[first_kday(SUNDAY, date(g_year, JANUARY, 2).fixed)].fixed)
     end
 
     # Return fixed date of Epiphany in Italy in Gregorian year 'g_year'.
     def epiphany_it(g_year = self.year)
-      date(g_year, JANUARY, 6)
+      date(GregorianDate[g_year, JANUARY, 6].fixed)
     end
     
     # see lines 1371-1385 in calendrica-3.0.cl
     # Return fixed date of Orthodox Easter in Gregorian year g_year.
-    def orthodox_easter(g_year = self.year)
+    def eastern_orthodox_easter(g_year = self.year)
       shifted_epact = (14 + 11 * (g_year % 19)) % 30
       j_year        = g_year > 0 ? g_year : g_year - 1
       paschal_moon  = JulianDate[j_year, APRIL, 19].fixed - shifted_epact

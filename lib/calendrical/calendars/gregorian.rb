@@ -4,24 +4,16 @@ class GregorianDate < Calendar
   include Calendrical::Dates
   
   def inspect
-    self.to_date
+    "#{year}-#{month}-#{day} Gregorian"
+  end
+  
+  def self.epoch
+    rd(1)
   end
   
   def to_date
     return nil unless @date_elements.year.present?
     Date.new(@date_elements.year, @date_elements.month, @date_elements.day)
-  end
-  
-  def set_elements(*args)
-    @date_elements = args.first.is_a?(DateStruct) ? args.first : DateStruct.new(args.first, args.second, args.third)
-  end
-
-  def set_fixed(arg)
-    @fixed = arg
-  end
-  
-  def epoch
-    rd(1)
   end
   
   # see lines 657-663 in calendrica-3.0.cl
@@ -55,10 +47,10 @@ class GregorianDate < Calendar
   
   # see lines 735-756 in calendrica-3.0.cl
   # Return the Gregorian date corresponding to fixed date 'date'.
-  def to_calendar
-    yyear   = year_from_fixed(self.fixed)
-    prior_days  = self.fixed - GregorianDate[yyear, 1, 1].fixed
-    correction  = (if self.fixed < date(yyear, MARCH, 1).fixed
+  def to_calendar(f_date = self.to_fixed)
+    yyear   = year_from_fixed(f_date)
+    prior_days  = f_date - GregorianDate[yyear, 1, 1].fixed
+    correction  = (if f_date < date(yyear, MARCH, 1).fixed
                     0
                   elsif leap_year?(yyear)
                     1
@@ -66,8 +58,8 @@ class GregorianDate < Calendar
                     2
                   end)
     month = quotient((12 * (prior_days + correction)) + 373, 367)
-    day = 1 + self.fixed - date(yyear, month, 1).fixed
-    @date_elements = DateStruct.new(yyear, month, day)
+    day = 1 + f_date - date(yyear, month, 1).fixed
+    Date.new(yyear, month, day)
   end
 
 protected

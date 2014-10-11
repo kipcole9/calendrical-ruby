@@ -1,5 +1,6 @@
 require "#{File.dirname(__FILE__)}/numeric.rb"
 require "#{File.dirname(__FILE__)}/mpf.rb"
+require "#{File.dirname(__FILE__)}/epoch.rb"
 require "#{File.dirname(__FILE__)}/base.rb"
 require "#{File.dirname(__FILE__)}/moment.rb"
 require "#{File.dirname(__FILE__)}/days.rb"
@@ -8,15 +9,18 @@ require "#{File.dirname(__FILE__)}/months.rb"
 require "#{File.dirname(__FILE__)}/seasons.rb"
 require "#{File.dirname(__FILE__)}/kday.rb"
 require "#{File.dirname(__FILE__)}/astro.rb"
-require "#{File.dirname(__FILE__)}/calendars/ecclesiastical.rb"
 
 class Calendar
   class UnknownLunarPhase < StandardError; end
-  DateStruct = Struct.new(:year, :month, :day)
-
+  Date = Struct.new(:year, :month, :day)
   
+  attr_accessor :elements, :fixed
+  delegate :day, :month, :year, to: :elements
+
   include Enumerable
   include Comparable
+  include Calendrical::Epoch
+  extend  Calendrical::Epoch
   include Calendrical::Base
   include Calendrical::Astro
   include Calendrical::Astro::Solar
@@ -24,25 +28,27 @@ class Calendar
   include Calendrical::Days
   include Calendrical::Months
   include Calendrical::Mpf
-    
-  attr_accessor :date_elements, :fixed
-  delegate :day, :month, :year, to: :date_elements
 
   def self.[](*args)
     new(*args)
   end
   
   def initialize(*args)
-    if args.first.is_a?(Date)
+    if args.first.is_a?(::Date)
       set_elements(args.first.year, args.first.month, args.first.day)
     elsif args.first.is_a?(self.class)
       dup_instance(args.first)
     elsif args.first.is_a?(Fixnum) && args.length == 1
       set_fixed(args.first)
-      set_elements(self.to_calendar)
+      set_elements(to_calendar(self.fixed))
     else
       set_elements(*args)
     end
+  end
+  
+  # Epoch is a class methods on each Calendar
+  def epoch
+    self.class.epoch
   end
   
   # Moment of sunset
@@ -104,7 +110,7 @@ class Calendar
   end
   
   def <=>(other)
-    fixed <=> other.fixed
+    fixed <=> other.respond_to?(:fixed) ? other.fixed : other
   end
   
   def succ
@@ -116,17 +122,33 @@ class Calendar
   end
   alias :to_i :fixed
   
-  def to_calendar
+  def to_calendar(*args)
     raise "Implement to_calendar in inherited class"
   end
   
   def to_date
-    raise "Implement to_date in inherited class"
+    to_gregorian.to_date
+  end
+
+  def to_gregorian
+    GregorianDate[fixed]
+  end
+  
+  def to_s(type = :short)
+    inspect
   end
 
 protected
   def set_elements(*args)
-    @date_elements = args
+    if args.first.is_a?(Date) 
+      @elements = args.first
+    else
+      @elements = Date.new unless @elements
+      members = Date.members
+      members.length.times do |i|
+        @elements.send "#{members[i]}=", args[i]
+      end
+    end
   end
   
   def set_fixed(arg)
@@ -135,7 +157,7 @@ protected
   
   def dup_instance(instance)
     self.fixed = instance.fixed
-    self.date_elements = instance.date_elements
+    self.date = instance.date
   end
   
   def date(*args)
