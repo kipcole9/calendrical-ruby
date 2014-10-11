@@ -36,7 +36,7 @@ module Calendrical
     # see lines 259-264 in calendrica-3.0.cl
     # Return first integer greater or equal to initial index, i,
     # such that condition, p, holds.
-    def next(i, p)
+    def next_of(i, p)
       x = i
       while !p.call(x) do
         x += 1
@@ -47,7 +47,7 @@ module Calendrical
     # see lines 266-271 in calendrica-3.0.cl
     # Return last integer greater or equal to initial index, i,
     # such that condition, p, holds.
-    def final(i, p)
+    def final_of(i, p)
       if not p.call(i)
         return i - 1  
       else 

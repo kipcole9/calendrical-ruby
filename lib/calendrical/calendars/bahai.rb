@@ -111,7 +111,7 @@ def future_bahai_new_year_on_or_before(date):
     """Return fixed date of Future Bahai New Year on or
     before fixed date, date."""
     approx = estimate_prior_solar_longitude(SPRING, sunset_in_haifa(date))
-    return next(ifloor(approx) - 1,
+    return next_of(ifloor(approx) - 1,
                 lambda day: (solar_longitude(sunset_in_haifa(day)) <=
                              (SPRING + deg(2))))
 

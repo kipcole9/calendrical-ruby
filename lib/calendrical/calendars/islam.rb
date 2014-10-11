@@ -81,7 +81,7 @@ def mawlid_an_nabi(g_year):
       tau = ((mean - 30)
              if (((date - mean) <= 3) and (not visible_crescent(date, location)))
              else (mean - 2))
-      return  next(tau, lambda d: visible_crescent(d, location))
+      return  next_of(tau, lambda d: visible_crescent(d, location))
     end
 
     # see lines 5862-5866 in calendrica-3.0.cl

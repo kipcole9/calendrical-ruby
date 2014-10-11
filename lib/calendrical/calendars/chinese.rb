@@ -122,7 +122,7 @@ def chinese_winter_solstice_on_or_before(date):
     on or before fixed date, date."""
     approx = estimate_prior_solar_longitude(WINTER,
                                             midnight_in_china(date + 1))
-    return next(ifloor(approx) - 1,
+    return next_of(ifloor(approx) - 1,
                 lambda day: WINTER < solar_longitude(
                     midnight_in_china(1 + day)))
 

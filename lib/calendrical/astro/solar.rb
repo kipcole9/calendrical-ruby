@@ -279,10 +279,10 @@ module Calendrical
       # Return approximate moment at or before tee
       # when solar longitude just exceeded lam degrees.
       def estimate_prior_solar_longitude(lam, tee)
-        rate = MEAN_TROPICAL_YEAR / deg(360)
-        tau = tee - (rate * mod(solar_longitude(tee) - lam, 360))
-        cap_Delta = mod(solar_longitude(tau) - lam + deg(180), 360) - deg(180)
-        return min(tee, tau - (rate * cap_Delta))
+        rate = MEAN_TROPICAL_YEAR / 360.0.degrees
+        tau = tee - (rate * ((solar_longitude(tee) - lam) % 360))
+        cap_Delta = ((solar_longitude(tau) - lam + 180.degrees) % 360) - 180.degrees
+        return [tee, tau - (rate * cap_Delta)].min
       end
     end
   end

@@ -58,7 +58,7 @@ def hindu_arcsin(amp):
     if (amp < 0):
         return -hindu_arcsin(-amp)
     else:
-        pos = next(0, lambda k: amp <= hindu_sine_table(k))
+        pos = next_of(0, lambda k: amp <= hindu_sine_table(k))
         below = hindu_sine_table(pos - 1)
         return (angle(0, 225, 0) *
                 (pos - 1 + ((amp - below) / (hindu_sine_table(pos) - below))))
@@ -187,7 +187,7 @@ def hindu_solar_from_fixed(date):
     month    = hindu_zodiac(critical)
     year     = hindu_calendar_year(critical) - HINDU_SOLAR_ERA
     approx   = date - 3 - mod(ifloor(hindu_solar_longitude(critical)), deg(30))
-    begin    = next(approx,
+    begin    = next_of(approx,
                     lambda i: (hindu_zodiac(hindu_sunrise(i + 1)) ==  month))
     day      = date - begin + 1
     return hindu_solar_date(year, month, day)
@@ -203,7 +203,7 @@ def fixed_from_hindu_solar(s_date):
     begin = ifloor((year + HINDU_SOLAR_ERA + ((month - 1)/12)) *
                   HINDU_SIDEREAL_YEAR + HINDU_EPOCH)
     return (day - 1 +
-            next(begin - 3,
+            next_of(begin - 3,
                  lambda d: (hindu_zodiac(hindu_sunrise(d + 1)) == month)))
 
 
@@ -258,7 +258,7 @@ def fixed_from_hindu_lunar(l_date):
     tau = (est -
            mod(hindu_lunar_day_from_moment(est + hr(6)) - day + 15, 30) +
            15)
-    date = next(tau - 1,
+    date = next_of(tau - 1,
                 lambda d: (hindu_lunar_day_from_moment(hindu_sunrise(d)) in
                            [day, amod(day + 1, 30)]))
     return (date + 1) if leap_day else date
@@ -469,7 +469,7 @@ def astro_hindu_solar_from_fixed(date):
     year     = astro_hindu_calendar_year(critical) - HINDU_SOLAR_ERA
     approx   = (date - 3 -
                 mod(ifloor(sidereal_solar_longitude( critical)), deg(30)))
-    begin    = next(approx,
+    begin    = next_of(approx,
                     lambda i: (sidereal_zodiac(astro_hindu_sunset(i)) == month))
     day      = date - begin + 1
     return hindu_solar_date(year, month, day)
@@ -485,7 +485,7 @@ def fixed_from_astro_hindu_solar(s_date):
     approx = (HINDU_EPOCH - 3 +
               ifloor(((year + HINDU_SOLAR_ERA) + ((month - 1) / 12)) *
                     MEAN_SIDEREAL_YEAR))
-    begin = next(approx,
+    begin = next_of(approx,
                  lambda i: (sidereal_zodiac(astro_hindu_sunset(i)) == month))
     return begin + day - 1
 
@@ -545,7 +545,7 @@ def fixed_from_astro_hindu_lunar(l_date):
     tau = (est -
            mod(astro_lunar_day_from_moment(est + hr(6)) - day + 15, 30) +
            15)
-    date = next(tau - 1,
+    date = next_of(tau - 1,
                 lambda d: (astro_lunar_day_from_moment(alt_hindu_sunrise(d)) in
                            [day, amod(day + 1, 30)]))
     return (date + 1) if leap_day else date
@@ -639,7 +639,7 @@ def hindu_date_occur(l_month, l_day, l_year):
                               l_day,
                               False)
     if (expunged):
-        return next(ttry,
+        return next_of(ttry,
                     lambda d: (not is_hindu_lunar_on_or_before(
                         hindu_lunar_from_fixed(d),
                         l_date))) - 1

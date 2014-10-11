@@ -184,7 +184,7 @@ def hebrew_from_fixed(date):
     start = (TISHRI
              if (date < fixed_from_hebrew(hebrew_date(year, NISAN, 1)))
              else  NISAN)
-    month = next(start, lambda m: date <= fixed_from_hebrew(
+    month = next_of(start, lambda m: date <= fixed_from_hebrew(
         hebrew_date(year, m, last_day_of_hebrew_month(m, year))))
     day = date - fixed_from_hebrew(hebrew_date(year, month, 1)) + 1
     return hebrew_date(year, month, day)
@@ -416,7 +416,7 @@ def possible_hebrew_days(h_month, h_day):
         tau = (date if (((date - mean) <= 3) and
                         (not visible_crescent(date - 1, location)))
                else (mean + 29))
-        return next(tau, lambda d: visible_crescent(d, location))
+        return next_of(tau, lambda d: visible_crescent(d, location))
 
     # see lines 5940-5955 in calendrica-3.0.cl
     def observational_hebrew_new_year(g_year):

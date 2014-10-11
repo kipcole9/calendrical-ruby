@@ -25,7 +25,7 @@ def persian_new_year_on_or_before(date):
     """Return the fixed date of Astronomical Persian New Year on or
     before fixed date, date."""
     approx = estimate_prior_solar_longitude(SPRING, midday_in_tehran(date))
-    return next(ifloor(approx) - 1,
+    return next_of(ifloor(approx) - 1,
                 lambda day: (solar_longitude(midday_in_tehran(day)) <=
                              (SPRING + deg(2))))
 
