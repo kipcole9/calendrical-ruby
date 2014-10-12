@@ -95,6 +95,38 @@ module Calendrical
         return 385000560.meters + correction
       end
       
+      # see lines 5925-5938 in calendrica-3.0.cl
+      # Return closest fixed date on or after date, date, on the eve
+      # of which crescent moon first became visible at location, location.
+      def phasis_on_or_after(f_date, location)
+        mean = f_date - (lunar_phase(f_date + 1) / mpf(360).degrees * MEAN_SYNODIC_MONTH).floor
+        tau = (f_date - mean) <= 3 && !visible_crescent?(f_date - 1, location) ? date : (mean + 29)
+        next_of(tau, lambda{|d| visible_crescent?(d, location)})
+      end
+      
+      # see lines 5847-5860 in calendrica-3.0.cl
+      # Return the closest fixed date on or before date 'date', when crescent
+      # moon first became visible at location 'location'.
+      def phasis_on_or_before(f_date, location)
+        mean = f_date - (lunar_phase(f_date + 1) / mpf(360).degrees * MEAN_SYNODIC_MONTH).floor
+        tau = (f_date - mean) <= 3 && !visible_crescent?(f_date, location) ? (mean - 30) : (mean - 2)
+        next_of(tau, lambda{|d| visible_crescent?(d, location)})
+      end
+      
+      # see lines 5829-5845 in calendrica-3.0.cl
+      # Return S. K. Shaukat's criterion for likely
+      # visibility of crescent moon on eve of date 'date',
+      # at location 'location'.
+      def visible_crescent?(date, location)
+        tee = universal_from_standard(dusk(date - 1, location, mpf(4.5).degrees), location)
+        phase = lunar_phase(tee)
+        altitude = lunar_altitude(tee, location)
+        arc_of_light = arccos_degrees(cosine_degrees(lunar_latitude(tee)) *
+                                      cosine_degrees(phase))
+        ((NEW_MOON < phase && phase < FIRST_QUARTER) && (mpf(10.6).degrees <= arc_of_light <= 90.degrees) && 
+          (altitude > mpf(4.1).degrees))
+      end
+      
     protected
       # see lines 453-458 in calendrica-3.0.errata.cl
       # Return the observed altitude of moon at moment, tee, and

@@ -4,6 +4,8 @@ require "#{File.dirname(__FILE__)}/astro/angle.rb"
 module Calendrical
   module Locations
     extend Calendrical::Astro::Angle
+    extend Calendrical::Mpf
+    
     class Location 
       attr_accessor :latitude, :longitude, :elevation, :zone
       

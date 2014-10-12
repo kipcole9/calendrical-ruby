@@ -34,6 +34,7 @@ class Calendar
   end
   
   def initialize(*args)
+    args = [::Date.today] unless args.present?
     if args.first.is_a?(::Date)
       set_elements(args.first.year, args.first.month, args.first.day)
     elsif args.first.is_a?(self.class)

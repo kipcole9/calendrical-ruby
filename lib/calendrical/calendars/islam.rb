@@ -56,33 +56,6 @@ def mawlid_an_nabi(g_year):
     ###########################################
     # astronomical lunar calendars algorithms #
     ###########################################
-    # see lines 5829-5845 in calendrica-3.0.cl
-    # Return S. K. Shaukat's criterion for likely
-    # visibility of crescent moon on eve of date 'date',
-    # at location 'location'.
-    def visible_crescent(date, location):
-      tee = universal_from_standard(dusk(date - 1, location, mpf(4.5).degrees),
-                                    location)
-      phase = lunar_phase(tee)
-      altitude = lunar_altitude(tee, location)
-      arc_of_light = arccos_degrees(cosine_degrees(lunar_latitude(tee)) *
-                                    cosine_degrees(phase))
-      return ((NEW_MOON < phase < FIRST_QUARTER) &&
-              (mpf(10.6).degrees <= arc_of_light <= 90.degrees) &&
-              (altitude > mpf(4.1).degrees))
-    end
-
-    # see lines 5847-5860 in calendrica-3.0.cl
-    # Return the closest fixed date on or before date 'date', when crescent
-    # moon first became visible at location 'location'.
-    def phasis_on_or_before(date, location):
-      mean = date - ifloor(lunar_phase(date + 1) / deg(360) *
-                           MEAN_SYNODIC_MONTH)
-      tau = ((mean - 30)
-             if (((date - mean) <= 3) and (not visible_crescent(date, location)))
-             else (mean - 2))
-      return  next_of(tau, lambda d: visible_crescent(d, location))
-    end
 
     # see lines 5862-5866 in calendrica-3.0.cl
     # see lines 220-221 in calendrica-3.0.errata.cl

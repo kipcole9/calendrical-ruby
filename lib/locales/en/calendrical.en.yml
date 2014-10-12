@@ -8,3 +8,120 @@ en:
         waning_gibbous:     'Waning Gibbous'
         last_quarter:       'Last Quarter'      
         waning_crescent:    'Waning Crescent'
+        
+    gregorian: &gregorian
+        months:
+            - January
+            - February
+            - March
+            - April
+            - May
+            - June
+            - July
+            - August
+            - September
+            - October
+            - November
+            - December
+            
+        days:
+            - Sunday
+            - Monday
+            - Tuesday
+            - Wednesday
+            - Thursday
+            - Friday
+            - Saturday
+            
+    iso:
+        <<: *gregorian
+        
+    hebrew:
+        months:
+            - Nisan       
+            - Iyyar       
+            - Sivan       
+            - Tammuz      
+            - Av      
+            - Elul        
+            - Tishri      
+            - Marheshvan  
+            - Kislev      
+            - Tevet      
+            - Shevat      
+            - Adar        
+            - Adar II
+            
+        days:
+            - Yom Reeshone
+            - Yom Shaynee
+            - Yom Shlee´shee
+            - Yom Revee´ee
+            - Yom Khah´mee´shee
+            - Yom Ha´shee´shee
+            - Shabbat
+            
+    french_revolutionary:
+        months:
+            - Vendémiaire
+            - Brumaire
+            - Frimaire
+            - Nivôse
+            - Pluviôse
+            - Ventôse
+            - Germinal
+            - Floréal
+            - Prairial
+            - Messidor
+            - Thermidor
+            - Fructidor
+            
+        days:
+            - Primidi
+            - Duodi
+            - Tridi
+            - Quartidi
+            - Quintidi
+            - Sextidi
+            - Septidi
+            - Octidi
+            - Nonidi
+            - Décadi
+            
+    coptic:
+        months:
+            - Thout
+            - Paopi
+            - Hathor
+            - Koiak
+            - Tobi
+            - Meshir
+            - Paremhat
+            - Parmouti
+            - Pashons
+            - Paoni
+            - Epip
+            - Mesori
+            - Pi Kogi Enavot
+            
+        days:
+            
+    egyptian:
+        months:
+            - Tout
+            - Baba
+            - Hatour
+            - Kiahk
+            - Touba
+            - Amshir
+            - Baramhat
+            - Baramouda
+            - Bashans
+            - Ba'ouna
+            - Abib
+            - Mesra
+            
+        days:
+            
+            
+    

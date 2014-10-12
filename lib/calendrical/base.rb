@@ -33,6 +33,18 @@ module Calendrical
       y + (x % -y)
     end
     
+    # see lines 502-510 in calendrica-3.0.cl
+    # Return those moments in list ell that occur in range 'range'.
+    def list_range(ell, range)
+      ell.select{|l| range.include?(l) }.compact
+    end
+
+    # see lines 482-485 in calendrica-3.0.cl
+    # Return the range data structure."""
+    def interval(t0, t1)
+      t0..t1
+    end
+    
     # see lines 259-264 in calendrica-3.0.cl
     # Return first integer greater or equal to initial index, i,
     # such that condition, p, holds.
@@ -51,7 +63,7 @@ module Calendrical
       if not p.call(i)
         return i - 1  
       else 
-        final(i+1, p)
+        final_of(i+1, p)
       end
     end
 
@@ -62,7 +74,7 @@ module Calendrical
       if not p.call(k) 
         return 0 
       else 
-        f(k) + summa(f, k+1, p)
+        f.call(k) + summa(f, k+1, p)
       end
     end
 

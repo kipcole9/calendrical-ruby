@@ -12,8 +12,8 @@ class GregorianDate < Calendar
   end
   
   def to_date
-    return nil unless @date_elements.year.present?
-    Date.new(@date_elements.year, @date_elements.month, @date_elements.day)
+    return nil unless @elements.year.present?
+    ::Date.new(@elements.year, @elements.month, @elements.day)
   end
   
   # see lines 657-663 in calendrica-3.0.cl

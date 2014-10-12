@@ -20,7 +20,7 @@ module Calendrical
     
     # see lines 366-369 in calendrica-3.0.cl
     # Return day of the week from a fixed date 'date'.
-    def day_of_week_from_fixed(g_date = self)
+    def day_of_week_from_fixed(g_date = self.fixed)
       f_date = g_date.is_a?(Fixnum) ? g_date : g_date.to_fixed
       (f_date - rd(0) - SUNDAY) % 7
     end
@@ -72,18 +72,6 @@ module Calendrical
       m = floor(60 * (alpha % 1))
       s = (alpha * 60 * 60) % 60
       degrees_minutes_seconds(d, m, s)
-    end
-
-    # see lines 502-510 in calendrica-3.0.cl
-    # Return those moments in list ell that occur in range 'range'.
-    def list_range(ell, range)
-      ell.select{|l| range.include?(l) }.compact
-    end
-
-    # see lines 482-485 in calendrica-3.0.cl
-    # Return the range data structure."""
-    def interval(t0, t1)
-      t0..t1
     end
 
     # see lines 447-450 in calendrica-3.0.cl

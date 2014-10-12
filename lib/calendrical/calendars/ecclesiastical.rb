@@ -66,6 +66,17 @@ module Calendrical
       paschal_moon = date(g_year, APRIL, 19).fixed - adjusted_epact
       date(kday_after(SUNDAY, paschal_moon))
     end
+    
+    # see lines 5903-5918 in calendrica-3.0.cl
+    # Return date of (proposed) astronomical Easter in Gregorian
+    # year, g_year.
+    def astronomical_easter(g_year = self.year)
+      jan1 = GregorianDate[g_year, JANUARY, 1].fixed
+      equinox = solar_longitude_after(SPRING, jan1)
+      paschal_moon = apparent_from_local(local_from_universal(lunar_phase_at_or_after(FULL_MOON, equinox), JERUSALEM), JERUSALEM).floor
+      # Return the Sunday following the Paschal moon.
+      kday_after(SUNDAY, paschal_moon)
+    end
 
     # see lines 1429-1431 in calendrica-3.0.cl
     # Return fixed date of Pentecost in Gregorian year g_year.
