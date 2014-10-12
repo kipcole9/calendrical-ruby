@@ -24,6 +24,7 @@ module Calendrical
       f_date = g_date.is_a?(Fixnum) ? g_date : g_date.to_fixed
       (f_date - rd(0) - SUNDAY) % 7
     end
+    alias :day_of_week :day_of_week_from_fixed
 
     # see lines 386-388 in calendrica-3.0.cl
     # Return the time of day data structure.

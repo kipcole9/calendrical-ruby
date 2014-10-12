@@ -7,6 +7,13 @@ class JulianDate < Calendar
     "#{year}-#{month}-#{day} Julian"
   end
   
+  def to_s
+    day_name = I18n.t('julian.days')[day_of_week]
+    month_name = I18n.t('julian.months')[month - 1]
+    suffix = year > 0 ? 'ce' : 'bce'
+    "#{day_name}, #{day} #{month_name} #{year.abs}#{suffix}"
+  end
+  
   # see lines 1042-1045 in calendrica-3.0.cl
   def self.epoch
     GregorianDate[0, DECEMBER, 30].fixed

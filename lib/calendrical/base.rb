@@ -123,7 +123,7 @@ module Calendrical
     def invert_angular(f, y, a, b, prec = 10**-5)
       binary_search(a, b,
         lambda{|l, h| ((h - l) <= prec)},
-        lambda{|x| ((f(x) - y) % 360) < 180}
+        lambda{|x| ((f.call(x) - y) % 360) < 180}
       )
     end
     

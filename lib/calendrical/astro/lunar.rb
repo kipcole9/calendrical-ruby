@@ -9,7 +9,7 @@ module Calendrical
       # see lines 460-467 in calendrica-3.0.errata.cl
       # Return the standard time of moonrise on fixed, date,
       # and location, location.
-      def moonrise(date, location)
+      def moonrise(location, date)
         t = universal_from_standard(date, location)
         waning = (lunar_phase(t) > 180.degrees)
         alt = observed_lunar_altitude(t, location)
@@ -28,7 +28,7 @@ module Calendrical
           lambda {|u, l| (u - l) < (1.0 / 60).hrs },
           lambda {|x| observed_lunar_altitude(x, location) > 0.degrees}
         )
-        (rise < (t + 1)) ? Moment.new(standard_from_universal(rise, location)) : BOGUS
+        (rise < (t + 1)) ? standard_from_universal(rise, location) : BOGUS
       end
       
       # see lines 3596-3613 in calendrica-3.0.cl
@@ -133,26 +133,6 @@ module Calendrical
       # at location, location,  taking refraction into account.
       def observed_lunar_altitude(tee, location)
         topocentric_lunar_altitude(tee, location) + refraction(tee, location)
-      end
-
-      # see lines 3055-3073 in calendrica-3.0.cl
-      # Return standard time of temporal moment, tee, at location, location.
-      # Return BOGUS if temporal hour is undefined that day.
-      def standard_from_sundial(tee, location)
-        date = fixed_from_moment(tee)
-        hour = 24 * mod(tee, 1)
-        h = if (6..18).include?(hour)
-          daytime_temporal_hour(date, location)
-        elsif (hour < 6)
-          nighttime_temporal_hour(date - 1, location)
-        else
-          nighttime_temporal_hour(date, location)
-        end
-
-        return BOGUS                                          if (h == BOGUS)
-        return sunrise(date, location) + ((hour - 6) * h)     if (6 <= hour <= 18)
-        return sunset(date - 1, location) + ((hour + 6) * h)  if (hour < 6)
-        return sunset(date, location) + ((hour - 18) * h)
       end
 
       # see lines 3081-3099 in calendrica-3.0.cl

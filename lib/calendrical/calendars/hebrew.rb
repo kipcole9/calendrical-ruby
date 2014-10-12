@@ -13,6 +13,16 @@ class HebrewDate < Calendar
   ADAR        = 12
   ADARII      = 13
 
+  def inspect
+    "#{year}-#{month}-#{day} Hebrew"
+  end
+  
+  def to_s
+    day_name = I18n.t('hebrew.days')[day_of_week]
+    month_name = I18n.t('hebrew.months')[month - 1]
+    "#{day_name}, #{day} #{month_name} #{year}"
+  end
+  
   # see lines 1581-1585 in calendrica-3.0.cl
   def self.epoch
     JulianDate[3761.bce, OCTOBER, 7].fixed
@@ -28,7 +38,7 @@ class HebrewDate < Calendar
   # see lines 3027-3031 in calendrica-3.0.cl
   # Return standard time of end of Jewish sabbath on fixed date, date,
   # at location, location, (as per Berthold Cohn).
-  def sabbath_ends?(f_date = self.fixed, location)
+  def sabbath_ends(f_date = self.fixed, location)
     dusk(f_date, location, angle(7, 5, 0)) 
   end
 

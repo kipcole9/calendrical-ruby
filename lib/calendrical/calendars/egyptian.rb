@@ -6,6 +6,11 @@ class EgyptianDate < Calendar
     "#{year}-#{month}-#{day} Egyptian"
   end
   
+  def to_s
+    month_name = I18n.t('egyptian.months')[month - 1]
+    "#{day} #{month_name}, #{year}"
+  end
+  
   # see lines 520-525 in calendrica-3.0.cl
   def self.epoch
     fixed_from_jd(1448638)

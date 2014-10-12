@@ -10,6 +10,12 @@ class IsoDate < Calendar
   def inspect
     "#{year}-W#{week}-#{day} ISO"
   end
+  
+  def to_s
+    day_name = I18n.t('gregorian.days')[day_of_week_from_fixed(self.fixed)]
+    week_name = "W%02d" % week
+    "#{day_name}, #{day} #{week_name} #{year}"
+  end
 
   def self.epoch
     rd(1)

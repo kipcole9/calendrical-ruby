@@ -36,6 +36,30 @@ en:
     iso:
         <<: *gregorian
         
+    julian:
+        months:
+            - Ianuarius
+            - Februarius
+            - Martius
+            - Aprilis
+            - Maius
+            - Iunius
+            - Quintilis
+            - Sextilis 
+            - September
+            - October
+            - November
+            - December	
+            
+        days:
+            - Sōlis
+            - Lūnae
+            - Martis
+            - Mercuriī
+            - Iovis
+            - Veneris
+            - Saturnī
+            
     hebrew:
         months:
             - Nisan       

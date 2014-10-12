@@ -13,6 +13,11 @@ module Calendrical
       c = clock
       Time.new(d.year, d.month, d.day, c.first, c.second, c.third, zone)
     end
+    
+    def to_hms
+      h, m, s = clock
+      "#{h}:#{m}:#{s}"
+    end
 
     # see lines 402-405 in calendrica-3.0.cl
     # Return fixed date from moment 'tee'.
@@ -32,11 +37,11 @@ module Calendrical
     # see lines 412-419 in calendrica-3.0.cl
     # Return clock time hour:minute:second from moment 'tee'.
     def clock
-      hour = (time * 24).floor
-      minute = ((time * 24 * 60) % 60).floor
-      second = (time * 24 * 60 * 60) % 60
+      t = time
+      hour = (t * 24).floor
+      minute = ((t * 24 * 60) % 60).floor
+      second = (t * 24 * 60 * 60) % 60
       [hour, minute, second]
     end
-
   end
 end

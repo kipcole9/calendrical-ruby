@@ -7,13 +7,19 @@ class GregorianDate < Calendar
     "#{year}-#{month}-#{day} Gregorian"
   end
   
+  def to_s
+    day_name = I18n.t('gregorian.days')[day_of_week]
+    month_name = I18n.t('gregorian.months')[month - 1]
+    "#{day_name}, #{day} #{month_name} #{year}"
+  end
+  
   def self.epoch
     rd(1)
   end
   
   def to_date
     return nil unless @elements.year.present?
-    ::Date.new(@elements.year, @elements.month, @elements.day)
+    Date.new(@elements.year, @elements.month, @elements.day)
   end
   
   # see lines 657-663 in calendrica-3.0.cl

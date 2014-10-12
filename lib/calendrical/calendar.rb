@@ -2,13 +2,13 @@ require "#{File.dirname(__FILE__)}/numeric.rb"
 require "#{File.dirname(__FILE__)}/mpf.rb"
 require "#{File.dirname(__FILE__)}/epoch.rb"
 require "#{File.dirname(__FILE__)}/base.rb"
-require "#{File.dirname(__FILE__)}/moment.rb"
 require "#{File.dirname(__FILE__)}/days.rb"
 require "#{File.dirname(__FILE__)}/dates.rb"
 require "#{File.dirname(__FILE__)}/months.rb"
 require "#{File.dirname(__FILE__)}/seasons.rb"
 require "#{File.dirname(__FILE__)}/kday.rb"
 require "#{File.dirname(__FILE__)}/astro.rb"
+require "#{File.dirname(__FILE__)}/moment.rb"
 
 class Calendar
   class UnknownLunarPhase < StandardError; end
@@ -19,15 +19,15 @@ class Calendar
 
   include Enumerable
   include Comparable
+  include Calendrical::Mpf
   include Calendrical::Epoch
   extend  Calendrical::Epoch
   include Calendrical::Base
+  include Calendrical::Days
+  include Calendrical::Months
   include Calendrical::Astro
   include Calendrical::Astro::Solar
   include Calendrical::Astro::Lunar
-  include Calendrical::Days
-  include Calendrical::Months
-  include Calendrical::Mpf
 
   def self.[](*args)
     new(*args)
@@ -52,29 +52,39 @@ class Calendar
     self.class.epoch
   end
   
-  # Moment of sunset
-  def sunset(location)
-    super(self.fixed, location)
+  def sunrise(location = GREENWHICH, date = self.fixed)
+    Calendrical::Moment.new(super, location)
+  end
+
+  def sunset(location = GREENWHICH, date = self.fixed)
+    Calendrical::Moment.new(super, location)
   end
   
-  # Moment of sunrise
-  def sunrise(location)
-    super(self.fixed, location)
+  def moonrise(location = GREENWHICH, date = self.fixed)
+    Calendrical::Moment.new(super, location)
   end
   
-  # Moment of moonrise
-  def moonrise(location)
-    super(self.fixed, location)
+  # Solstice
+  def december_solstice(location = GREENWHICH, g_year = self.year)
+    Calendrical::Moment.new(super, location)
   end
   
-  # Phase of the moon in degrees
-  def lunar_phase
-    super(self.fixed)
+  def june_solstice(location = GREENWHICH, g_year = self.year)
+    Calendrical::Moment.new(super, location)
   end
   
+  # Equinox
+  def march_equinox(location = GREENWHICH, g_year = self.year)
+    Calendrical::Moment.new(super, location)
+  end
+  
+  def september_equinox(location = GREENWHICH, g_year = self.year)
+    Calendrical::Moment.new(super, location)
+  end
+
   # Phase of the moon in words
   def lunar_phase_name
-    case (phase = lunar_phase.round)
+    case (phase = lunar_phase(self.fixed).round)
     when 0..45
       defined?(I18n) ? I18n.t('moon_phase.new_moon')        : 'New Moon'
     when 46..90
@@ -92,13 +102,13 @@ class Calendar
     when 316..360
       defined?(I18n) ? I18n.t('moon_phase.waning_crescent') : 'Waning Crescent'  
     else
-      raise UnknownLunarPhase("Unknown lunar phase angle #{phase}")
+      raise UnknownLunarPhase("Unknown lunar phase angle #{phase}.")
     end                    
   end
   
   # Distance in meters
-  def lunar_distance
-    super(self.fixed)
+  def lunar_distance(tee = self.fixed)
+    super
   end
   
   def +(other)

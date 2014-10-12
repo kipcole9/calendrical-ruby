@@ -17,57 +17,75 @@ module Calendrical
       # see lines 2997-3007 in calendrica-3.0.cl
       # Return Standard time of sunrise on fixed date 'date' at
       # location 'location'.
-      def sunrise(date, location)
+      def sunrise(location, date)
         alpha = refraction(date, location)
-        Moment.new(dawn(date, location, alpha), location)
+        dawn(date, location, alpha)
       end
 
       # see lines 3009-3019 in calendrica-3.0.cl
       # Return standard time of sunset on fixed date 'date' at
       # location 'location'.
-      def sunset(date, location)
+      def sunset(location, date)
         alpha = refraction(date, location)
-        Moment.new(dusk(date, location, alpha), location)
+        dusk(date, location, alpha)
+      end
+      
+      # Solstice
+      def december_solstice(location, g_year)
+        standard_from_universal(solar_longitude_after(WINTER, date(g_year, JANUARY, 1).fixed), location)
+      end
+      
+      def june_solstice(location, g_year)
+        standard_from_universal(solar_longitude_after(SUMMER, date(g_year, JULY, 1).fixed), location)
+      end
+      
+      # Equinox
+      def march_equinox(location, g_year)
+        standard_from_universal(solar_longitude_after(SPRING, date(g_year, JANUARY, 1).fixed), location)
+      end
+      
+      def september_equinox(location, g_year)
+        standard_from_universal(solar_longitude_after(AUTUMN, date(g_year, JULY, 1).fixed), location)        
       end
     
       # see lines 2851-2857 in calendrica-3.0.cl
       # Return standard time on fixed date, date, of true (apparent)
       # midnight at location, location.
       def midnight(date, location)
-        Moment.new(standard_from_local(local_from_apparent(date, location), location))
+        standard_from_local(local_from_apparent(date, location), location)
       end
 
       # see lines 2859-2864 in calendrica-3.0.cl
       # Return standard time on fixed date, date, of midday
       # at location, location.
       def midday(date, location)
-        Moment.new(standard_from_local(local_from_apparent(date + mpf(12).hrs, location), location))
+        standard_from_local(local_from_apparent(date + mpf(12).hrs, location), location)
       end
       
       # see lines 3033-3042 in calendrica-3.0.cl
       # Return the length of daytime temporal hour on fixed date, date
       # at location, location.
       # Return BOGUS if there no sunrise or sunset on date, date.
-      def daytime_temporal_hour(date, location)
-        (sunset(date, location) - sunrise(date, location)) / 12
+      def daytime_temporal_hour(location, f_date)
+        (sunset(location, f_date).moment - sunrise(location, f_date).moment) / 12.0
       end
 
       # see lines 3044-3053 in calendrica-3.0.cl
       # Return the length of nighttime temporal hour on fixed date, date,
       # at location, location.
       # Return BOGUS if there no sunrise or sunset on date, date.
-      def nighttime_temporal_hour(date, location)
-        (sunrise(date + 1, location) - sunset(date, location)) / 12
+      def nighttime_temporal_hour(location, f_date)
+        (sunrise(location, f_date + 1).moment - sunset(location, f_date).moment) / 12.0
       end
-      
+
       # Return sunset time in Urbana, Ill, on Gregorian date 'gdate'."""
       def urbana_sunset(gdate = self)
-        sunset(gdate.fixed, URBANA)
+        sunset(URBANA, gdate = self.fixed)
       end
 
       # Return sunset time in Urbana, Ill, on Gregorian date 'gdate'."""
       def urbana_sunrise(gdate = self)
-        sunrise(gdate.fixed, URBANA)
+        sunrise(URBANA, gdate.fixed = self.fixed)
       end
 
       # from eq 13.38 pag. 191
@@ -94,6 +112,26 @@ module Calendrical
         moment = moment_of_depression(date + 18.hrs, location, alpha, EVENING)
         raise(Calendrical::Astro::NoMoment, "Dusk: no moment of depression for date #{date + 18.hrs} at location #{location}") if moment.nil?
         standard_from_local(moment, location)
+      end
+      
+      # see lines 3055-3073 in calendrica-3.0.cl
+      # Return standard time of temporal moment, tee, at location, location.
+      # Return BOGUS if temporal hour is undefined that day.
+      def standard_from_sundial(tee, location)
+        f_date = fixed_from_moment(tee)
+        hour = 24 * (tee % 1)
+        h = if (6..18).include?(hour)
+          daytime_temporal_hour(location, f_date)
+        elsif (hour < 6)
+          nighttime_temporal_hour(location, f_date - 1)
+        else
+          nighttime_temporal_hour(location, f_ate)
+        end
+
+        return BOGUS                                            if (h == BOGUS)
+        return sunrise(f_date, location) + ((hour - 6) * h)     if (6 <= hour <= 18)
+        return sunset(f_date - 1, location) + ((hour + 6) * h)  if (hour < 6)
+        return sunset(f_date, location) + ((hour - 18) * h)
       end
       
       # see lines 2811-2815 in calendrica-3.0.cl
@@ -197,7 +235,7 @@ module Calendrical
       # Return the longitude of sun at moment 'tee'.
       # Adapted from 'Planetary Programs and Tables from -4000 to +2800'
       # by Pierre Bretagnon and Jean_Louis Simon, Willmann_Bell, Inc., 1986.
-      # See also pag 166 of 'Astronomical Algorithms' by Jean Meeus, 2nd Ed 1998,
+      # See also page 166 of 'Astronomical Algorithms' by Jean Meeus, 2nd Ed 1998,
       # with corrections Jun 2005.
       def solar_longitude(tee)
         c = julian_centuries(tee)
@@ -211,13 +249,13 @@ module Calendrical
       
       # see lines 3283-3295 in calendrica-3.0.cl
       # Return the moment UT of the first time at or after moment, tee,
-      # when the solar longitude will be lam degrees."""
+      # when the solar longitude will be lam degrees.
       def solar_longitude_after(lam, tee)
-        rate = MEAN_TROPICAL_YEAR / deg(360)
+        rate = MEAN_TROPICAL_YEAR / 360.degrees
         tau = tee + rate * ((lam - solar_longitude(tee)) % 360)
-        a = max(tee, tau - 5)
+        a = [tee, tau - 5].max
         b = tau + 5
-        invert_angular(solar_longitude, lam, a, b)
+        invert_angular(lambda{|x| solar_longitude(x)}, lam, a, b)
       end
     
       # see lines 3261-3271 in calendrica-3.0.cl

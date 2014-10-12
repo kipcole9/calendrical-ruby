@@ -20,19 +20,19 @@ module Calendrical
     # Return the fixed date of Advent in Gregorian year 'g_year'
     # (the Sunday closest to November 30).
     def advent(g_year = self.year)
-      date(GregorianDate[kday_nearest(SUNDAY, date(g_year, NOVEMBER, 30).fixed)].fixed)
+      date(GregorianDate[kday_nearest(SUNDAY, date(g_year, NOVEMBER, 30))].fixed)
     end
 
     # see lines 953-957 in calendrica-3.0.cl
     # Return the fixed date of Epiphany in U.S. in Gregorian year 'g_year'
     # (the first Sunday after January 1).
     def epiphany(g_year = self.year)
-      date(GregorianDate[first_kday(SUNDAY, date(g_year, JANUARY, 2).fixed)].fixed)
+      date(GregorianDate[first_kday(SUNDAY, date(g_year, JANUARY, 2))].fixed)
     end
 
     # Return fixed date of Epiphany in Italy in Gregorian year 'g_year'.
     def epiphany_it(g_year = self.year)
-      date(GregorianDate[g_year, JANUARY, 6].fixed)
+      GregorianDate[g_year, JANUARY, 6]
     end
     
     # see lines 1371-1385 in calendrica-3.0.cl
