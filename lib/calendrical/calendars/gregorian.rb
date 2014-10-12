@@ -32,23 +32,23 @@ class GregorianDate < Calendar
   # see lines 665-687 in calendrica-3.0.cl
   # Return the fixed date equivalent to the Gregorian date 'g_date'.
   def to_fixed(g_date = self)
-    month = g_date.month
-    day   = g_date.day
+    mmonth = g_date.month
+    dday   = g_date.day
     yyear  = g_date.year
     ((epoch - 1) + 
       (365 * (yyear - 1)) + 
       quotient(yyear - 1, 4) - 
       quotient(yyear - 1, 100) + 
       quotient(yyear - 1, 400) + 
-      quotient((367 * month) - 362, 12) +
-        (if month <= 2
+      quotient((367 * mmonth) - 362, 12) +
+        (if mmonth <= 2
           0
         elsif leap_year?(yyear)
           -1
         else
           -2
         end) + 
-      day)
+      dday)
   end
   
   # see lines 735-756 in calendrica-3.0.cl
@@ -141,6 +141,14 @@ class GregorianYear < Calendar
     
   def initialize(year)
     @year = year
+  end
+  
+  def inspect
+    "#{year} Gregorian"
+  end
+  
+  def to_s
+    inspect
   end
   
   def <=>(other)

@@ -2,6 +2,11 @@ class EgyptianDate < Calendar
   extend Calendrical::Mpf
   extend Calendrical::Days
   
+  # see lines 520-525 in calendrica-3.0.cl
+  def self.epoch
+    fixed_from_jd(1448638)
+  end
+    
   def inspect
     "#{year}-#{month}-#{day} Egyptian"
   end
@@ -10,12 +15,7 @@ class EgyptianDate < Calendar
     month_name = I18n.t('egyptian.months')[month - 1]
     "#{day} #{month_name}, #{year}"
   end
-  
-  # see lines 520-525 in calendrica-3.0.cl
-  def self.epoch
-    fixed_from_jd(1448638)
-  end
-  
+
   # see lines 527-536 in calendrica-3.0.cl
   # Return the fixed date corresponding to Egyptian date 'e_date'.
   def to_fixed(e_date = self)

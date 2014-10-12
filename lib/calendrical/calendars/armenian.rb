@@ -4,6 +4,10 @@ class ArmenianDate < Calendar
     "#{year}-#{month}-#{day} Armenian"
   end
   
+  def to_s
+    inspect
+  end
+  
   # see lines 560-564 in calendrica-3.0.cl
   def self.epoch
     rd(201443)

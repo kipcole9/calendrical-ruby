@@ -2,6 +2,12 @@ require "#{File.dirname(__FILE__)}/../roman_numerals.rb"
 
 class FrenchRevolutionaryDate < Calendar
   
+  # see lines 4222-4226 in calendrica-3.0.cl
+  # Fixed date of start of the French Revolutionary calendar.
+  def self.epoch
+    GregorianDate[1792, SEPTEMBER, 22].fixed
+  end
+  
   def inspect
     "#{year}-#{month}-#{day} French Revolutionary"
   end
@@ -10,28 +16,6 @@ class FrenchRevolutionaryDate < Calendar
     day_name = I18n.t('french_revolutionary.days')[day_of_week]
     month_name = I18n.t('french_revolutionary.months')[month - 1]
     "#{day_name}, #{day} #{month_name} #{year.to_s_roman}"
-  end
-  
-  # see lines 4222-4226 in calendrica-3.0.cl
-  # Fixed date of start of the French Revolutionary calendar.
-  def self.epoch
-    GregorianDate[1792, SEPTEMBER, 22].fixed
-  end
-
-  # see lines 4235-4241 in calendrica-3.0.cl
-  # Return Universal Time of true midnight at the end of
-  # fixed date, date.
-  def midnight_in_paris(f_date)
-    universal_from_standard(midnight(f_date + 1, PARIS).moment, PARIS)
-  end
-
-  # see lines 4243-4252 in calendrica-3.0.cl
-  # Return fixed date of French Revolutionary New Year on or
-  # before fixed date, date.
-  def new_year_on_or_before(f_date)
-    approx = estimate_prior_solar_longitude(AUTUMN, midnight_in_paris(f_date))
-    next_of(approx.floor - 1, 
-        lambda {|day| AUTUMN <= solar_longitude(midnight_in_paris(day))})
   end
 
   # see lines 4254-4267 in calendrica-3.0.cl
@@ -63,8 +47,24 @@ class FrenchRevolutionaryDate < Calendar
     dnum -= 1
     dnum
   end
+  
+  # see lines 4243-4252 in calendrica-3.0.cl
+  # Return fixed date of French Revolutionary New Year on or
+  # before fixed date, date.
+  def new_year_on_or_before(f_date)
+    approx = estimate_prior_solar_longitude(AUTUMN, midnight_in_paris(f_date))
+    next_of(approx.floor - 1, 
+        lambda {|day| AUTUMN <= solar_longitude(midnight_in_paris(day))})
+  end
 
 protected
+
+  # see lines 4235-4241 in calendrica-3.0.cl
+  # Return Universal Time of true midnight at the end of
+  # fixed date, date.
+  def midnight_in_paris(f_date)
+    universal_from_standard(midnight(f_date + 1, PARIS).moment, PARIS)
+  end
 
   # see lines 4280-4286 in calendrica-3.0.cl
   # Return True if year, f_year, is a leap year on the French

@@ -6,19 +6,19 @@ class IsoDate < Calendar
   include Calendrical::Kday
   include Calendrical::Dates
   
+  def self.epoch
+    rd(1)
+  end
+
   # Format output as 2014-W40-3
   def inspect
     "#{year}-W#{week}-#{day} ISO"
   end
   
   def to_s
-    day_name = I18n.t('gregorian.days')[day_of_week_from_fixed(self.fixed)]
+    day_name = I18n.t('gregorian.days')[day_of_week]
     week_name = "W%02d" % week
     "#{day_name}, #{day} #{week_name} #{year}"
-  end
-
-  def self.epoch
-    rd(1)
   end
 
   # see lines 995-1005 in calendrica-3.0.cl
@@ -43,22 +43,9 @@ class IsoDate < Calendar
   # see lines 1024-1032 in calendrica-3.0.cl
   # Return True if ISO year 'i_year' is a long (53-week) year."""
   def long_year?(i_year)
-    jan1  = day_of_week_from_fixed(gregorian_new_year(i_year))
-    dec31 = day_of_week_from_fixed(gregorian_year_end(i_year))
+    jan1  = day_of_week(GregorianYear[i_year].new_year.fixed)
+    dec31 = day_of_week(GregorianYear[i_year].year_end.fixed)
     (jan1 == THURSDAY) || (dec31 == THURSDAY)
   end
-  
-protected
 
-  def set_elements(*args)
-    if args.first.is_a?(Date) 
-      @elements = args.first
-    else
-      @elements = Date.new unless @elements
-      members = Date.members
-      members.length.times do |i|
-        @elements.send "#{members[i]}=", args[i]
-      end
-    end
-  end
 end

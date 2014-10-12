@@ -3,6 +3,11 @@ class JulianDate < Calendar
   include Calendrical::Kday
   include Calendrical::Dates
   
+  # see lines 1042-1045 in calendrica-3.0.cl
+  def self.epoch
+    GregorianDate[0, DECEMBER, 30].fixed
+  end
+  
   def inspect
     "#{year}-#{month}-#{day} Julian"
   end
@@ -13,11 +18,7 @@ class JulianDate < Calendar
     suffix = year > 0 ? 'ce' : 'bce'
     "#{day_name}, #{day} #{month_name} #{year.abs}#{suffix}"
   end
-  
-  # see lines 1042-1045 in calendrica-3.0.cl
-  def self.epoch
-    GregorianDate[0, DECEMBER, 30].fixed
-  end
+
 
   # see lines 1057-1060 in calendrica-3.0.cl
   # Return True if Julian year 'j_year' is a leap year in
@@ -61,16 +62,5 @@ class JulianDate < Calendar
     day        = 1 + (f_date - date(year, month, 1).fixed)
     Date.new(year, month, day)
   end
-
-  # see lines 1250-1266 in calendrica-3.0.cl
-  # Return the list of the fixed dates of Julian month 'j_month', day
-  # 'j_day' that occur in Gregorian year 'g_year'.
-  def julian_in_gregorian
-    jan1 = new_year(self.year).fixed
-    y    = to_calendar(jan1).year
-    y_prime = (y == -1) ? 1 : (y + 1)
-    date1 = date(y, self.month, self.day).fixed
-    date2 = date(y_prime, self.month, self.day).fixed
-    list_range(date1..date2, year_range(self.year))
-  end
+ 
 end

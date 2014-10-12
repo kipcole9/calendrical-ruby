@@ -1,12 +1,16 @@
 class EtheopianDate < Calendar
   
+  # see lines 1325-1328 in calendrica-3.0.cl
+  def self.epoch
+    JulianDate[8.ce, AUGUST, 29].fixed
+  end
+   
   def inspect
     "#{year}-#{month}-#{day} Etheopian"
   end
   
-  # see lines 1325-1328 in calendrica-3.0.cl
-  def self.epoch
-    JulianDate[8.ce, AUGUST, 29].fixed
+  def to_s
+    inspect
   end
 
   # see lines 1330-1339 in calendrica-3.0.cl

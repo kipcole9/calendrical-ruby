@@ -123,12 +123,11 @@ class BalineseDate < Calendar
   # see lines 2632-2646 in calendrica-3.0.cl
   # Return the list of occurrences of n-th day of c-day cycle in range.
   # cap_Delta is the position in cycle of RD 0.
-  # TODO: Need to review the last line to understand how to translate the python
   def positions_in_range(n, c, cap_Delta, range)
     a = range.first # python start
     b = range.last  # python end
     pos = a + ((n - a - cap_Delta - 1) % c)
-    # pos > b ? nil : [pos].extend(positions_in_range(n, c, cap_Delta, interval(pos + 1, b))))
+    pos > b ? nil : [pos] << positions_in_range(n, c, cap_Delta, interval(pos + 1, b))
   end
 
   # see lines 2648-2654 in calendrica-3.0.cl

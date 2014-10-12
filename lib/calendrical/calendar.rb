@@ -148,14 +148,30 @@ class Calendar
   def to_s(type = :short)
     inspect
   end
-
+  
+  # see lines 1250-1266 in calendrica-3.0.cl
+  # Return the list of the fixed dates of Calendar month 'c_month', day
+  # 'c_day' that occur in Gregorian year 'g_year'.
+  def in_gregorian(c_month = self.month, c_day = self.day, g_year = self.year)
+    jan1 = GregorianYear[g_year].new_year.fixed
+    y    = to_calendar(jan1).year
+    y_prime = (y == -1) ? 1 : (y + 1)
+    date1 = date(y, c_month, c_day).fixed
+    date2 = date(y_prime, c_month, c_day).fixed
+    list_range(date1..date2, GregorianYear[g_year].year_range)
+  end
+  
 protected
+  # Copy the arguments to the date structure of the 
+  # calendar class.  self.class::Date ensures we copy to the
+  # calendar-specific structure if one exists
   def set_elements(*args)
-    if args.first.is_a?(Date) 
+    struct = self.class::Date
+    if args.first.is_a?(struct) 
       @elements = args.first
     else
-      @elements = Date.new unless @elements
-      members = Date.members
+      @elements = struct.new unless @elements
+      members = struct.members
       members.length.times do |i|
         @elements.send "#{members[i]}=", args[i]
       end
@@ -168,7 +184,7 @@ protected
   
   def dup_instance(instance)
     self.fixed = instance.fixed
-    self.date = instance.date
+    self.elements = instance.elements
   end
   
   def date(*args)

@@ -1,12 +1,16 @@
 class CopticDate < Calendar
 
+  # see lines 1281-1284 in calendrica-3.0.cl
+  def self.epoch
+    JulianDate[284, AUGUST, 29].fixed
+  end
+  
   def inspect
     "#{year}-#{month}-#{day} Coptic"
   end
   
-  # see lines 1281-1284 in calendrica-3.0.cl
-  def self.epoch
-    JulianDate[284, AUGUST, 29].fixed
+  def to_s
+    inspect
   end
   
   # see lines 1286-1289 in calendrica-3.0.cl
@@ -36,17 +40,6 @@ class CopticDate < Calendar
     mmonth = 1 + quotient(f_date - date(yyear, 1, 1).fixed, 30.0)
     dday   = f_date + 1 - date(yyear, mmonth, 1).fixed
     Date.new(yyear, mmonth, dday)
-  end
-
-  # see lines 1347-1360 in calendrica-3.0.cl
-  # Return the list of the fixed dates of Coptic month 'c_month',
-  # day 'c_day' that occur in Gregorian year 'g_year'.
-  def coptic_in_gregorian(c_month, c_day, g_year)
-    jan1  = GregorianCalendar.new_year(g_year)
-    y     = date(jan1).year
-    date1 = date(y, c_month, c_day).fixed
-    date2 = date(y + 1, c_month, c_day).fixed
-    list_range(date1..date2, GregorianCalendar.year_range(g_year))
   end
 
   # see lines 1362-1366 in calendrica-3.0.cl

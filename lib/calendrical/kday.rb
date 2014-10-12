@@ -69,11 +69,18 @@ module Calendrical
     end
 
     # see lines 729-733 in calendrica-3.0.cl
-    # Return the range of fixed dates in Gregorian year 'g_year'.
-    def year_range(g_year = self.year)
-      interval(new_year(g_year).fixed, year_end(g_year).fixed)
+    # Return the range of fixed dates in year 'c_year'
+    # of the current calendar
+    def year_range(c_year = self.year)
+      interval(new_year(c_year).fixed, year_end(c_year).fixed)
     end
 
+    # see lines 729-733 in calendrica-3.0.cl
+    # Return the range of fixed dates in Gregorian year 'g_year'.
+    def gregorian_year_range(g_year = self.year)
+      interval(GregorianDate[g_year].new_year.fixed, GregorianDate[g_year].year_end.fixed)
+    end
+    
     # see lines 758-763 in calendrica-3.0.cl
     # Return the number of days from Gregorian date 'g_date1'
     # till Gregorian date 'g_date2'.
