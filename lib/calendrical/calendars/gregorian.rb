@@ -137,7 +137,7 @@ class GregorianYear < Calendar
   include Calendrical::Kday
   include Calendrical::Ecclesiastical
   include Calendrical::Dates
-  include Calendrical::Dates::US
+  # include Calendrical::Dates::US
     
   def initialize(year)
     @year = year
@@ -174,11 +174,7 @@ class GregorianYear < Calendar
   def range
     new_year..year_end
   end
-  
-  def fixed
-    @fixed ||= to_fixed
-  end
-  
+
   def to_fixed
     new_year.fixed
   end 
@@ -186,10 +182,7 @@ class GregorianYear < Calendar
   def each_day(&block)
     range.each(&block)
   end
-  
-  def inspect
-    self.year
-  end
+
 end
 
   

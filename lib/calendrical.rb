@@ -11,6 +11,7 @@ require "calendrical/calendars/balinese.rb"
 require "calendrical/calendars/etheopian.rb"
 require "calendrical/calendars/french_revolutionary.rb"
 require "calendrical/calendars/hebrew.rb"
+require "calendrical/calendars/chinese.rb"
 
 if defined?(I18n)
   I18n.load_path += Dir.glob( File.dirname(__FILE__) + "/locales/**/*.{rb,yml}" ) 

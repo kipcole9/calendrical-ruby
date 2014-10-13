@@ -390,8 +390,8 @@ module Calendrical
       def new_moon_before(tee)
         t0 = nth_new_moon(0)
         phi = lunar_phase(tee)
-        n = iround(((tee - t0) / MEAN_SYNODIC_MONTH) - (phi / deg(360)))
-        nth_new_moon(final(n - 1, lambda{|k| nth_new_moon(k) < tee}))
+        n = (((tee - t0) / MEAN_SYNODIC_MONTH) - (phi / 360.degrees)).round
+        nth_new_moon(final_of(n - 1, lambda{|k| nth_new_moon(k) < tee}))
       end
 
       # see lines 3587-3594 in calendrica-3.0.cl
@@ -399,8 +399,8 @@ module Calendrical
       def new_moon_at_or_after(tee)
         t0 = nth_new_moon(0)
         phi = lunar_phase(tee)
-        n = iround((tee - t0) / MEAN_SYNODIC_MONTH - phi / deg(360))
-        nth_new_moon(next_(n, lambda{|k| nth_new_moon(k) >= tee }))
+        n = ((tee - t0) / MEAN_SYNODIC_MONTH - phi / 360.degrees).round
+        nth_new_moon(next_of(n, lambda{|k| nth_new_moon(k) >= tee }))
       end
 
       # see lines 3734-3762 in calendrica-3.0.cl

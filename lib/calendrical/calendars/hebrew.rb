@@ -13,6 +13,11 @@ class HebrewDate < Calendar
   ADAR        = 12
   ADARII      = 13
 
+  # see lines 1581-1585 in calendrica-3.0.cl
+  def self.epoch
+    JulianDate[3761.bce, OCTOBER, 7].fixed
+  end
+  
   def inspect
     "#{year}-#{month}-#{day} Hebrew"
   end
@@ -23,29 +28,59 @@ class HebrewDate < Calendar
     "#{day_name}, #{day} #{month_name} #{year}"
   end
   
-  # see lines 1581-1585 in calendrica-3.0.cl
-  def self.epoch
-    JulianDate[3761.bce, OCTOBER, 7].fixed
+  # see lines 1702-1721 in calendrica-3.0.cl
+  # Return fixed date of Hebrew date h_date.
+  def to_fixed(h_date = self)
+    mmonth = h_date.month
+    dday   = h_date.day
+    yyear  = h_date.year
+
+    if (mmonth < TISHRI)
+      tmp = (summa(lambda{|m| last_day_of_month(m, yyear)},
+                   TISHRI,
+                   lambda{|m| m <= last_month_of_year(yyear)}) +
+             summa(lambda{|m| last_day_of_month(m, yyear)},
+                   NISAN,
+                   lambda{|m| m < mmonth}))
+    else
+      tmp = summa(lambda{|m| last_day_of_month(m, yyear)},
+                  TISHRI,
+                  lambda{|m| m < mmonth})
+    end
+    new_year(yyear) + dday - 1 + tmp
   end
 
+  # see lines 1723-1751 in calendrica-3.0.cl
+  # Return  Hebrew (year month day) corresponding to fixed date date.
+  # The fraction can be approximated by 365.25.
+  def to_calendar(f_date = self.fixed)
+    approx = quotient(f_date - epoch, 35975351/98496.0) + 1
+    yyear = final_of(approx - 1, lambda{|y| new_year(y) <= f_date})
+    start = f_date < to_fixed(date(yyear, NISAN, 1)) ? TISHRI : NISAN
+    mmonth = next_of(start, lambda{|m| f_date <= to_fixed(date(yyear, m, last_day_of_month(m, yyear)))})
+    dday = f_date - to_fixed(date(yyear, mmonth, 1)) + 1
+    Date.new(yyear, mmonth, dday)
+  end
+  
   # see lines 3021-3025 in calendrica-3.0.cl
   # Return standard time of Jewish dusk on fixed date, date,
   # at location, location, (as per Vilna Gaon).
-  def jewish_dusk(f_date = self.fixed, location)
+  def dusk(f_date = self.fixed, location = JERUSALEM)
     dusk(f_date, location, angle(4, 40, 0))
   end
+  alias :jewish_dusk :dusk
 
   # see lines 3027-3031 in calendrica-3.0.cl
   # Return standard time of end of Jewish sabbath on fixed date, date,
   # at location, location, (as per Berthold Cohn).
-  def sabbath_ends(f_date = self.fixed, location)
+  def sabbath_ends(f_date = self.fixed, location = JERUSALEM)
     dusk(f_date, location, angle(7, 5, 0)) 
   end
 
   # see lines 3075-3079 in calendrica-3.0.cl
   # Return standard time on fixed date, date, at location, location,
   # of end of morning according to Jewish ritual.
-  def morning_end(f_date = self.fixed, location)
+  def morning_ends(f_date = self.fixed, location = JERUSALEM)
     standard_from_sundial(f_date + 10.hrs, location)
   end
 
@@ -138,40 +173,6 @@ class HebrewDate < Calendar
   # Return True if Kislev is short in Hebrew year h_year.
   def short_kislev?(h_year = self.year)
     [353, 383].include? days_in_year(h_year)
-  end
-
-  # see lines 1702-1721 in calendrica-3.0.cl
-  # Return fixed date of Hebrew date h_date.
-  def to_fixed(h_date = self)
-    mmonth = h_date.month
-    dday   = h_date.day
-    yyear  = h_date.year
-
-    if (mmonth < TISHRI)
-      tmp = (summa(lambda{|m| last_day_of_month(m, yyear)},
-                   TISHRI,
-                   lambda{|m| m <= last_month_of_year(yyear)}) +
-             summa(lambda{|m| last_day_of_month(m, yyear)},
-                   NISAN,
-                   lambda{|m| m < mmonth}))
-    else
-      tmp = summa(lambda{|m| last_day_of_month(m, yyear)},
-                  TISHRI,
-                  lambda{|m| m < mmonth})
-    end
-    new_year(yyear) + dday - 1 + tmp
-  end
-
-  # see lines 1723-1751 in calendrica-3.0.cl
-  # Return  Hebrew (year month day) corresponding to fixed date date.
-  # The fraction can be approximated by 365.25.
-  def to_calendar(f_date = self.fixed)
-    approx = quotient(f_date - epoch, 35975351/98496.0) + 1
-    yyear = final_of(approx - 1, lambda{|y| new_year(y) <= f_date})
-    start = f_date < to_fixed(date(yyear, NISAN, 1)) ? TISHRI : NISAN
-    mmonth = next_of(start, lambda{|m| f_date <= to_fixed(date(yyear, m, last_day_of_month(m, yyear)))})
-    dday = f_date - to_fixed(date(yyear, mmonth, 1)) + 1
-    Date.new(yyear, mmonth, dday)
   end
 
   # see lines 1753-1761 in calendrica-3.0.cl
@@ -310,11 +311,11 @@ class HebrewDate < Calendar
   # Return the list of the fixed dates of Hebrew birthday
   # birthday that occur in Gregorian g_year.
   def hebrew_birthday_in_gregorian(birthdate, g_year)
-    jan1 = GregorianDate[g_year, 1, 1].new_year.fixed
+    jan1 = GregorianYear[g_year].new_year.fixed
     y    = date(jan1).fixed
     date1 = hebrew_birthday(birthdate, y)
     date2 = hebrew_birthday(birthdate, y + 1)
-    list_range([date1, date2], gregorian_year_range(g_year))
+    list_range([date1, date2], GregorianYear[g_year].year_range)
   end
 
   # see lines 1895-1937 in calendrica-3.0.cl
