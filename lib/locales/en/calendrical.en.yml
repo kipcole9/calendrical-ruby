@@ -147,5 +147,36 @@ en:
             
         days:
             
+    # http://en.wikipedia.org/wiki/Sexagenary_cycle
+    chinese:
+        stem:
+            - jiǎ
+            - yǐ
+            - bǐng
+            - dīng
+            - wù
+            - jǐ
+            - gēng
+            - xīn
+            - rén
+            - guǐ
+            
+        branch:
+            - zǐ
+            - chǒu
+            - yín
+            - mǎo
+            - chén
+            - sì
+            - wǔ
+            - wèi
+            - shēn
+            - yǒu
+            - xū
+            - hài
+            
+            
+            
+            
             
     

@@ -22,7 +22,7 @@ class ChineseDate < Calendar
   end
 
   def to_s
-    inspect
+    "#{year_name} #{month_name} #{day_name}"
   end
   
   # see lines 4520-4565 in calendrica-3.0.cl
@@ -216,23 +216,32 @@ class ChineseDate < Calendar
   # see lines 4646-4649 in calendrica-3.0.cl
   # see lines 214-215 in calendrica-3.0.errata.cl
   # Return sexagesimal name for Chinese year, year, of any cycle.
-  def chinese_year_name(year)
-    chinese_sexagesimal_name(year)
+  def year_name(yyear = self.year)
+    name = chinese_sexagesimal_name(yyear)
+    stem = I18n.t('chinese.stem')[name.stem - 1]
+    branch = I18n.t('chinese.branch')[name.branch - 1]
+    "#{stem}#{branch}"
   end
 
   # see lines 4657-4664 in calendrica-3.0.cl
   # see lines 211-212 in calendrica-3.0.errata.cl
   # Return sexagesimal name for month, month, of Chinese year, year.
-  def chinese_month_name(month, year)
-    elapsed_months = (12 * (year - 1)) + (month - 1)
-    chinese_sexagesimal_name(elapsed_months - CHINESE_MONTH_NAME_EPOCH)
+  def month_name(mmonth = self.month, yyear = self.year)
+    elapsed_months = (12 * (yyear - 1)) + (mmonth - 1)
+    name = chinese_sexagesimal_name(elapsed_months - CHINESE_MONTH_NAME_EPOCH)
+    stem = I18n.t('chinese.stem')[name.stem - 1]
+    branch = I18n.t('chinese.branch')[name.branch - 1]
+    "#{stem}#{branch}"
   end
 
   # see lines 4671-4675 in calendrica-3.0.cl
   # see lines 208-209 in calendrica-3.0.errata.cl
-  def chinese_day_name(date)
+  def day_name(date = self.fixed)
     # Return Chinese sexagesimal name for date, date.
-    chinese_sexagesimal_name(date - CHINESE_DAY_NAME_EPOCH)
+    name = chinese_sexagesimal_name(date - CHINESE_DAY_NAME_EPOCH)
+    stem = I18n.t('chinese.stem')[name.stem - 1]
+    branch = I18n.t('chinese.branch')[name.branch - 1]
+    "#{stem}#{branch}"
   end
 
   # see lines 4677-4687 in calendrica-3.0.cl

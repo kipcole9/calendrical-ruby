@@ -39,6 +39,9 @@ class Calendar
       set_elements(args.first.year, args.first.month, args.first.day)
     elsif args.first.is_a?(self.class)
       dup_instance(args.first)
+    elsif args.first.respond_to?(:fixed)
+      set_fixed(args.first.fixed)
+      set_elements(to_calendar(self.fixed))      
     elsif args.first.is_a?(Fixnum) && args.length == 1
       set_fixed(args.first)
       set_elements(to_calendar(self.fixed))
