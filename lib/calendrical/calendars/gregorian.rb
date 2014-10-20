@@ -19,7 +19,7 @@ class GregorianDate < Calendar
   
   def to_date
     return nil unless @elements.year.present?
-    Date.new(@elements.year, @elements.month, @elements.day)
+    ::Date.new(@elements.year, @elements.month, @elements.day)
   end
   
   # see lines 657-663 in calendrica-3.0.cl
@@ -149,6 +149,10 @@ class GregorianYear < Calendar
   
   def to_s
     inspect
+  end
+  
+  def leap_year?
+    new_year.leap_year?
   end
   
   def <=>(other)
