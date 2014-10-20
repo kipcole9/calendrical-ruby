@@ -16,6 +16,8 @@ class Calendar
   
   attr_accessor :elements, :fixed
   delegate :day, :month, :year, to: :elements
+  
+  using Calendrical::Numeric
 
   include Enumerable
   include Comparable

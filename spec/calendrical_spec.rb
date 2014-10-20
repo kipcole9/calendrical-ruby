@@ -31,6 +31,5 @@ describe Calendrical do
   
   it 'knows the fixed date of January 1, 2010' do
     expect(GregorianDate[2010,1,1].fixed).to eq(733773)
-  end
-  
+  end 
 end

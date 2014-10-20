@@ -1,3 +1,5 @@
+using Calendrical::Numeric
+
 module Calendrical
   module Astro
     module Constants
