@@ -9,7 +9,7 @@ class Gregorian::Month < Calendar
   end
   
   def inspect
-    "#{year}-#{month}"
+    range.inspect
   end
 
   def <=>(other)
@@ -46,10 +46,12 @@ class Gregorian::Month < Calendar
     end
   end
   
-  # TODO:  Weeks should be offset to quarter, not the year
   def week(n)
-    week_number = ((range.first.fixed - Gregorian::Year[year].new_year.fixed) / 7) + n
-    Gregorian::Week[year, week_number]
+    start_day = range.first + ((n - 1) * 7)
+    raise(Calendrical::InvalidWeek, "Invalid week '#{n}' which must lie within month #{month} range of #{range}") \
+      unless range.include?(start_day)
+    end_day = [start_day + 6, range.last].min
+    Gregorian::Week[year, n, start_day, end_day]
   end
   
 protected
