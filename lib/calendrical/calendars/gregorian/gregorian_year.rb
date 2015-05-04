@@ -11,7 +11,6 @@ class GregorianYear < Calendar
   end
   
   def inspect
-    # "#{year} Gregorian"
     year
   end
   
@@ -26,11 +25,7 @@ class GregorianYear < Calendar
   def <=>(other)
     year <=> other.year
   end
-  
-  def succ
-    self.class[year + 1]
-  end
-  
+
   # Need to do a little traffic managment here since
   # we're going to be called sometimes with just a year
   # and sometimes with a date formation from the super class
@@ -57,5 +52,13 @@ class GregorianYear < Calendar
   
   def quarter(n)
     GregorianQuarter[year, n]
+  end
+  
+  def month(n)
+    GregorianMonth[year, n]
+  end
+  
+  def week(n)
+    GregorianWeek[year, n]
   end
 end

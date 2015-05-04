@@ -15,11 +15,7 @@ class GregorianWeek < Calendar
   def <=>(other)
     weeks <=> other.weeks
   end
-  
-  def succ
-    self + 1
-  end
-      
+ 
   def range
     start_of_week..end_of_week
   end

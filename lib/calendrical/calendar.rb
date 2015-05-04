@@ -131,7 +131,7 @@ class Calendar
   end
   
   def succ
-    date(fixed + 1)
+    self + 1
   end
 
   def fixed

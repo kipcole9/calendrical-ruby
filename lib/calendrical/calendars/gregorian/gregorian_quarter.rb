@@ -58,4 +58,9 @@ class GregorianQuarter < Calendar
   def quarters
     year * 4 + quarter
   end
+  
+  def week(n)
+    week_number = ((range.first.fixed - GregorianYear[year].new_year.fixed) / 7) + n
+    GregorianWeek[year, week_number]
+  end
 end
