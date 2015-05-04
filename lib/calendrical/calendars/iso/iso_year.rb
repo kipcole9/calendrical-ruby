@@ -25,8 +25,8 @@ class IsoYear < GregorianYear
     IsoQuarter[self.year, n]
   end
   
-  def week(n)
-    raise(Calendrical::InvalidWeek, "Invalid week '#{n}' which must be between 1 and 52 inclusive") unless (1..52).include?(n.to_i)
+  def week(n) 
+    IsoWeek[self.year, n]
   end
   
   def last_week_of_year

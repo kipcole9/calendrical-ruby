@@ -1,6 +1,5 @@
 class GregorianWeek < Calendar
   attr_accessor :year, :week, :fixed
-  include Enumerable
     
   def initialize(year, week)
     raise(Calendrical::InvalidWeek, "Invalid week '#{week}' which must be between 1 and 53 inclusive") unless (1..53).include?(week.to_i)
@@ -11,10 +10,6 @@ class GregorianWeek < Calendar
   def inspect
     week_name = "W%02d" % week
     "#{year}-#{week_name}"
-  end
-  
-  def to_s
-    inspect
   end
   
   def <=>(other)

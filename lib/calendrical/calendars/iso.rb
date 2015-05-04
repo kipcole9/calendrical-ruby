@@ -1,5 +1,6 @@
 require File.expand_path("../iso/iso_year.rb", __FILE__)
 require File.expand_path("../iso/iso_quarter.rb", __FILE__)
+require File.expand_path("../iso/iso_week.rb", __FILE__)
 
 class IsoDate < Calendar
   Date = Struct.new(:year, :week, :day)

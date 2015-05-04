@@ -16,4 +16,9 @@ class IsoQuarter < GregorianQuarter
   def last_week_of_year
     IsoYear[year].last_week_of_year
   end
+  
+  def week(n)
+    raise(Calendrical::InvalidWeek, "Week must be between 1 and 13 for weeks in a quarter") unless (1..13).include? n.to_i  
+    IsoWeek[year, (quarter * 13) + n.to_i - 1]
+  end
 end

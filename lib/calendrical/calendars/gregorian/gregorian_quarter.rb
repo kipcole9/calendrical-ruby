@@ -14,19 +14,11 @@ class GregorianQuarter < Calendar
   def inspect
     "#{year}-Q#{quarter}"
   end
-  
-  def to_s
-    inspect
-  end
-  
+
   def <=>(other)
     quarters <=> other.quarters
   end
-  
-  def succ
-    self + 1
-  end
-  
+
   def range
     @range ||= case quarter
     when 1
