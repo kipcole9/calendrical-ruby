@@ -11,7 +11,11 @@ module Iso
   def self.Quarter(year, quarter)
     Iso::Quarter[year, quarter]
   end
-
+  
+  def self.Week(year, week)
+    Iso::Week[year, week]
+  end
+  
   def self.Date(year, month, day)
     Iso::Date[year, month, day]
   end

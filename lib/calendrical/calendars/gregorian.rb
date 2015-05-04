@@ -17,6 +17,10 @@ module Gregorian
     Gregorian::Month[year, month]
   end
   
+  def self.Week(year, week)
+    Gregorian::Week[year, week]
+  end
+
   def self.Date(year, month, day)
     Gregorian::Date[year, month, day]
   end
