@@ -118,7 +118,7 @@ class Calendar
   
   def +(other)
     value = other.respond_to?(:fixed) ? other.fixed : other
-    date(self.fixed + other)
+    date(self.fixed + value)
   end
   
   def -(other)
