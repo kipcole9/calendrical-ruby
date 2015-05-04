@@ -2,7 +2,7 @@ class Gregorian::Week < Calendar
   attr_accessor :year, :week, :start_day, :end_day, :fixed
     
   def initialize(year, week, start_day = nil, end_day = nil, quarter = nil)
-    raise(Calendrical::InvalidWeek, "Invalid week '#{week}' which must be between 1 and 53 inclusive") unless (1..53).include?(week.to_i)
+    raise(Calendrical::InvalidWeek, "Week #{week} doesn't lie between 1 and 53 inclusive") unless (1..53).include?(week.to_i)
     @year = year
     @week = week
     @start_day = start_day

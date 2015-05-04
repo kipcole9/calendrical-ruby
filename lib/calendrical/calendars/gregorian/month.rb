@@ -48,7 +48,7 @@ class Gregorian::Month < Calendar
   
   def week(n)
     start_day = range.first + ((n - 1) * 7)
-    raise(Calendrical::InvalidWeek, "Invalid week '#{n}' which must lie within month #{month} range of #{range}") \
+    raise(Calendrical::InvalidWeek, "Week #{n} doesn't lie within month #{month}'s range of #{range}") \
       unless range.include?(start_day)
     end_day = [start_day + 6, range.last].min
     Gregorian::Week[year, n, start_day, end_day]
