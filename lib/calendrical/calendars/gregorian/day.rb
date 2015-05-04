@@ -1,7 +1,5 @@
 module Gregorian
   class Date < Calendar
-    # include Calendrical::Ecclesiastical
-    # include Calendrical::Kday
     include Calendrical::Dates
   
     def inspect
@@ -16,6 +14,10 @@ module Gregorian
   
     def self.epoch
       rd(1)
+    end
+    
+    def range
+      @range ||= self..self
     end
   
     def to_date
@@ -67,6 +69,10 @@ module Gregorian
     end
 
   protected
+  
+    def validate_date!
+      ::Date.new(year, month, day)
+    end
   
     # see lines 689-715 in calendrica-3.0.cl
     # Return the Gregorian year corresponding to the fixed date 'date'.

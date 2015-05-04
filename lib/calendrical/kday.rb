@@ -6,35 +6,35 @@ module Calendrical
     # see lines 849-853 in calendrica-3.0.cl
     # Return the fixed date of the k-day on or before fixed date 'date'.
     # k=0 means Sunday, k=1 means Monday, and so on."""
-    def kday_on_or_before(k, g_date = self)
+    def kday_on_or_before(k, g_date = self.range.first)
       g_date - day_of_week_from_fixed(g_date - k)
     end
 
     # see lines 855-859 in calendrica-3.0.cl
     # Return the fixed date of the k-day on or after fixed date 'date'.
     # k=0 means Sunday, k=1 means Monday, and so on.
-    def kday_on_or_after(k, g_date = self)
+    def kday_on_or_after(k, g_date = self.range.last)
       kday_on_or_before(k, g_date + 6)
     end
 
     # see lines 861-865 in calendrica-3.0.cl
     # Return the fixed date of the k-day nearest fixed date 'date'.
     # k=0 means Sunday, k=1 means Monday, and so on.
-    def kday_nearest(k, g_date = self)
+    def kday_nearest(k, g_date = self.range.first)
       kday_on_or_before(k, g_date + 3)
     end
 
     # see lines 867-871 in calendrica-3.0.cl
     # Return the fixed date of the k-day after fixed date 'date'.
     # k=0 means Sunday, k=1 means Monday, and so on.
-    def kday_after(k, g_date = self)
+    def kday_after(k, g_date = self.range.last)
       kday_on_or_before(k, g_date + 7)
     end
 
     # see lines 873-877 in calendrica-3.0.cl
     # Return the fixed date of the k-day before fixed date 'date'.
     # k=0 means Sunday, k=1 means Monday, and so on.
-    def kday_before(k, g_date = self)
+    def kday_before(k, g_date = self.range.first)
       kday_on_or_before(k, g_date - 1)
     end
 
@@ -44,7 +44,7 @@ module Calendrical
     # If n<0, return the n-th k-day on or before 'g_date'.
     # If n=0, return BOGUS.
     # A k-day of 0 means Sunday, 1 means Monday, and so on.
-    def nth_kday(n, k, g_date = self)
+    def nth_kday(n, k, g_date = self.range.first)
       if n > 0
         kday_before(k, g_date) + 7*n
       elsif n < 0
@@ -57,15 +57,16 @@ module Calendrical
     # see lines 892-897 in calendrica-3.0.cl
     # Return the fixed date of first k-day on or after Gregorian date 'g_date'.
     # A k-day of 0 means Sunday, 1 means Monday, and so on.
-    def first_kday(k, g_date = self)
+    def first_kday(k, g_date = self.range.first)
       nth_kday(1, k, g_date)
     end
 
     # see lines 899-904 in calendrica-3.0.cl
     # Return the fixed date of last k-day on or before Gregorian date 'g_date'.
     # A k-day of 0 means Sunday, 1 means Monday, and so on.
-    def last_kday(k, g_date = self)
-      nth_kday(-1, k - 1, g_date)
+    # WAS: nth_kday(-1, k - 1, g_date)
+    def last_kday(k, g_date = self.range.last)
+      nth_kday(-1, k, g_date)
     end
 
     # see lines 729-733 in calendrica-3.0.cl

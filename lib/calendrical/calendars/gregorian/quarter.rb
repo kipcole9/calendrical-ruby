@@ -29,7 +29,7 @@ class Gregorian::Quarter < Calendar
       Gregorian::Date[year, OCTOBER, 1]..Gregorian::Date[year, DECEMBER, 31]
     end
   end
-
+  
   def +(other)
     absolute_quarters = quarters + other
     new_year = absolute_quarters / QUARTERS_IN_YEAR

@@ -24,7 +24,15 @@ class Gregorian::Year < Calendar
   end
   
   def range
-    new_year..year_end
+    @range ||= new_year..year_end
+  end
+  
+  def +(other)
+    self.class[year + other]
+  end
+  
+  def -(other)
+    self.class[year - other]
   end
 
   def quarter(n)
@@ -38,10 +46,6 @@ class Gregorian::Year < Calendar
   def week(n)
     Gregorian::Week[year, n]
   end
-  
-  def to_fixed
-    new_year.fixed
-  end 
 
   # Need to do a little traffic managment here since
   # we're going to be called sometimes with just a year

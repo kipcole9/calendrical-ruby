@@ -19,7 +19,8 @@ module Iso
     end
      
     def week(n)
-      # raise(Calendrical::InvalidWeek, "Week must be between 1 and 13 for weeks in a quarter") unless (1..13).include? n.to_i  
+      raise(Calendrical::InvalidWeek, "Week #{n} isn't between 1 and 13 (or 14 for a long year in q4) for weeks in a quarter") \
+        unless (1..13).include?(n.to_i) || (Iso::Year.long_year?(year) && quarter == 4 && week == 14)
       Iso::Week[year, ((quarter - 1) * 13) + n.to_i]
     end
   end

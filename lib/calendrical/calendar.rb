@@ -28,6 +28,7 @@ class Calendar
   include Calendrical::Days
   include Calendrical::Months
   include Calendrical::Astro
+  include Calendrical::Kday  
   include Calendrical::Astro::Solar
   include Calendrical::Astro::Lunar
 
@@ -50,14 +51,20 @@ class Calendar
     else
       set_elements(*args)
     end
+    validate_date!
   end
   
   def to_s(type = :short)
     inspect
   end
   
-  def each_day(&block)
-    range.each(&block)
+  def to_fixed
+    range.first.fixed
+  end
+  alias :fixed :to_fixed
+  
+  def each(&block)
+    range(&block)
   end
   
   def +(other)
@@ -199,6 +206,11 @@ protected
   
   def date(*args)
     self.class[*args]
+  end
+  
+  # Implement in concrete class
+  def validate_date!
+    
   end
   
 end
