@@ -3,7 +3,8 @@ require "#{File.dirname(__FILE__)}/astro/lunar.rb"
 
 module Calendrical
   module Astro
-  
+    class NoMoment < StandardError; end
+    
   protected
     # see lines 3111-3114 in calendrica-3.0.cl
     def j2000

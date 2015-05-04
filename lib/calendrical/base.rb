@@ -1,4 +1,8 @@
 module Calendrical
+  class InvalidQuarter < StandardError; end
+  class InvalidWeek < StandardError; end
+  class UnknownLunarPhase < StandardError; end
+  
   module Base
 
     # see lines 249-252 in calendrica-3.0.cl

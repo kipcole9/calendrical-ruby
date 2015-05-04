@@ -1,10 +1,13 @@
+require File.expand_path("../gregorian/gregorian_year.rb", __FILE__)
+require File.expand_path("../gregorian/gregorian_quarter.rb", __FILE__)
+
 class GregorianDate < Calendar
   include Calendrical::Ecclesiastical
   include Calendrical::Kday
   include Calendrical::Dates
   
   def inspect
-    "#{year}-#{month}-#{day} Gregorian"
+    to_date.inspect
   end
   
   def to_s
@@ -67,7 +70,15 @@ class GregorianDate < Calendar
     day = 1 + f_date - date(yyear, month, 1).fixed
     Date.new(yyear, month, day)
   end
-
+  
+  def quarter(n)
+    GregorianQuarter[self.year, n]
+  end
+  
+  def week(n)
+    raise(Calendrical::InvalidWeek, "Invalid week '#{n}' which must be between 1 and 52 inclusive") unless (1..52).include?(n.to_i)
+  end
+  
 protected
   
   # see lines 689-715 in calendrica-3.0.cl
@@ -131,62 +142,5 @@ protected
   end
 end
 
-class GregorianYear < Calendar
-  attr_accessor :year, :fixed
-
-  include Calendrical::Kday
-  include Calendrical::Ecclesiastical
-  include Calendrical::Dates
-  # include Calendrical::Dates::US
-    
-  def initialize(year)
-    @year = year
-  end
-  
-  def inspect
-    "#{year} Gregorian"
-  end
-  
-  def to_s
-    inspect
-  end
-  
-  def leap_year?
-    new_year.leap_year?
-  end
-  
-  def <=>(other)
-    year <=> other.year
-  end
-  
-  def succ
-    self.class[year + 1]
-  end
-  
-  # Need to do a little traffic managment here since
-  # we're going to be called sometimes with just a year
-  # and sometimes with a date formation from the super class
-  def date(g_year, g_month = nil, g_day = nil)
-    the_year = g_year.is_a?(Fixnum) ? g_year : g_year.year
-    if g_month && g_day
-      GregorianDate[the_year, g_month, g_day]
-    else
-      GregorianYear[the_year]
-    end
-  end 
-  
-  def range
-    new_year..year_end
-  end
-
-  def to_fixed
-    new_year.fixed
-  end 
-  
-  def each_day(&block)
-    range.each(&block)
-  end
-
-end
 
   

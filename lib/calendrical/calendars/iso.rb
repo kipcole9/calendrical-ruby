@@ -6,13 +6,19 @@ class IsoDate < Calendar
   include Calendrical::Kday
   include Calendrical::Dates
   
+  def initialize(*args)
+    super
+    raise(Calendrical::InvalidWeek, "Year #{year} is not a long ISO year, there is no week 53") if !long_year?(year) && week == 53
+    raise(Calendrical::InvalidWeek, "Week must be between 1 and 52, or 53 for a long ISO year") unless (1..53).include? week    
+  end
+  
   def self.epoch
     rd(1)
   end
 
   # Format output as 2014-W40-3
   def inspect
-    "#{year}-W#{week}-#{day} ISO"
+    "#{year}-W#{week}-#{day}"
   end
   
   def to_s
@@ -42,10 +48,22 @@ class IsoDate < Calendar
 
   # see lines 1024-1032 in calendrica-3.0.cl
   # Return True if ISO year 'i_year' is a long (53-week) year."""
-  def long_year?(i_year)
+  def long_year?(i_year = self)
     jan1  = day_of_week(GregorianYear[i_year].new_year.fixed)
     dec31 = day_of_week(GregorianYear[i_year].year_end.fixed)
     (jan1 == THURSDAY) || (dec31 == THURSDAY)
+  end
+  
+  def new_year
+    date(year, 1, 1)
+  end
+  
+  def year_end
+    date(year, long_year?(year) ? 53 : 52, 7)
+  end
+  
+  def range
+    new_year..year_end
   end
 
 end

@@ -107,7 +107,7 @@ class Calendar
     when 316..360
       defined?(I18n) ? I18n.t('moon_phase.waning_crescent') : 'Waning Crescent'  
     else
-      raise UnknownLunarPhase("Unknown lunar phase angle #{phase}.")
+      raise(Calendrical::UnknownLunarPhase, "Unknown lunar phase angle #{phase}.")
     end                    
   end
   
