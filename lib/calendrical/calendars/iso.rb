@@ -1,3 +1,6 @@
+require File.expand_path("../iso/iso_year.rb", __FILE__)
+require File.expand_path("../iso/iso_quarter.rb", __FILE__)
+
 class IsoDate < Calendar
   Date = Struct.new(:year, :week, :day)
   delegate :year, :week, :day, to: :elements
@@ -45,25 +48,8 @@ class IsoDate < Calendar
     day    = amod(date - rd(0), 7)
     Date.new(year, week, day)
   end
-
-  # see lines 1024-1032 in calendrica-3.0.cl
-  # Return True if ISO year 'i_year' is a long (53-week) year."""
+  
   def long_year?(i_year = self)
-    jan1  = day_of_week(GregorianYear[i_year].new_year.fixed)
-    dec31 = day_of_week(GregorianYear[i_year].year_end.fixed)
-    (jan1 == THURSDAY) || (dec31 == THURSDAY)
+    IsoYear.long_year?(i_year)
   end
-  
-  def new_year
-    date(year, 1, 1)
-  end
-  
-  def year_end
-    date(year, long_year?(year) ? 53 : 52, 7)
-  end
-  
-  def range
-    new_year..year_end
-  end
-
 end

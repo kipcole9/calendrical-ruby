@@ -127,7 +127,7 @@ class Calendar
   end
   
   def <=>(other)
-    fixed <=> other.respond_to?(:fixed) ? other.fixed : other
+    self.fixed <=> other.fixed
   end
   
   def succ

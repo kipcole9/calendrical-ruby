@@ -1,5 +1,6 @@
 require File.expand_path("../gregorian/gregorian_year.rb", __FILE__)
 require File.expand_path("../gregorian/gregorian_quarter.rb", __FILE__)
+require File.expand_path("../gregorian/gregorian_week.rb", __FILE__)
 
 class GregorianDate < Calendar
   include Calendrical::Ecclesiastical
@@ -69,10 +70,6 @@ class GregorianDate < Calendar
     month = quotient((12 * (prior_days + correction)) + 373, 367)
     day = 1 + f_date - date(yyear, month, 1).fixed
     Date.new(yyear, month, day)
-  end
-  
-  def quarter(n)
-    GregorianQuarter[self.year, n]
   end
   
   def week(n)

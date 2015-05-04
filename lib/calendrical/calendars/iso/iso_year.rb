@@ -1,49 +1,36 @@
-class GregorianYear < Calendar
-  attr_accessor :year, :fixed
+class IsoYear < GregorianYear
+  delegate :long_year?, to: :class
 
-  include Calendrical::Kday
-  include Calendrical::Ecclesiastical
-  include Calendrical::Dates
-  # include Calendrical::Dates::US
-    
-  def initialize(year)
-    @year = year
-  end
-  
-  def inspect
-    # "#{year} Gregorian"
-    year
-  end
-  
-  def to_s
-    inspect
-  end
-  
-  def leap_year?
-    new_year.leap_year?
-  end
-  
-  def <=>(other)
-    year <=> other.year
-  end
-  
-  def succ
-    self.class[year + 1]
-  end 
-  
   def new_year
-    date(year, 1, 1)
+    IsoDate[year, 1, 1]
   end
   
   def year_end
-    date(year, long_year?(year) ? 53 : 52, 7)
+    IsoDate[year, last_week_of_year, 7]
+  end
+ 
+  # see lines 1024-1032 in calendrica-3.0.cl
+  # Return True if ISO year 'i_year' is a long (53-week) year."""
+  def self.long_year?(i_year)
+    new(i_year).long_year?
   end
   
-  def range
-    new_year..year_end
+  def long_year?(i_year = self)
+    jan1  = day_of_week(GregorianYear[i_year].new_year.fixed)
+    dec31 = day_of_week(GregorianYear[i_year].year_end.fixed)
+    (jan1 == THURSDAY) || (dec31 == THURSDAY)
   end
   
-  def each_day(&block)
-    range.each(&block)
+  def quarter(n)
+    IsoQuarter[self.year, n]
   end
+  
+  def week(n)
+    raise(Calendrical::InvalidWeek, "Invalid week '#{n}' which must be between 1 and 52 inclusive") unless (1..52).include?(n.to_i)
+  end
+  
+  def last_week_of_year
+    long_year?(year) ? 53 : 52
+  end
+  
 end

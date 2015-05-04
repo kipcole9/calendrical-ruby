@@ -27,18 +27,6 @@ class GregorianQuarter < Calendar
     self + 1
   end
   
-  # Need to do a little traffic managment here since
-  # we're going to be called sometimes with just a year
-  # and sometimes with a date formation from the super class
-  # def date(g_year, g_month = nil, g_day = nil)
-  #   the_year = g_year.is_a?(Fixnum) ? g_year : g_year.year
-  #   if g_month && g_day
-  #     GregorianDate[the_year, g_month, g_day]
-  #   else
-  #     GregorianYear[the_year]
-  #   end
-  # end 
-  
   def range
     @range ||= case quarter
     when 1

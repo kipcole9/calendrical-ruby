@@ -54,4 +54,8 @@ class GregorianYear < Calendar
   def each_day(&block)
     range.each(&block)
   end
+  
+  def quarter(n)
+    GregorianQuarter[year, n]
+  end
 end
