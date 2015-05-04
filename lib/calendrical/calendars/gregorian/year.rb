@@ -1,4 +1,4 @@
-class GregorianYear < Calendar
+class Gregorian::Year < Calendar
   attr_accessor :year, :fixed
 
   include Calendrical::Kday
@@ -12,10 +12,6 @@ class GregorianYear < Calendar
   
   def inspect
     year
-  end
-  
-  def to_s
-    inspect
   end
   
   def leap_year?
@@ -32,9 +28,9 @@ class GregorianYear < Calendar
   def date(g_year, g_month = nil, g_day = nil)
     the_year = g_year.is_a?(Fixnum) ? g_year : g_year.year
     if g_month && g_day
-      GregorianDate[the_year, g_month, g_day]
+      Gregorian::Date[the_year, g_month, g_day]
     else
-      GregorianYear[the_year]
+      Gregorian::Year[the_year]
     end
   end 
   
@@ -51,14 +47,14 @@ class GregorianYear < Calendar
   end
   
   def quarter(n)
-    GregorianQuarter[year, n]
+    Gregorian::Quarter[year, n]
   end
   
   def month(n)
-    GregorianMonth[year, n]
+    Gregorian::Month[year, n]
   end
   
   def week(n)
-    GregorianWeek[year, n]
+    Gregorian::Week[year, n]
   end
 end

@@ -78,7 +78,7 @@ module Calendrical
     # see lines 729-733 in calendrica-3.0.cl
     # Return the range of fixed dates in Gregorian year 'g_year'.
     def gregorian_year_range(g_year = self.year)
-      interval(GregorianDate[g_year].new_year.fixed, GregorianDate[g_year].year_end.fixed)
+      interval(Gregorian::Date[g_year].new_year.fixed, Gregorian::Date[g_year].year_end.fixed)
     end
     
     # see lines 758-763 in calendrica-3.0.cl

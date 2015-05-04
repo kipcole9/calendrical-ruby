@@ -52,6 +52,32 @@ class Calendar
     end
   end
   
+  def to_s(type = :short)
+    inspect
+  end
+  
+  def each_day(&block)
+    range.each(&block)
+  end
+  
+  def +(other)
+    value = other.respond_to?(:fixed) ? other.fixed : other
+    date(self.fixed + value)
+  end
+  
+  def -(other)
+    value = other.respond_to?(:fixed) ? other.fixed : other
+    date(self.fixed - value)
+  end
+  
+  def <=>(other)
+    self.fixed <=> other.fixed
+  end
+  
+  def succ
+    self + 1
+  end
+  
   # Epoch is a class methods on each Calendar
   def epoch
     self.class.epoch
@@ -64,11 +90,7 @@ class Calendar
   def sunset(location = GREENWHICH, date = self.fixed)
     Calendrical::Moment.new(super, location)
   end
-  
-  def moonrise(location = GREENWHICH, date = self.fixed)
-    Calendrical::Moment.new(super, location)
-  end
-  
+
   # Solstice
   def december_solstice(location = GREENWHICH, g_year = self.year)
     Calendrical::Moment.new(super, location)
@@ -84,6 +106,10 @@ class Calendar
   end
   
   def september_equinox(location = GREENWHICH, g_year = self.year)
+    Calendrical::Moment.new(super, location)
+  end
+  
+  def moonrise(location = GREENWHICH, date = self.fixed)
     Calendrical::Moment.new(super, location)
   end
 
@@ -116,28 +142,6 @@ class Calendar
     super
   end
   
-  def each_day(&block)
-    range.each(&block)
-  end
-  
-  def +(other)
-    value = other.respond_to?(:fixed) ? other.fixed : other
-    date(self.fixed + value)
-  end
-  
-  def -(other)
-    value = other.respond_to?(:fixed) ? other.fixed : other
-    date(self.fixed - value)
-  end
-  
-  def <=>(other)
-    self.fixed <=> other.fixed
-  end
-  
-  def succ
-    self + 1
-  end
-
   def fixed
     @fixed ||= self.to_fixed
   end
@@ -154,11 +158,7 @@ class Calendar
   def to_gregorian
     GregorianDate[fixed]
   end
-  
-  def to_s(type = :short)
-    inspect
-  end
-  
+
   # see lines 1250-1266 in calendrica-3.0.cl
   # Return the list of the fixed dates of Calendar month 'c_month', day
   # 'c_day' that occur in Gregorian year 'g_year'.

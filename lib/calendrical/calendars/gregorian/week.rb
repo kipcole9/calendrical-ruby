@@ -1,4 +1,4 @@
-class GregorianWeek < Calendar
+class Gregorian::Week < Calendar
   attr_accessor :year, :week, :fixed
     
   def initialize(year, week)
@@ -26,8 +26,8 @@ class GregorianWeek < Calendar
 
   def +(other)
     start_date = start_of_week + (other * 7)
-    week_number = ((start_date.to_fixed - GregorianYear[start_date.year].new_year.to_fixed) / 7) + 1
-    GregorianWeek[start_date.year, week_number]
+    week_number = ((start_date.to_fixed - Gregorian::Year[start_date.year].new_year.to_fixed) / 7) + 1
+    Gregorian::Week[start_date.year, week_number]
   end
   
   def -(other)
@@ -35,12 +35,12 @@ class GregorianWeek < Calendar
   end
 
   def start_of_week
-    GregorianYear[year].new_year + ((week - 1) * 7)
+    Gregorian::Year[year].new_year + ((week - 1) * 7)
   end
   
   def end_of_week
     end_of_week = start_of_week + 6
-    end_of_week = GregorianYear[year].year_end if end_of_week.year > year
+    end_of_week = Gregorian::Year[year].year_end if end_of_week.year > year
     end_of_week
   end
   

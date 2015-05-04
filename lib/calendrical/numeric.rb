@@ -21,7 +21,7 @@ module Calendrical
         end
 
         def to_gregorian
-          GregorianDate[self.to_i]
+          Gregorian::Date[self.to_i]
         end
 
         # Hours expressed as fraction of day

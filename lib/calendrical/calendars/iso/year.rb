@@ -1,12 +1,12 @@
-class IsoYear < GregorianYear
+class Iso::Year < Gregorian::Year
   delegate :long_year?, to: :class
 
   def new_year
-    IsoDate[year, 1, 1]
+    Iso::Date[year, 1, 1]
   end
   
   def year_end
-    IsoDate[year, last_week_of_year, 7]
+    Iso::Date[year, last_week_of_year, 7]
   end
  
   # see lines 1024-1032 in calendrica-3.0.cl
@@ -16,17 +16,17 @@ class IsoYear < GregorianYear
   end
   
   def long_year?(i_year = self)
-    jan1  = day_of_week(GregorianYear[i_year].new_year.fixed)
-    dec31 = day_of_week(GregorianYear[i_year].year_end.fixed)
+    jan1  = day_of_week(Gregorian::Year[i_year].new_year.fixed)
+    dec31 = day_of_week(Gregorian::Year[i_year].year_end.fixed)
     (jan1 == THURSDAY) || (dec31 == THURSDAY)
   end
   
   def quarter(n)
-    IsoQuarter[self.year, n]
+    Iso::Quarter[self.year, n]
   end
   
   def week(n) 
-    IsoWeek[self.year, n]
+    Iso::Week[self.year, n]
   end
   
   def last_week_of_year

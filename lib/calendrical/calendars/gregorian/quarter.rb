@@ -1,4 +1,4 @@
-class GregorianQuarter < Calendar
+class Gregorian::Quarter < Calendar
   attr_accessor :year, :quarter, :fixed
 
   include Calendrical::Kday
@@ -22,24 +22,16 @@ class GregorianQuarter < Calendar
   def range
     @range ||= case quarter
     when 1
-      GregorianDate[year, 1, 1]..GregorianDate[year, 3, 31]
+      Gregorian::Date[year, 1, 1]..Gregorian::Date[year, 3, 31]
     when 2
-      GregorianDate[year, 4, 1]..GregorianDate[year, 6, 30]
+      Gregorian::Date[year, 4, 1]..Gregorian::Date[year, 6, 30]
     when 3
-      GregorianDate[year, 7, 1]..GregorianDate[year, 9, 30]
+      Gregorian::Date[year, 7, 1]..Gregorian::Date[year, 9, 30]
     when 4
-      GregorianDate[year, 10, 1]..GregorianDate[year, 12, 31]
+      Gregorian::Date[year, 10, 1]..Gregorian::Date[year, 12, 31]
     end
   end
 
-  def to_fixed
-    range.first.fixed
-  end 
-  
-  def each_day(&block)
-    range.each(&block)
-  end
-  
   def +(other)
     absolute_quarters = quarters + other
     new_year = absolute_quarters / 4
@@ -59,8 +51,9 @@ class GregorianQuarter < Calendar
     year * 4 + quarter
   end
   
+  # TODO:  Weeks should be offset to quarter, not the year
   def week(n)
-    week_number = ((range.first.fixed - GregorianYear[year].new_year.fixed) / 7) + n
-    GregorianWeek[year, week_number]
+    week_number = ((range.first.fixed - Gregorian::Year[year].new_year.fixed) / 7) + n
+    Gregorian::Week[year, week_number]
   end
 end
