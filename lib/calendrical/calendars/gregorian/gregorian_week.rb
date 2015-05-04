@@ -23,11 +23,7 @@ class GregorianWeek < Calendar
   def to_fixed
     range.first.fixed
   end 
-  
-  def each_day(&block)
-    range.each(&block)
-  end
-  
+
   def +(other)
     start_date = start_of_week + (other * 7)
     week_number = ((start_date.to_fixed - GregorianYear[start_date.year].new_year.to_fixed) / 7) + 1

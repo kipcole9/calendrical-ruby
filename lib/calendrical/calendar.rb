@@ -116,6 +116,10 @@ class Calendar
     super
   end
   
+  def each_day(&block)
+    range.each(&block)
+  end
+  
   def +(other)
     value = other.respond_to?(:fixed) ? other.fixed : other
     date(self.fixed + value)
