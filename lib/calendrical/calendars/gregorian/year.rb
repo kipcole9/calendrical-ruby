@@ -15,12 +15,33 @@ class Gregorian::Year < Calendar
   end
   
   def leap_year?
-    new_year.leap_year?
+    (year % 4 == 0) && ![100, 200, 300].include?(year % 400)
   end
-  
+  alias :leap? :leap_year?
+
   def <=>(other)
     year <=> other.year
   end
+  
+  def range
+    new_year..year_end
+  end
+
+  def quarter(n)
+    Gregorian::Quarter[year, n]
+  end
+  
+  def month(n)
+    Gregorian::Month[year, n]
+  end
+  
+  def week(n)
+    Gregorian::Week[year, n]
+  end
+  
+  def to_fixed
+    new_year.fixed
+  end 
 
   # Need to do a little traffic managment here since
   # we're going to be called sometimes with just a year
@@ -32,29 +53,5 @@ class Gregorian::Year < Calendar
     else
       Gregorian::Year[the_year]
     end
-  end 
-  
-  def range
-    new_year..year_end
-  end
-
-  def to_fixed
-    new_year.fixed
-  end 
-  
-  def each_day(&block)
-    range.each(&block)
-  end
-  
-  def quarter(n)
-    Gregorian::Quarter[year, n]
-  end
-  
-  def month(n)
-    Gregorian::Month[year, n]
-  end
-  
-  def week(n)
-    Gregorian::Week[year, n]
   end
 end

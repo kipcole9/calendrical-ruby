@@ -1,10 +1,11 @@
 class Gregorian::Month < Calendar
   attr_accessor :year, :month, :fixed
-    
+  MONTHS_IN_YEAR = 12
+  
   def initialize(year, month)
     raise(Calendrical::InvalidMonth, "Invalid month '#{month}' which must be between 1 and 12 inclusive") unless (1..12).include?(month.to_i)
-    @year = year
-    @month = month
+    @year = year.to_i
+    @month = month.to_i
   end
   
   def inspect
@@ -21,10 +22,10 @@ class Gregorian::Month < Calendar
 
   def +(other)
     absolute_months = months + other
-    new_year = absolute_months / 12
-    new_month = absolute_quarters % 12
+    new_year = absolute_months / MONTHS_IN_YEAR
+    new_month = absolute_quarters % MONTHS_IN_YEAR
     if new_month == 0
-      new_month = 12 
+      new_month = DECEMBER
       new_year = new_year - 1
     end
     self.class[new_year, new_month]
@@ -36,9 +37,9 @@ class Gregorian::Month < Calendar
   
   def last_day_of_month
     case month
-    when 9, 4, 6, 11
+    when SEPTEMBER, APRIL, JUNE, NOVEMBER
       30
-    when 2
+    when FEBRUARY
       Gregorian::Year[year].leap_year? ? 29 : 28
     else
       31
@@ -54,7 +55,7 @@ class Gregorian::Month < Calendar
 protected
   
   def months
-    year * 12 + month
+    year * MONTHS_IN_YEAR + month
   end
 
 end

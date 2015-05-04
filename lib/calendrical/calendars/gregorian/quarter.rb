@@ -1,10 +1,12 @@
 class Gregorian::Quarter < Calendar
   attr_accessor :year, :quarter, :fixed
-
+  QUARTERS_IN_YEAR = 4
+  LAST_QUARTER = 4
+  
   def initialize(year, quarter)
     raise(Calendrical::InvalidQuarter, "Invalid quarter '#{quarter}' which must be between 1 and 4 inclusive") unless (1..4).include?(quarter.to_i)
-    @year = year
-    @quarter = quarter
+    @year = year.to_i
+    @quarter = quarter.to_i
   end
   
   def inspect
@@ -18,22 +20,22 @@ class Gregorian::Quarter < Calendar
   def range
     @range ||= case quarter
     when 1
-      Gregorian::Date[year, 1, 1]..Gregorian::Date[year, 3, 31]
+      Gregorian::Date[year, JANUARY, 1]..Gregorian::Date[year, MARCH, 31]
     when 2
-      Gregorian::Date[year, 4, 1]..Gregorian::Date[year, 6, 30]
+      Gregorian::Date[year, APRIL, 1]..Gregorian::Date[year, JUNE, 30]
     when 3
-      Gregorian::Date[year, 7, 1]..Gregorian::Date[year, 9, 30]
+      Gregorian::Date[year, JULY, 1]..Gregorian::Date[year, SEPTEMBER, 30]
     when 4
-      Gregorian::Date[year, 10, 1]..Gregorian::Date[year, 12, 31]
+      Gregorian::Date[year, OCTOBER, 1]..Gregorian::Date[year, DECEMBER, 31]
     end
   end
 
   def +(other)
     absolute_quarters = quarters + other
-    new_year = absolute_quarters / 4
-    new_quarter = absolute_quarters % 4
+    new_year = absolute_quarters / QUARTERS_IN_YEAR
+    new_quarter = absolute_quarters % QUARTERS_IN_YEAR
     if new_quarter == 0
-      new_quarter = 4 
+      new_quarter = LAST_QUARTER 
       new_year = new_year - 1
     end
     self.class[new_year, new_quarter]
@@ -58,7 +60,7 @@ class Gregorian::Quarter < Calendar
 protected
   
   def quarters
-    year * 4 + quarter
+    year * QUARTERS_IN_YEAR + quarter
   end
 
 end

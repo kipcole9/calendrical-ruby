@@ -1,7 +1,7 @@
 module Gregorian
   class Date < Calendar
-    include Calendrical::Ecclesiastical
-    include Calendrical::Kday
+    # include Calendrical::Ecclesiastical
+    # include Calendrical::Kday
     include Calendrical::Dates
   
     def inspect
@@ -19,16 +19,13 @@ module Gregorian
     end
   
     def to_date
-      return nil unless @elements.year.present?
-      ::Date.new(@elements.year, @elements.month, @elements.day)
+      return nil unless year.present?
+      ::Date.new(year, month, day)
     end
-  
-    # see lines 657-663 in calendrica-3.0.cl
-    # Return True if Gregorian year 'g_year' is leap.
-    def leap_year?(g_year = self.year)
-      (g_year % 4 == 0) && ![100, 200, 300].include?(g_year % 400)
+
+    def leap_year?(yyear = self.year)
+      Gregorian::Year[yyear].leap_year?
     end
-    alias :leap? :leap_year?
 
     # see lines 665-687 in calendrica-3.0.cl
     # Return the fixed date equivalent to the Gregorian date 'g_date'.
@@ -56,7 +53,7 @@ module Gregorian
     # Return the Gregorian date corresponding to fixed date 'date'.
     def to_calendar(f_date = self.to_fixed)
       yyear   = year_from_fixed(f_date)
-      prior_days  = f_date - GregorianDate[yyear, 1, 1].fixed
+      prior_days  = f_date - Gregorian::Date[yyear, 1, 1].fixed
       correction  = (if f_date < date(yyear, MARCH, 1).fixed
                       0
                     elsif leap_year?(yyear)
@@ -66,13 +63,9 @@ module Gregorian
                     end)
       month = quotient((12 * (prior_days + correction)) + 373, 367)
       day = 1 + f_date - date(yyear, month, 1).fixed
-      Date.new(yyear, month, day)
+      Calendar::Date.new(yyear, month, day)
     end
-  
-    def week(n)
-      raise(Calendrical::InvalidWeek, "Invalid week '#{n}' which must be between 1 and 52 inclusive") unless (1..52).include?(n.to_i)
-    end
-  
+
   protected
   
     # see lines 689-715 in calendrica-3.0.cl

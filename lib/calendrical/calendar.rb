@@ -156,19 +156,19 @@ class Calendar
   end
 
   def to_gregorian
-    GregorianDate[fixed]
+    Gregorian::Date[fixed]
   end
 
   # see lines 1250-1266 in calendrica-3.0.cl
   # Return the list of the fixed dates of Calendar month 'c_month', day
   # 'c_day' that occur in Gregorian year 'g_year'.
   def in_gregorian(c_month = self.month, c_day = self.day, g_year = self.year)
-    jan1 = GregorianYear[g_year].new_year.fixed
+    jan1 = Gregorian::Year[g_year].new_year.fixed
     y    = to_calendar(jan1).year
     y_prime = (y == -1) ? 1 : (y + 1)
     date1 = date(y, c_month, c_day).fixed
     date2 = date(y_prime, c_month, c_day).fixed
-    list_range(date1..date2, GregorianYear[g_year].year_range)
+    list_range(date1..date2, Gregorian::Year[g_year].year_range)
   end
   
 protected
