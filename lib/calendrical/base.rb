@@ -1,5 +1,6 @@
 module Calendrical
   class InvalidQuarter < StandardError; end
+  class InvalidMonth < StandardError; end
   class InvalidWeek < StandardError; end
   class UnknownLunarPhase < StandardError; end
   
