@@ -5,6 +5,7 @@ module Calendrical
     module Lunar
       extend Calendrical::Mpf
       include Constants
+      using Calendrical::Numeric
       
       # see lines 460-467 in calendrica-3.0.errata.cl
       # Return the standard time of moonrise on fixed, date,
@@ -62,7 +63,7 @@ module Calendrical
                 ((lunar_phase(tee) - phi) % 360)))
         a = tau - 2
         b = [tee, tau + 2].min
-        invert_angular(lunar_phase, phi, a, b)
+        invert_angular(lambda{|x| lunar_phase(x)}, phi, a, b)
       end
 
       # see lines 3651-3661 in calendrica-3.0.cl
@@ -75,7 +76,7 @@ module Calendrical
                 (phi - lunar_phase(tee)) % 360))
         a = [tee, tau - 2].max
         b = tau + 2
-        return invert_angular(lunar_phase, phi, a, b)
+        invert_angular(lambda{|x| lunar_phase(x)}, phi, a, b)
       end
       
       # see lines 3764-3813 in calendrica-3.0.cl

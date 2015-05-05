@@ -1,8 +1,7 @@
 module Julian
   class Date < Calendar
-    include Calendrical::Ecclesiastical
-    include Calendrical::Kday
-    include Calendrical::Dates
+    # include Calendrical::Kday
+    # include Calendrical::Dates
   
     # see lines 1042-1045 in calendrica-3.0.cl
     def self.epoch
@@ -20,6 +19,10 @@ module Julian
       "#{day_name}, #{day} #{month_name} #{year.abs}#{suffix}"
     end
 
+    def range
+      @range ||= self..self
+    end
+    
     # see lines 1057-1060 in calendrica-3.0.cl
     # Return True if Julian year 'j_year' is a leap year in
     # the Julian calendar.

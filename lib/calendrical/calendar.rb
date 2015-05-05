@@ -113,6 +113,10 @@ class Calendar
   end
   alias :to_i :fixed
   
+  def fixed=(f)
+    @fixed = f
+  end
+  
   # Epoch is a class methods on each Calendar
   def epoch
     self.class.epoch

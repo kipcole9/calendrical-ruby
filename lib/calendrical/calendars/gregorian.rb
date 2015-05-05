@@ -9,20 +9,20 @@ module Gregorian
     Gregorian::Year[year]
   end
     
-  def self.Quarter(year, quarter)
-    Gregorian::Quarter[year, quarter]
+  def self.Quarter(*args)
+    Gregorian::Quarter[*args]
   end
   
-  def self.Month(year, month)
+  def self.Month(*args)
     Gregorian::Month[year, month]
   end
   
-  def self.Week(year, week)
-    Gregorian::Week[year, week]
+  def self.Week(*args)
+    Gregorian::Week[*args]
   end
 
-  def self.Date(year, month, day)
-    Gregorian::Date[year, month, day]
+  def self.Date(*args)
+    Gregorian::Date[*args]
   end
   
 end

@@ -1,5 +1,4 @@
 class Julian::Year < Gregorian::Year
-  attr_accessor :year, :fixed
   delegate :leap_year?, to: :class
 
   def self.leap_year?(j_year = self.year)

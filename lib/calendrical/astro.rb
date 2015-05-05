@@ -3,12 +3,13 @@ require "#{File.dirname(__FILE__)}/astro/lunar.rb"
 
 module Calendrical
   module Astro
+    using Calendrical::Numeric
     class NoMoment < StandardError; end
     
   protected
     # see lines 3111-3114 in calendrica-3.0.cl
     def j2000
-      mpf(12).hrs + GregorianYear[2000].new_year.fixed
+      mpf(12).hrs + Gregorian::Year[2000].new_year.fixed
     end
     
     def fixed_from_moment(tee)
