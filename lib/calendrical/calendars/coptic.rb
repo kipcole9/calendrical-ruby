@@ -20,13 +20,13 @@ module Coptic
 
     # see lines 1286-1289 in calendrica-3.0.cl
     # Return True if Coptic year 'c_year' is a leap year
-    # in the Coptic calendar."""
+    # in the Coptic calendar.
     def leap_year?(c_year)
       c_year % 4 == 3
     end
 
     # see lines 1291-1301 in calendrica-3.0.cl
-    # Return the fixed date of Coptic date 'c_date'."""
+    # Return the fixed date of Coptic date 'c_date'.
     def to_fixed(c_date = self)
       mmonth = c_date.month
       dday   = c_date.day

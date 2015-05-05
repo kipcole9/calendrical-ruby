@@ -170,7 +170,7 @@ module Calendrical
       # 780
       # return sum(b(*e) for e in zip(*l))
       # puts "Zipped: #{l.first.zip(*l[1..-1]).map{|x| b.call(*x)}}"
-      l.first.zip(*l[1..-1]).map{|x| b.call(*x)}.sum
+      l.first.zip(*l[1..-1]).map{|x| b.call(*x)}.reduce(:+)
     end
 
     # see lines 315-321 in calendrica-3.0.cl
