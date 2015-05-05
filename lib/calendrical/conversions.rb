@@ -11,6 +11,10 @@ module Calendrical
     def to_chinese
       Chinese::Date(self.fixed)
     end
+    
+    def to_french_revolutionary
+      FrenchRevolutionary::Date(self.fixed)
+    end
   end
 end
   
