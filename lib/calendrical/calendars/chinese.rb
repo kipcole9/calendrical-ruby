@@ -43,7 +43,7 @@ module Chinese
       s2 = chinese_winter_solstice_on_or_before(s1 + 370)
       next_m11 = chinese_new_moon_before(1 + s2)
       m12 = chinese_new_moon_on_or_after(1 + s1)
-      leap_year = ((next_m11 - m12) / MEAN_SYNODIC_MONTH).round == 12
+      leap_year = ((next_m11 - m12).to_f / MEAN_SYNODIC_MONTH).round == 12
 
       m = chinese_new_moon_before(1 + f_date)
       mmonth = amod(((m - m12) / MEAN_SYNODIC_MONTH).round - (leap_year && chinese_prior_leap_month?(m12, m) ? 1 : 0), 12)
@@ -169,7 +169,7 @@ module Chinese
       next_m11 = chinese_new_moon_before(1 + s2)
       m12 = chinese_new_moon_on_or_after(1 + s1)
       m13 = chinese_new_moon_on_or_after(1 + m12)
-      leap_year = iround((next_m11 - m12).to_f / MEAN_SYNODIC_MONTH) == 12
+      leap_year = ((next_m11 - m12).to_f / MEAN_SYNODIC_MONTH).round == 12
 
       if (leap_year && (chinese_no_major_solar_term?(m12) || chinese_no_major_solar_term?(m13)))
         chinese_new_moon_on_or_after(1 + m13)
