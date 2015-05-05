@@ -57,7 +57,7 @@ module Chinese
 
     # see lines 4567-4596 in calendrica-3.0.cl
     # Return fixed date of Chinese date, c_date.
-    def to_fixed(c_date)
+    def to_fixed(c_date = self)
       cycle = c_date.cycle
       yyear  = c_date.year
       mmonth = c_date.month
