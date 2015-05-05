@@ -6,7 +6,6 @@ module FrenchRevolutionary
   end
   
   class Date < Calendar
-    
     # see lines 4222-4226 in calendrica-3.0.cl
     # Fixed date of start of the French Revolutionary calendar.
     def self.epoch
@@ -23,6 +22,10 @@ module FrenchRevolutionary
       "#{day_name}, #{day} #{month_name} #{year.to_s_roman}"
     end
 
+    def range
+      @range ||= self..self
+    end
+    
     # see lines 4254-4267 in calendrica-3.0.cl
     # Return fixed date of French Revolutionary date, f_date
     def to_fixed(fr_date = self)
@@ -43,6 +46,8 @@ module FrenchRevolutionary
       self.class::Date.new(yyear, mmonth, dday)
     end
 
+  protected
+  
     # 10 day weeks, first day of the month is also
     # first day of the week
     def day_of_week
@@ -61,14 +66,12 @@ module FrenchRevolutionary
       next_of(approx.floor - 1, 
           lambda {|day| AUTUMN <= solar_longitude(midnight_in_paris(day))})
     end
-
-  protected
-
+    
     # see lines 4235-4241 in calendrica-3.0.cl
     # Return Universal Time of true midnight at the end of
     # fixed date, date.
     def midnight_in_paris(f_date = self.fixed)
-      universal_from_standard(midnight(f_date + 1, PARIS).moment, PARIS)
+      universal_from_standard(midnight(f_date + 1, PARIS), PARIS)
     end
 
     # see lines 4280-4286 in calendrica-3.0.cl
