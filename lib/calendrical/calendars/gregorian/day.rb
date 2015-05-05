@@ -124,7 +124,7 @@ module Gregorian
     # see lines 827-841 in calendrica-3.0.cl
     # Return the Gregorian year corresponding to the fixed date 'date'.
     # Alternative calculation.
-    def alt_gregorian_year_from_fixed(date)
+    def alt_year_from_fixed(date)
       approx = quotient(date - gregorian_epoch + 2, 146097/400.0)
       start  = (gregorian_epoch +
         (365 * approx)         +

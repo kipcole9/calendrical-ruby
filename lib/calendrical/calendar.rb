@@ -14,7 +14,7 @@ class Calendar
   class UnknownLunarPhase < StandardError; end
   Date = Struct.new(:year, :month, :day)
   
-  attr_accessor :elements, :fixed
+  attr_accessor :elements
   delegate :day, :month, :year, to: :elements
   
   using Calendrical::Numeric
@@ -57,12 +57,33 @@ class Calendar
   def to_s(type = :short)
     inspect
   end
-  
+
+  # Default convert ranges (years, quarters, months, weeks) to the fixed date of the start of the range
   def to_fixed
-    range.first.fixed
+    range.present? ? range.first.fixed : fixed
   end
-  alias :fixed :to_fixed
   
+  # Convert a fixed date to the current calendar
+  def to_calendar(*args)
+    raise "Implement to_calendar in inherited class"
+  end
+  
+  def to_date
+    to_gregorian.to_date
+  end
+
+  def to_gregorian
+    if range.present?
+      if range.first == range.last
+        Gregorian::Date[range.first.to_fixed]
+      else
+        Gregorian::Date[range.first.to_fixed]..Gregorian::Date[range.last.to_fixed]
+      end
+    else
+      Gregorian::Date[to_fixed]
+    end
+  end
+
   def each(&block)
     range(&block)
   end
@@ -84,6 +105,11 @@ class Calendar
   def succ
     self + 1
   end
+
+  def fixed
+    @fixed ||= self.to_fixed
+  end
+  alias :to_i :fixed
   
   # Epoch is a class methods on each Calendar
   def epoch
@@ -147,23 +173,6 @@ class Calendar
   # Distance in meters
   def lunar_distance(tee = self.fixed)
     super
-  end
-  
-  def fixed
-    @fixed ||= self.to_fixed
-  end
-  alias :to_i :fixed
-  
-  def to_calendar(*args)
-    raise "Implement to_calendar in inherited class"
-  end
-  
-  def to_date
-    to_gregorian.to_date
-  end
-
-  def to_gregorian
-    Gregorian::Date[fixed]
   end
 
   # see lines 1250-1266 in calendrica-3.0.cl

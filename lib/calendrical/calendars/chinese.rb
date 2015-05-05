@@ -14,7 +14,7 @@ class ChineseDate < Calendar
   include Calendrical::Dates
   
   def epoch
-    GregorianDate[-2636, FEBRUARY, 15].fixed
+    Gregorian::Date[-2636, FEBRUARY, 15].fixed
   end
   
   def inspect
@@ -245,7 +245,7 @@ class ChineseDate < Calendar
   end
 
   # see lines 4677-4687 in calendrica-3.0.cl
-  def chinese_day_name_on_or_before(name, date)
+  def chinese_day_name_on_or_before(name, date = self.fixed)
     # Return fixed date of latest date on or before fixed date, date, that
     # has Chinese name, name.
     date - ((date + chinese_name_difference(name, chinese_sexagesimal_name(CHINESE_DAY_NAME_EPOCH))) % 60)
@@ -254,7 +254,7 @@ class ChineseDate < Calendar
   # see lines 4689-4699 in calendrica-3.0.cl
   # Return fixed date of the Dragon Festival occurring in Gregorian
   # year g_year.
-  def dragon_festival(g_year)
+  def dragon_festival(g_year = self.year)
     elapsed_years = 1 + g_year - gregorian_year_from_fixed(CHINESE_EPOCH)
     cycle = 1 + quotient(elapsed_years - 1, 60)
     year = amod(elapsed_years, 60)
@@ -262,8 +262,8 @@ class ChineseDate < Calendar
   end
 
   # see lines 4701-4708 in calendrica-3.0.cl
-  # Return fixed date of Qingming occurring in Gregorian year, g_year."""
-  def qing_ming(g_year)
+  # Return fixed date of Qingming occurring in Gregorian year, g_year.
+  def qing_ming(g_year = self.year)
     (minor_solar_term_on_or_after(GregorianDate[g_year, MARCH, 30].fixed)).floor
   end
 

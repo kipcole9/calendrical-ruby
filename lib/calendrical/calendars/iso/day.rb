@@ -11,6 +11,7 @@ module Iso
       super
       raise(Calendrical::InvalidWeek, "Year #{year} is not a long ISO year, there is no week 53") if !long_year?(year) && week == 53
       raise(Calendrical::InvalidWeek, "Week must be between 1 and 52, or 53 for a long ISO year") unless (1..53).include? week    
+      raise(Calendrical::InvalidDay, "Day must be between 1 and 7") unless (1..7).include? day
     end
   
     def self.epoch
