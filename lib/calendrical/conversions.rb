@@ -19,6 +19,10 @@ module Calendrical
     def to_coptic
       Coptic::Date(self.fixed)
     end
+    
+    def to_egyptian
+      Egyptian::Date(self.fixed)
+    end
   end
 end
   
