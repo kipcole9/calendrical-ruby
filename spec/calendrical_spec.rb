@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gregorian do
+describe 'Calendrical' do
   let!(:base_date) { 735723 }  # Which is the fixed date for May 5, 2015
   
   it 'has a version number' do
