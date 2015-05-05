@@ -60,7 +60,11 @@ class Calendar
   def to_s(type = :short)
     inspect
   end
-
+    
+  def range
+    @range ||= self..self
+  end
+  
   # Default convert ranges (years, quarters, months, weeks) to the fixed date of the start of the range
   def to_fixed
     range.present? ? range.first.fixed : fixed

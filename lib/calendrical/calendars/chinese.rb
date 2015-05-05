@@ -33,11 +33,7 @@ module Chinese
     def to_s
       "#{year_name} #{month_name} #{day_name}"
     end
-    
-    def range
-      @range ||= self..self
-    end
-   
+
     # see lines 4520-4565 in calendrica-3.0.cl
     # Return Chinese date (cycle year month leap day) of fixed date, date.
     def to_calendar(f_date = self.fixed)

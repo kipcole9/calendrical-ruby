@@ -22,10 +22,6 @@ module FrenchRevolutionary
       "#{day_name}, #{day} #{month_name} #{year.to_s_roman}"
     end
 
-    def range
-      @range ||= self..self
-    end
-    
     # see lines 4254-4267 in calendrica-3.0.cl
     # Return fixed date of French Revolutionary date, f_date
     def to_fixed(fr_date = self)

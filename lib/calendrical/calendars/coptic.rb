@@ -16,11 +16,7 @@ module Coptic
     def to_s
       inspect
     end
-    
-    def range
-      @range ||= self..self
-    end
-  
+
     # see lines 1286-1289 in calendrica-3.0.cl
     # Return True if Coptic year 'c_year' is a leap year
     # in the Coptic calendar."""

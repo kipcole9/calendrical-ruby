@@ -15,11 +15,7 @@ module Gregorian
     def self.epoch
       rd(1)
     end
-    
-    def range
-      @range ||= self..self
-    end
-  
+
     def to_date
       return nil unless year.present?
       ::Date.new(year, month, day)
