@@ -1,4 +1,8 @@
 module Chinese
+  def self.Date(*args)
+    Chinese::Date[*args]
+  end
+    
   class Date < Calendar
     extend Calendrical::Epoch
     using Calendrical::Numeric
