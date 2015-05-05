@@ -12,7 +12,9 @@ module Chinese
   
     # see lines 4666-4669 in calendrica-3.0.cl
     CHINESE_DAY_NAME_EPOCH = rd(45)
-  
+    
+    CHINESE_EPOCH = Gregorian::Date[-2636, FEBRUARY, 15].fixed
+
     include Calendrical::Kday
     include Calendrical::Dates
   
@@ -31,14 +33,10 @@ module Chinese
     def range
       @range ||= self..self
     end
-    
-    def succ
-      (self.to_fixed + 1).to_calendar
-    end
-  
+   
     # see lines 4520-4565 in calendrica-3.0.cl
     # Return Chinese date (cycle year month leap day) of fixed date, date.
-    def to_calendar(f_date)
+    def to_calendar(f_date = self.fixed)
       s1 = chinese_winter_solstice_on_or_before(f_date)
       s2 = chinese_winter_solstice_on_or_before(s1 + 370)
       next_m11 = chinese_new_moon_before(1 + s2)
@@ -46,24 +44,24 @@ module Chinese
       leap_year = ((next_m11 - m12).to_f / MEAN_SYNODIC_MONTH).round == 12
 
       m = chinese_new_moon_before(1 + f_date)
-      mmonth = amod(((m - m12) / MEAN_SYNODIC_MONTH).round - (leap_year && chinese_prior_leap_month?(m12, m) ? 1 : 0), 12)
+      mmonth = amod(((m - m12).to_f / MEAN_SYNODIC_MONTH).round - (leap_year && chinese_prior_leap_month?(m12, m) ? 1 : 0), 12)
       leap_month = leap_year && chinese_no_major_solar_term?(m) && !chinese_prior_leap_month?(m12, chinese_new_moon_before(m))
-      elapsed_years = (mpf(1.5) - (mmonth / 12.0) + ((f_date - epoch) / MEAN_TROPICAL_YEAR)).floor
+      elapsed_years = (mpf(1.5) - (mmonth / 12.0) + ((f_date - epoch).to_f / MEAN_TROPICAL_YEAR)).floor
       ccycle = 1 + quotient(elapsed_years - 1, 60)
       yyear = amod(elapsed_years, 60)
       dday = 1 + (f_date - m)
-      Chinese::Date.new(ccycle, yyear, mmonth, leap_month, dday)
+      self.class::Date.new(ccycle, yyear, mmonth, leap_month, dday)
     end
 
     # see lines 4567-4596 in calendrica-3.0.cl
     # Return fixed date of Chinese date, c_date.
     def to_fixed(c_date = self)
-      cycle = c_date.cycle
+      ccycle = c_date.cycle
       yyear  = c_date.year
       mmonth = c_date.month
       leap  = c_date.leap
       dday   = c_date.day
-      mid_year = (epoch + ((((cycle - 1) * 60) + (yyear - 1) + 1/2) * MEAN_TROPICAL_YEAR)).floor
+      mid_year = (epoch + ((((ccycle - 1) * 60) + (yyear - 1) + 1/2.0) * MEAN_TROPICAL_YEAR)).floor
       new_year = new_year_on_or_before(mid_year)
       p = chinese_new_moon_on_or_after(new_year + ((mmonth - 1) * 29))
       d = to_calendar(p)
@@ -180,15 +178,16 @@ module Chinese
 
     # see lines 4502-4511 in calendrica-3.0.cl
     # Return fixed date of Chinese New Year on or before fixed date, date.
-    def new_year_on_or_before(date = self)
+    def new_year_on_or_before(date = self.fixed)
       new_year = chinese_new_year_in_sui(date)
       (date >= new_year) ? new_year : chinese_new_year_in_sui(date - 180)
     end
         
     # see lines 4513-4518 in calendrica-3.0.cl
     # Return fixed date of Chinese New Year in Gregorian year, g_year.
-    def new_year(g_year = self.year)
-      new_year_on_or_before(Gregorian::Date[g_year, JULY, 1].fixed)
+    # Now returns Chinese::Date
+    def new_year(g_year = self_gregorian_year)
+      self.class[new_year_on_or_before(Gregorian::Date[g_year, JULY, 1].fixed)]
     end
 
     # see lines 4598-4607 in calendrica-3.0.cl
@@ -265,17 +264,19 @@ module Chinese
     # see lines 4689-4699 in calendrica-3.0.cl
     # Return fixed date of the Dragon Festival occurring in Gregorian
     # year g_year.
-    def dragon_festival(g_year = self.year)
-      elapsed_years = 1 + g_year - gregorian_year_from_fixed(CHINESE_EPOCH)
-      cycle = 1 + quotient(elapsed_years - 1, 60)
-      year = amod(elapsed_years, 60)
-      date(cycle, year, 5, false, 5).fixed
+    def dragon_festival(g_year = self_gregorian_year)
+      elapsed_years = 1 + g_year - Gregorian::Date[CHINESE_EPOCH].year
+      ccycle = 1 + quotient(elapsed_years - 1, 60)
+      yyear = amod(elapsed_years, 60)
+      self.class[ccycle, yyear, 5, false, 5]
     end
 
     # see lines 4701-4708 in calendrica-3.0.cl
     # Return fixed date of Qingming occurring in Gregorian year, g_year.
-    def qing_ming(g_year = self.year)
-      (minor_solar_term_on_or_after(Gregorian::Date[g_year, MARCH, 30].fixed)).floor
+    # Now returns a Chinese::Date
+    # TODO:  Doesnt seem right.  2015 should be April 5 and we're returning March 30
+    def qing_ming(g_year = self_gregorian_year)
+      self.class[(minor_solar_term_on_or_after(Gregorian::Date[g_year, MARCH, 30].fixed)).floor]
     end
 
     # see lines 4710-4722 in calendrica-3.0.cl
@@ -314,6 +315,11 @@ module Chinese
         res = 3
       end
       return res
+    end
+    
+  protected
+    def self_gregorian_year
+      Gregorian::Date[self.fixed].year
     end
   end
 end

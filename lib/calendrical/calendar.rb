@@ -41,7 +41,8 @@ class Calendar
   def initialize(*args)
     args = [::Date.today] unless args.present?
     if args.first.is_a?(::Date)
-      set_elements(args.first.year, args.first.month, args.first.day)
+      set_fixed(Gregorian::Date[args.first.year, args.first.month, args.first.day].to_fixed)
+      set_elements(to_calendar(self.fixed))
     elsif args.first.is_a?(self.class)
       dup_instance(args.first)
     elsif args.first.respond_to?(:fixed)
