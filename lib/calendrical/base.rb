@@ -24,6 +24,11 @@ module Calendrical
       (m / n).floor
     end
     
+    # Add iround for compatibility with the CL and python code
+    def iround(x)
+      x.round
+    end
+    
     # m % n   (this works as described in book for negative integres)
     # It is interesting to note that
     #    mod(1.5, 1)
