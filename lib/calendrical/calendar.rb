@@ -9,6 +9,7 @@ require "#{File.dirname(__FILE__)}/seasons.rb"
 require "#{File.dirname(__FILE__)}/kday.rb"
 require "#{File.dirname(__FILE__)}/astro.rb"
 require "#{File.dirname(__FILE__)}/moment.rb"
+require "#{File.dirname(__FILE__)}/conversions.rb"
 
 class Calendar
   class UnknownLunarPhase < StandardError; end
@@ -31,6 +32,7 @@ class Calendar
   include Calendrical::Kday  
   include Calendrical::Astro::Solar
   include Calendrical::Astro::Lunar
+  include Calendrical::Conversions
 
   def self.[](*args)
     new(*args)

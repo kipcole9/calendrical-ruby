@@ -8,16 +8,16 @@ module Iso
     Iso::Year[year]
   end
     
-  def self.Quarter(year, quarter)
-    Iso::Quarter[year, quarter]
+  def self.Quarter(*args)
+    Iso::Quarter[*args]
   end
   
-  def self.Week(year, week)
-    Iso::Week[year, week]
+  def self.Week(*args)
+    Iso::Week[*args]
   end
   
-  def self.Date(year, month, day)
-    Iso::Date[year, month, day]
+  def self.Date(*args)
+    Iso::Date[*args]
   end
   
 end

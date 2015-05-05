@@ -3,7 +3,7 @@ module Gregorian
     include Calendrical::Dates
   
     def inspect
-      to_date.inspect
+      "#{year}-#{month}-#{day} G"
     end
   
     def to_s
