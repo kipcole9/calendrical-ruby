@@ -23,6 +23,10 @@ module Calendrical
     def to_egyptian
       Egyptian::Date(self.fixed)
     end
+    
+    def to_etheopian
+      Etheopian::Date(self.fixed)
+    end
   end
 end
   

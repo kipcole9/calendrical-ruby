@@ -14,7 +14,8 @@ module Coptic
     end
   
     def to_s
-      inspect
+      month_name = I18n.t('coptic.months')[month - 1]
+      "#{day} #{month_name}, #{year}"
     end
 
     # see lines 1286-1289 in calendrica-3.0.cl
