@@ -1,9 +1,9 @@
 require "#{File.dirname(__FILE__)}/numeric.rb"
 require "#{File.dirname(__FILE__)}/astro/angle.rb"
-using Calendrical::Numeric
 
 module Calendrical
   module Locations
+    using Calendrical::Numeric
     extend Calendrical::Astro::Angle
     extend Calendrical::Mpf
     

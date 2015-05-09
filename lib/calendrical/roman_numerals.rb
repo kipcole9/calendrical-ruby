@@ -177,10 +177,10 @@ end
 # end
 
 
-def Object.const_missing sym
-  if RomanNumerals::REGEXP === sym.to_s
-    const_set(sym, RomanNumeral.get(sym))
-    return
-  end
-  super  
-end
+# def Object.const_missing sym
+#   if RomanNumerals::REGEXP === sym.to_s
+#     const_set(sym, RomanNumeral.get(sym))
+#     return
+#   end
+#   super
+# end

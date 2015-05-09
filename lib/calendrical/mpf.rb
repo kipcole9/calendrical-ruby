@@ -5,9 +5,7 @@ module Calendrical
     # precision which Ruby will give on all
     # 64 bit platforms I use
     def mpf(x)
-      # BigDecimal.new(x, 10)
       x.to_f
-      # x
     end
   end
 end
