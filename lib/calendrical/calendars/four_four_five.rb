@@ -1,9 +1,10 @@
+require File.expand_path("../four_four_five/config.rb", __FILE__)
 require File.expand_path("../four_four_five/day.rb", __FILE__)
 require File.expand_path("../four_four_five/year.rb", __FILE__)
 require File.expand_path("../four_four_five/quarter.rb", __FILE__)
 require File.expand_path("../four_four_five/week.rb", __FILE__)
 
-module Iso
+module FourFourFive
   def self.Year(year)
     FourFourFive::Year[year]
   end
