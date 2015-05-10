@@ -12,8 +12,8 @@ module Calendrical
     
     # see lines 366-369 in calendrica-3.0.cl
     # Return day of the week from a fixed date 'date'.
-    def day_of_week_from_fixed(g_date = self.fixed)
-      f_date = g_date.is_a?(Fixnum) ? g_date : g_date.to_fixed
+    def day_of_week_from_fixed(g_date = self)
+      f_date = g_date.respond_to?(:fixed) ? g_date.fixed : g_date.to_i
       (f_date - rd(0) - SUNDAY) % 7
     end
     alias :day_of_week :day_of_week_from_fixed

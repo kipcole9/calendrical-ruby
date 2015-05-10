@@ -7,55 +7,27 @@
 module FourFourFive
   def self.config(config_key = :default, &block)
     Thread.current[:calendrical] ||= Hash.new
-    Thread.current[:calendrical][config_key] = Config.new
+    Thread.current[:calendrical][config_key] ||= Config.new
+    
     if block_given?
       yield Thread.current[:calendrical][config_key]
-      validate_configuration!
+      Thread.current[:calendrical][config_key].validate_configuration!
     end
+    
     Thread.current[:calendrical][config_key]
   end
   
   class Config
-    def calendar_type=(calendar_type)
-      @calendar_type = calendar_type
-    end 
-   
-    def calendar_type
-      @calendar_type || :'445'
+    attr_accessor :calendar_type, :starts_or_ends, :first_or_last, :day_of_week, :month
+    
+    def initialize
+      @calendar_type  = :'445'
+      @starts_or_ends = :starts
+      @first_or_last  = :first
+      @day_of_week    = :sunday
+      @month          = :january
     end
      
-    def starts_or_ends=(start_or_end)
-      @starts_or_ends = start_or_end
-    end 
-   
-    def starts_or_ends
-      @starts_or_ends || :starts
-    end
-    
-    def first_or_last=(anchor)
-      @first_or_last = anchor
-    end 
-   
-    def first_or_last
-      @first_or_last || :first
-    end
-    
-    def day_of_week=(day)
-      @day_of_week = day
-    end 
-   
-    def day_of_week
-      @day_of_week || :sunday
-    end
-    
-    def month=(anchor)
-      @month = anchor
-    end 
-   
-    def month
-      @month || :january
-    end
-    
     def validate_configuration!
       
     end
