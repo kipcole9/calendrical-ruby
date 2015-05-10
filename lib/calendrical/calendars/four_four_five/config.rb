@@ -8,7 +8,10 @@ module FourFourFive
   def self.config(config_key = :default, &block)
     Thread.current[:calendrical] ||= Hash.new
     Thread.current[:calendrical][config_key] = Config.new
-    yield Thread.current[:calendrical][config_key] if block_given?
+    if block_given?
+      yield Thread.current[:calendrical][config_key]
+      validate_configuration!
+    end
     Thread.current[:calendrical][config_key]
   end
   
@@ -51,6 +54,10 @@ module FourFourFive
    
     def month
       @month || :january
+    end
+    
+    def validate_configuration!
+      
     end
   end
 end
