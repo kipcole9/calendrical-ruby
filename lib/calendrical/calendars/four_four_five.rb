@@ -14,6 +14,10 @@ module FourFourFive
   def self.Quarter(*args)
     FourFourFive::Quarter[*args]
   end
+
+  def self.Month(*args)
+    FourFourFive::Month[*args]
+  end  
   
   def self.Week(*args)
     FourFourFive::Week[*args]
