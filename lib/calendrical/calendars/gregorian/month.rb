@@ -17,7 +17,15 @@ class Gregorian::Month < Calendar
   end
 
   def range
-    @range ||= Gregorian::Date[year, month, 1]..Gregorian::Date[year, month, last_day_of_month]
+    @range ||= start_of_month..end_of_month
+  end
+  
+  def start_of_month
+    Gregorian::Date[year, month, 1]
+  end
+  
+  def end_of_month
+    Gregorian::Date[year, month, last_day_of_month]
   end
 
   def +(other)
@@ -35,12 +43,12 @@ class Gregorian::Month < Calendar
     self + -other
   end
   
-  def last_day_of_month
-    case month
+  def last_day_of_month(yyear = self.year, mmonth = self.month)
+    case mmonth
     when SEPTEMBER, APRIL, JUNE, NOVEMBER
       30
     when FEBRUARY
-      Gregorian::Year[year].leap_year? ? 29 : 28
+      Gregorian::Year[yyear].leap_year? ? 29 : 28
     else
       31
     end

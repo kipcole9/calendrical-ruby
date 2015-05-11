@@ -4,9 +4,14 @@ module Calendrical
   class InvalidWeek < StandardError; end
   class InvalidDay< StandardError; end
   class UnknownLunarPhase < StandardError; end
+  class DayError < StandardError; end
+  class MonthError < StandardError; end
+  class StartEnd  < StandardError; end 
+  class Proximity < StandardError; end  
+  class Type < StandardError; end     
+  class DanglingDays < StandardError; end  
   
   module Base
-
     # see lines 249-252 in calendrica-3.0.cl
     # m // n
     # The following

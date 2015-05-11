@@ -11,7 +11,7 @@ class Gregorian::Year < Calendar
   end
   
   def inspect
-    year
+    range.inspect
   end
   
   def leap_year?
@@ -45,6 +45,14 @@ class Gregorian::Year < Calendar
   
   def week(n)
     Gregorian::Week[year, n]
+  end
+  
+  def quarters_in_year
+    4
+  end
+  
+  def days_in_week
+    7
   end
 
   # Need to do a little traffic managment here since

@@ -199,6 +199,11 @@ class Calendar
   end
   
 protected
+  def config(*args)
+    FourFourFive.config(*args)
+  end
+  
+  
   # Copy the arguments to the date structure of the 
   # calendar class.  self.class::Date ensures we copy to the
   # calendar-specific structure if one exists

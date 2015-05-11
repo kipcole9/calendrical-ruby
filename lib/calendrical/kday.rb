@@ -23,6 +23,7 @@ module Calendrical
     def kday_nearest(k, g_date = self.range.first)
       kday_on_or_before(k, g_date + 3)
     end
+    alias :nearest_kday :kday_nearest
 
     # see lines 867-871 in calendrica-3.0.cl
     # Return the fixed date of the k-day after fixed date 'date'.
