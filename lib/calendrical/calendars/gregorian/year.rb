@@ -4,7 +4,6 @@ class Gregorian::Year < Calendar
   include Calendrical::Kday
   include Calendrical::Ecclesiastical
   include Calendrical::Dates
-  # include Calendrical::Dates::US
     
   def initialize(year)
     @year = year

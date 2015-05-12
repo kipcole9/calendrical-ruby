@@ -210,11 +210,13 @@ class Calendar
     list_range(date1..date2, Gregorian::Year[g_year].year_range)
   end
   
-protected
   def config(*args)
     ThirteenWeekQuarter.config(*args)
+
   end
   
+protected
+
   # Copy the arguments to the date structure of the 
   # calendar class.  self.class::Date ensures we copy to the
   # calendar-specific structure if one exists

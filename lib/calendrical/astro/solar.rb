@@ -274,9 +274,10 @@ module Calendrical
       # Return Dynamical Time minus Universal Time (in days) for
       # moment, tee.  Adapted from "Astronomical Algorithms"
       # by Jean Meeus, Willmann_Bell, Inc., 1991.
+      # FIXME: on line 280 is this the number of days in the range or the date diff (we aassume diff)
       def ephemeris_correction(tee)
         yyear = Gregorian::Date[tee.floor].year
-        c = (Gregorian::Date[yyear, JULY, 1] - Gregorian::Date[1900, JANUARY, 1]).to_fixed / mpf(36525)
+        c = (Gregorian::Date[yyear, JULY, 1] - Gregorian::Date[1900, JANUARY, 1]) / mpf(36525)
         if (1988..2019).include?(yyear)
           corr = 1.0/86400.0 * (yyear - 1933)
         elsif (1900..1987).include?(yyear)
@@ -293,7 +294,7 @@ module Calendrical
         elsif (1620..1699).include?(yyear)
           corr = (1.0/86400 * poly(yyear - 1600, [mpf(196.58333), mpf(-4.0675), mpf(0.0219167)]))
         else
-          x = mpf(12).hrs + (Gregorian::Date[yyear, JANUARY, 1] - Gregorian::Date[1810, JANUARY, 1]).to_fixed
+          x = mpf(12).hrs + (Gregorian::Date[yyear, JANUARY, 1] - Gregorian::Date[1810, JANUARY, 1])
           corr = 1.0/86400.0 * (((x * x) / mpf(41048480.0)) - 15)
         end
         return corr

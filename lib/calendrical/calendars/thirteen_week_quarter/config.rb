@@ -1,6 +1,5 @@
 module ThirteenWeekQuarter
-  def self.config(&block)
-    config_key = self.calendar_name
+  def self.config(config_key = self.name, &block)
     Thread.current[:calendrical] ||= Hash.new
     Thread.current[:calendrical][config_key] ||= Config.new
 
@@ -25,6 +24,36 @@ module ThirteenWeekQuarter
       validate_configuration!
     end
     
+    def default!
+      config {|c| }
+    end
+  
+    def national_retail_federation!
+      config do |c|
+        c.calendar_type      = :'454'        # one of 445, 454, 544 defining weeks in a quarter
+        c.starts_or_ends     = :starts       # define the :start of the year, or the :end of the year
+        c.first_last_nearest = :first        # :first, :last, :nearest (:nearest to :start or :end of :month)
+        c.day_of_week        = :sunday       # start (or end) the year on this day
+        c.month_name         = :february     # start (or end) the year in this month
+      end
+    end
+
+    def cisco!
+      config do |c|
+        c.calendar_type      = :'445'        # one of 445, 454, 544 defining weeks in a quarter
+        c.starts_or_ends     = :ends         # define the :start of the year, or the :end of the year
+        c.first_last_nearest = :last         # :first, :last, :nearest (:nearest to :start or :end of :month)
+        c.day_of_week        = :saturday     # start (or end) the year on this day
+        c.month_name         = :july         # start (or end) the year in this month
+      end
+    end
+    
+  private
+    def config(*args)
+      yield self
+      self
+    end
+    
     def weeks_in_month(month)
       calendar_type[month - 1].to_i
     end
@@ -45,11 +74,11 @@ module ThirteenWeekQuarter
     end
   
     def valid_days
-      @valid_days ||= (Calendrical::Days.constants - [:TimeOfDay])
+      Calendrical::Days.constants - [:TimeOfDay]
     end
   
     def valid_months
-      @valid_months ||= Calendrical::Months.constants
+      Calendrical::Months.constants
     end
     
     def valid_start_or_end

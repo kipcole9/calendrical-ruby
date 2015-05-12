@@ -1,5 +1,4 @@
 require File.expand_path("../thirteen_week_quarter/config.rb", __FILE__)
-require File.expand_path("../thirteen_week_quarter/configurations.rb", __FILE__)
 require File.expand_path("../thirteen_week_quarter/day.rb", __FILE__)
 require File.expand_path("../thirteen_week_quarter/year.rb", __FILE__)
 require File.expand_path("../thirteen_week_quarter/quarter.rb", __FILE__)
