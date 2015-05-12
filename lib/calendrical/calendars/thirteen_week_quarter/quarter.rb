@@ -1,4 +1,4 @@
-module FourFourFive
+module ThirteenWeekQuarter
   class Quarter < Gregorian::Quarter
     attr_reader :start_of_year
     

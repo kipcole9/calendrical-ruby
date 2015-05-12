@@ -1,4 +1,4 @@
-module FourFourFive
+module ThirteenWeekQuarter
   class Month < Gregorian::Month
     
     def start_of_month

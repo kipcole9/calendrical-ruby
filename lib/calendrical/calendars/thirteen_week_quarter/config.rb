@@ -1,15 +1,17 @@
-module FourFourFive
-  def self.config(config_key = :default, &block)
-    Thread.current[:calendrical] ||= Config.new
-    
+module ThirteenWeekQuarter
+  def self.config(&block)
+    config_key = self.calendar_name
+    Thread.current[:calendrical] ||= Hash.new
+    Thread.current[:calendrical][config_key] ||= Config.new
+
     if block_given?
-      yield Thread.current[:calendrical]
-      Thread.current[:calendrical].validate_configuration!
+      yield Thread.current[:calendrical][config_key]
+      Thread.current[:calendrical][config_key].validate_configuration!
     end
-    
-    Thread.current[:calendrical]
+
+    Thread.current[:calendrical][config_key]
   end
-  
+
   class Config
     attr_accessor :calendar_type, :starts_or_ends, :first_last_nearest, :day_of_week, :month_name
     

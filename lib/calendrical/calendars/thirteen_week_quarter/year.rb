@@ -1,6 +1,5 @@
-module FourFourFive
+module ThirteenWeekQuarter
   class Year < Gregorian::Year
-
     def new_year
       if config.starts_or_ends == :starts
         calculated_anchor_day
@@ -53,6 +52,7 @@ module FourFourFive
     end
   
   protected
+  
     def calculated_anchor_day
       send("#{config.first_last_nearest}_kday", start_or_end_day_number, Gregorian::Date[year, month_number, anchor_day])
     end

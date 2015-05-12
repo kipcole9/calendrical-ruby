@@ -1,4 +1,4 @@
-module FourFourFive
+module ThirteenWeekQuarter
   class Week < Gregorian::Week    
     def initialize(year, week)
       super

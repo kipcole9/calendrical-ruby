@@ -14,7 +14,8 @@ require "calendrical/calendars/hebrew.rb"
 require "calendrical/calendars/chinese.rb"
 require "calendrical/calendars/japanese.rb"
 require "calendrical/calendars/korean.rb"
-require "calendrical/calendars/four_four_five.rb"
+require "calendrical/calendars/thirteen_week_quarter.rb"
+require "calendrical/calendars/national_retail_federation.rb"
 
 if defined?(I18n)
   I18n.load_path += Dir.glob( File.dirname(__FILE__) + "/locales/**/*.{rb,yml}" ) 

@@ -17,7 +17,7 @@ class Calendar
   
   attr_accessor :elements
   delegate :day, :month, :year, to: :elements
-  delegate :first, :last, :begin, :end, to: :range
+  delegate :first, :last, :begin, :end, :each, :each_with_index, to: :range
   
   using Calendrical::Numeric
 
@@ -58,6 +58,9 @@ class Calendar
     validate_date!
   end
   
+  # TODO mirror the options in native class Date as appropriate
+  # Defaults to inspect - better to implement the appropriate 
+  # output per calendar
   def to_s(type = :short)
     inspect
   end
@@ -97,10 +100,6 @@ class Calendar
     end
   end
 
-  def each(&block)
-    range.each(&block)
-  end
-  
   def +(other)
     date(self.fixed + other.to_i)
   end
@@ -213,7 +212,7 @@ class Calendar
   
 protected
   def config(*args)
-    FourFourFive.config(*args)
+    ThirteenWeekQuarter.config(*args)
   end
   
   # Copy the arguments to the date structure of the 
