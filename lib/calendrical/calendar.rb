@@ -98,7 +98,7 @@ class Calendar
   end
 
   def each(&block)
-    range(&block)
+    range.each(&block)
   end
   
   def +(other)
