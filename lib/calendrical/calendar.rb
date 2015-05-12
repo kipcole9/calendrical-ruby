@@ -17,6 +17,7 @@ class Calendar
   
   attr_accessor :elements
   delegate :day, :month, :year, to: :elements
+  delegate :first, :last, :begin, :end, to: :range
   
   using Calendrical::Numeric
 
@@ -65,6 +66,11 @@ class Calendar
     @range ||= self..self
   end
   
+  def days
+    # Date difference + the initial day
+    range.last - range.first + 1
+  end
+  
   # Default convert ranges (years, quarters, months, weeks) to the fixed date of the start of the range
   def to_fixed
     range.present? ? range.first.fixed : fixed
@@ -96,13 +102,20 @@ class Calendar
   end
   
   def +(other)
-    value = other.respond_to?(:fixed) ? other.fixed : other
-    date(self.fixed + value)
+    date(self.fixed + other.to_i)
   end
   
   def -(other)
-    value = other.respond_to?(:fixed) ? other.fixed : other
-    date(self.fixed - value)
+    if other.class < Calendar
+      # Difference two dates in any calendar is an integer
+      self.fixed - other.fixed
+    elsif other.respond_to? :to_date
+      # Difference between two dates is an integer 
+      self.fixed - Gregorian::Date[other.to_date].fixed
+    else
+      # Anything else we subtract the number of days from a date and return a date
+      date(self.fixed - other.to_i)
+    end
   end
   
   def <=>(other)
@@ -202,7 +215,6 @@ protected
   def config(*args)
     FourFourFive.config(*args)
   end
-  
   
   # Copy the arguments to the date structure of the 
   # calendar class.  self.class::Date ensures we copy to the

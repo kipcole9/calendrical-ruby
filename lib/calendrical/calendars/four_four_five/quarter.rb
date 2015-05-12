@@ -12,29 +12,11 @@ module FourFourFive
     end
     
     def start_of_quarter
-      @start_of_quarter ||= case quarter
-      when 1
-        start_of_year
-      when 2                   
-        start_of_year + (1 * days_in_quarter)
-      when 3 
-        start_of_year + (2 * days_in_quarter)
-      when 4 
-        start_of_year + (3 * days_in_quarter)
-      end
+      @start_of_quarter = start_of_year + ((quarter - 1) * days_in_quarter)
     end
     
     def end_of_quarter
-      @end_of_quarter ||= case quarter
-      when 1
-        start_of_year + days_in_quarter - 1
-      when 2                   
-        start_of_year + (2 * days_in_quarter) - 1
-      when 3 
-        start_of_year + (3 * days_in_quarter) - 1
-      when 4
-        start_of_year + (4 * days_in_quarter) - 1
-      end
+      @end_of_quarter = start_of_year + (quarter * days_in_quarter) - 1
     end
   
     def last_week_of_year
