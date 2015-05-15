@@ -46,6 +46,10 @@ class Gregorian::Year < Calendar
     Gregorian::Week[year, n]
   end
   
+  def weeks
+    days / 7.0
+  end
+  
   def quarters_in_year
     4
   end

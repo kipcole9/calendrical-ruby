@@ -1,6 +1,13 @@
 module ThirteenWeekQuarter
   class Year < Gregorian::Year
-    
+    def initialize(year)
+      if config.starts_or_ends == :ends and month_number < Calendrical::Months::JUNE
+        @year = year + 1
+      else
+        @year = year
+      end
+    end
+      
     def new_year
       if config.starts_or_ends == :starts
         calculated_anchor_day
@@ -20,7 +27,7 @@ module ThirteenWeekQuarter
   
     def long_year?(i_year = self)
       if config.starts_or_ends == :starts
-        self.class[year + 1].new_year.fixed - new_year.fixed >= (364 + 7)
+        Year[year + 1].new_year.fixed - new_year.fixed >= (364 + 7)
       else
         year_end.fixed - Year[year - 1].year_end.fixed >= (364 + 7)
       end
@@ -36,6 +43,10 @@ module ThirteenWeekQuarter
   
     def week(n) 
       Week[self.year, n]
+    end
+    
+    def weeks
+      days / 7
     end
   
     def last_week_of_year
@@ -53,6 +64,7 @@ module ThirteenWeekQuarter
     end
   
   protected
+
     def calculated_anchor_day
       send("#{config.first_last_nearest}_kday", start_or_end_day_number, Gregorian::Date[year, month_number, anchor_day])
     end

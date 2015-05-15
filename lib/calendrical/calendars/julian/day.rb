@@ -19,17 +19,6 @@ module Julian
       "#{day_name}, #{day} #{month_name} #{year.abs}#{suffix}"
     end
 
-    def range
-      @range ||= self..self
-    end
-    
-    # see lines 1057-1060 in calendrica-3.0.cl
-    # Return True if Julian year 'j_year' is a leap year in
-    # the Julian calendar.
-    def leap_year?(j_year = self.year)
-      (j_year % 4) == (j_year > 0 ? 0 : 3)
-    end
-
     # see lines 1062-1082 in calendrica-3.0.cl
     # Return the fixed date equivalent to the Julian date 'j_date'.
     def to_fixed(j_date = self)
@@ -40,7 +29,7 @@ module Julian
       (epoch - 1 + (365 * (y - 1)) + quotient(y - 1, 4) + quotient(367 * mmonth - 362, 12) +
               (if mmonth <= 2
                 0
-              elsif leap_year?(yyear)
+              elsif Julian::Year[yyear].leap_year?
                 -1
               else
                 -2
@@ -56,7 +45,7 @@ module Julian
       prior_days = f_date - date(yyear, JANUARY, 1).fixed
       correction = if f_date < date(yyear, MARCH, 1).fixed
                      0
-                   elsif leap_year?(yyear)
+                   elsif Julian::Year[yyear].leap_year?
                      1
                    else
                      2

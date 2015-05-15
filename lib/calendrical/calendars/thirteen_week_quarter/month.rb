@@ -10,7 +10,7 @@ module ThirteenWeekQuarter
     
     def end_of_month
       end_of_month = start_of_month + (config.weeks_in_month(month_in_quarter) * 7) - 1
-      end_of_month += 7 if Year[year].long_year?
+      end_of_month += 7 if Year[year].long_year? && month == 12
       end_of_month
     end
     
@@ -23,7 +23,7 @@ module ThirteenWeekQuarter
     end
     
     def weeks
-      (end_of_month.fixed - start_of_month.fixed) / 7
+      days / 7
     end
   
   protected

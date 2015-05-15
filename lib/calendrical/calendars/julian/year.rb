@@ -1,7 +1,5 @@
 class Julian::Year < Gregorian::Year
-  delegate :leap_year?, to: :class
-
-  def self.leap_year?(j_year = self.year)
+  def leap_year?(j_year = self.year)
     (j_year % 4) == (j_year > 0 ? 0 : 3)
   end
   alias :leap? :leap_year?

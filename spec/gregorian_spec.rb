@@ -81,6 +81,21 @@ describe Gregorian do
   end
   
   it 'has an epoch of 1 at Date of Date.new(1,1,1)' do
-    expect(Gregorian::Date(1,1,1).to_fixed).to eq(1)
+    expect(Gregorian::Date(1,1,1).fixed).to eq(1)
+  end
+  
+  it 'knows how many weeks in a year' do
+    expect(Gregorian::Year[2014].weeks).to eq(52.142857142857146)
+    expect(Gregorian::Year[2016].weeks).to eq(52.285714285714285)
+  end
+  
+  it 'knows how many weeks in a quarter' do
+    expect(Gregorian::Year[2014].quarter(1).weeks).to eq(12.857142857142858)
+    expect(Gregorian::Year[2016].quarter(4).weeks).to eq(13.142857142857142)
+  end
+  
+  it 'knows how many weeks in a month' do
+    expect(Gregorian::Year[2014].month(1).weeks).to eq(4.428571428571429)
+    expect(Gregorian::Year[2016].month(4).weeks).to eq(4.285714285714286)
   end
 end

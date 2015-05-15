@@ -59,6 +59,10 @@ class Gregorian::Quarter < Calendar
     Gregorian::Week[year, n, start_day, end_day]
   end
   
+  def weeks
+    days / 7.0
+  end
+  
 protected
   
   def quarters
