@@ -1,6 +1,7 @@
 module ThirteenWeekQuarter
   class Month < Gregorian::Month
-    
+    delegate :config, to: :ThirteenWeekQuarter
+
     def start_of_month
       quarter = (month / 4) + 1
       start_of_quarter = year.quarter(quarter).start_of_quarter

@@ -71,7 +71,7 @@ class Calendar
   
   def days
     # Date difference + the initial day
-    range.last - range.first + 1
+    @days ||= range.last - range.first + 1
   end
   
   # Default convert ranges (years, quarters, months, weeks) to the fixed date of the start of the range
@@ -209,10 +209,6 @@ class Calendar
     date1 = date(y, c_month, c_day).fixed
     date2 = date(y_prime, c_month, c_day).fixed
     list_range(date1..date2, Gregorian::Year[g_year].year_range)
-  end
-  
-  def config(*args)
-    ThirteenWeekQuarter.config(*args)
   end
   
 protected

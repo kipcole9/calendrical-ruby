@@ -14,7 +14,7 @@ class Gregorian::Year < Calendar
   end
   
   def leap_year?
-    (year % 4 == 0) && ![100, 200, 300].include?(year % 400)
+    @leap_year ||= (year % 4 == 0) && ![100, 200, 300].include?(year % 400)
   end
   alias :leap? :leap_year?
 

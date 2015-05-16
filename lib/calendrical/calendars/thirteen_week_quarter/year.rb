@@ -1,11 +1,13 @@
 module ThirteenWeekQuarter
   class Year < Gregorian::Year
+    delegate :config, to: :ThirteenWeekQuarter
+    
     def initialize(year)
       @year = year + offset_for_early_year_end
     end
       
     def new_year
-      if config.starts_or_ends == :starts
+      @new_year ||= if config.starts_or_ends == :starts
         calculated_anchor_day
       else
         year_end - length_of_year + 1
@@ -13,16 +15,15 @@ module ThirteenWeekQuarter
     end
   
     def year_end
-      if config.starts_or_ends == :ends
+      @year_end ||= if config.starts_or_ends == :ends
         calculated_anchor_day
       else
         new_year + length_of_year - 1
       end
-
     end
   
     def long_year?
-      if config.starts_or_ends == :starts
+      @long_year ||= if config.starts_or_ends == :starts
         Year[year + 1].new_year - new_year > 364
       else
         year_end - Year[year_end.year - 1 - offset_for_early_year_end].year_end > 364
@@ -30,15 +31,15 @@ module ThirteenWeekQuarter
     end
   
     def quarter(n)
-      ThirteenWeekQuarter::Quarter[self, n]
+      Quarter[self, n]
     end
   
     def month(n) 
-      ThirteenWeekQuarter::Month[self, n]
+      Month[self, n]
     end
   
     def week(n) 
-      ThirteenWeekQuarter::Week[self, n]
+      Week[self, n]
     end
     
     def weeks

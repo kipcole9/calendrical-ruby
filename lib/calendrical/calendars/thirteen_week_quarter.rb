@@ -26,5 +26,5 @@ module ThirteenWeekQuarter
   def self.Date(*args)
     ThirteenWeekQuarter::Date[*args]
   end
-  
+
 end

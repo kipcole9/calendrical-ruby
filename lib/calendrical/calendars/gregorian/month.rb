@@ -43,12 +43,12 @@ class Gregorian::Month < Calendar
     self + -other
   end
   
-  def last_day_of_month(yyear = self.year.year, mmonth = self.month)
-    case mmonth
+  def last_day_of_month
+    case month
     when SEPTEMBER, APRIL, JUNE, NOVEMBER
       30
     when FEBRUARY
-      Gregorian::Year[yyear].leap_year? ? 29 : 28
+      year.leap_year? ? 29 : 28
     else
       31
     end

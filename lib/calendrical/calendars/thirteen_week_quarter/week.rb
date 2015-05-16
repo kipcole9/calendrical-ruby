@@ -1,5 +1,7 @@
 module ThirteenWeekQuarter
-  class Week < Gregorian::Week    
+  class Week < Gregorian::Week
+    delegate :config, to: :ThirteenWeekQuarter
+    
     def initialize(year, week, start_day = nil, end_day = nil, quarter = nil)
       super
       raise(Calendrical::InvalidWeek, "Year #{year} is not a long year, there is no week 53") if !year.long_year? && week == 53

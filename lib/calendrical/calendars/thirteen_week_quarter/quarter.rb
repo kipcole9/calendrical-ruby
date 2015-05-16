@@ -1,5 +1,7 @@
 module ThirteenWeekQuarter
   class Quarter < Gregorian::Quarter
+    delegate :config, to: :ThirteenWeekQuarter
+    
     attr_reader :start_of_year
     
     def initialize(year, quarter)
@@ -40,5 +42,6 @@ module ThirteenWeekQuarter
       diq += 7 if quarter == 4 and year.long_year?
       diq
     end
+
   end
 end
