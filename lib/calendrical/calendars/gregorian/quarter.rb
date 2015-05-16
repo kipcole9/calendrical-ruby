@@ -5,7 +5,7 @@ class Gregorian::Quarter < Calendar
   
   def initialize(year, quarter)
     raise(Calendrical::InvalidQuarter, "Invalid quarter '#{quarter}' which must be between 1 and 4 inclusive") unless (1..4).include?(quarter.to_i)
-    @year = year.to_i
+    @year = year
     @quarter = quarter.to_i
   end
   
@@ -20,13 +20,13 @@ class Gregorian::Quarter < Calendar
   def range
     @range ||= case quarter
     when 1
-      Gregorian::Date[year, JANUARY, 1]..Gregorian::Date[year, MARCH, 31]
+      Gregorian::Date[year.year, JANUARY, 1]..Gregorian::Date[year.year, MARCH, 31]
     when 2
-      Gregorian::Date[year, APRIL, 1]..Gregorian::Date[year, JUNE, 30]
+      Gregorian::Date[year.year, APRIL, 1]..Gregorian::Date[year.year, JUNE, 30]
     when 3
-      Gregorian::Date[year, JULY, 1]..Gregorian::Date[year, SEPTEMBER, 30]
+      Gregorian::Date[year.year, JULY, 1]..Gregorian::Date[year.year, SEPTEMBER, 30]
     when 4
-      Gregorian::Date[year, OCTOBER, 1]..Gregorian::Date[year, DECEMBER, 31]
+      Gregorian::Date[year.year, OCTOBER, 1]..Gregorian::Date[year.year, DECEMBER, 31]
     end
   end
   
@@ -66,7 +66,7 @@ class Gregorian::Quarter < Calendar
 protected
   
   def quarters
-    year * QUARTERS_IN_YEAR + quarter
+    year.year * QUARTERS_IN_YEAR + quarter
   end
 
 end

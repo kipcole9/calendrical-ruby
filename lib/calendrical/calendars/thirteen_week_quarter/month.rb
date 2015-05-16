@@ -3,14 +3,14 @@ module ThirteenWeekQuarter
     
     def start_of_month
       quarter = (month / 4) + 1
-      start_of_quarter = Year[year].quarter(quarter).start_of_quarter
+      start_of_quarter = year.quarter(quarter).start_of_quarter
       offset_weeks = config.offset_weeks_for_month(month_in_quarter)
       start_of_quarter + (offset_weeks * 7)
     end
     
     def end_of_month
       end_of_month = start_of_month + (config.weeks_in_month(month_in_quarter) * 7) - 1
-      end_of_month += 7 if Year[year].long_year? && month == 12
+      end_of_month += 7 if year.long_year? && month == 12
       end_of_month
     end
     
@@ -19,7 +19,7 @@ module ThirteenWeekQuarter
       raise(Calendrical::InvalidWeek, "Week #{n} doesn't lie within month #{month}'s range of #{range}") \
         unless range.include?(start_day)
       end_day = [start_day + 6, range.last].min
-      Gregorian::Week[year, n, start_day, end_day]
+      ThirteenWeekQuarter::Week[year, n, start_day, end_day]
     end
     
     def weeks

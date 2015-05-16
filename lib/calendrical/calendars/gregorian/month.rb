@@ -4,7 +4,7 @@ class Gregorian::Month < Calendar
   
   def initialize(year, month)
     raise(Calendrical::InvalidMonth, "Invalid month '#{month}' which must be between 1 and 12 inclusive") unless (1..12).include?(month.to_i)
-    @year = year.to_i
+    @year = year
     @month = month.to_i
   end
   
@@ -21,11 +21,11 @@ class Gregorian::Month < Calendar
   end
   
   def start_of_month
-    Gregorian::Date[year, month, 1]
+    Gregorian::Date[year.year, month, 1]
   end
   
   def end_of_month
-    Gregorian::Date[year, month, last_day_of_month]
+    Gregorian::Date[year.year, month, last_day_of_month]
   end
 
   def +(other)
@@ -43,7 +43,7 @@ class Gregorian::Month < Calendar
     self + -other
   end
   
-  def last_day_of_month(yyear = self.year, mmonth = self.month)
+  def last_day_of_month(yyear = self.year.year, mmonth = self.month)
     case mmonth
     when SEPTEMBER, APRIL, JUNE, NOVEMBER
       30
@@ -69,7 +69,7 @@ class Gregorian::Month < Calendar
 protected
   
   def months
-    year * MONTHS_IN_YEAR + month
+    year.year * MONTHS_IN_YEAR + month
   end
 
 end

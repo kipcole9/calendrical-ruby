@@ -30,15 +30,15 @@ module ThirteenWeekQuarter
     end
   
     def quarter(n)
-      Quarter[self.year, n]
+      ThirteenWeekQuarter::Quarter[self, n]
     end
   
     def month(n) 
-      Month[self.year, n]
+      ThirteenWeekQuarter::Month[self, n]
     end
   
     def week(n) 
-      Week[self.year, n]
+      ThirteenWeekQuarter::Week[self, n]
     end
     
     def weeks

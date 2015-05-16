@@ -21,11 +21,11 @@ class Iso::Year < Gregorian::Year
   end
   
   def quarter(n)
-    Iso::Quarter[self.year, n]
+    Iso::Quarter[self, n]
   end
   
   def week(n) 
-    Iso::Week[self.year, n]
+    Iso::Week[self, n]
   end
   
   def last_week_of_year

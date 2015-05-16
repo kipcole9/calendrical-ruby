@@ -7,8 +7,8 @@ module Gregorian
     end
   
     def to_s
-      day_name = I18n.t('gregorian.days')[day_of_week]
-      month_name = I18n.t('gregorian.months')[month - 1]
+      day_name = ::I18n.t('gregorian.days')[day_of_week]
+      month_name = ::I18n.t('gregorian.months')[month - 1]
       "#{day_name}, #{day} #{month_name} #{year}"
     end
   

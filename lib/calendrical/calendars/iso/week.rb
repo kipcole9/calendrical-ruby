@@ -2,7 +2,7 @@ module Iso
   class Week < Gregorian::Week    
     def initialize(year, week)
       super
-      raise(Calendrical::InvalidWeek, "Year #{year} is not a long ISO year, there is no week 53") if !Iso::Year.long_year?(year) && week == 53
+      raise(Calendrical::InvalidWeek, "Year #{year.year} is not a long ISO year, there is no week 53") if !year.long_year? && week == 53
     end
 
     def +(other)
@@ -12,12 +12,12 @@ module Iso
     end
 
     def start_of_week
-      Iso::Year[year].new_year + ((week - 1) * 7)
+      year.new_year + ((week - 1) * 7)
     end
   
     def end_of_week
       end_of_week = start_of_week + 6
-      end_of_week = Iso::Year[year].year_end if end_of_week.year > year
+      end_of_week = year.year_end if end_of_week.year > year
       end_of_week
     end
   end

@@ -35,15 +35,15 @@ class Gregorian::Year < Calendar
   end
 
   def quarter(n)
-    Gregorian::Quarter[year, n]
+    Gregorian::Quarter[self, n]
   end
   
   def month(n)
-    Gregorian::Month[year, n]
+    Gregorian::Month[self, n]
   end
   
   def week(n)
-    Gregorian::Week[year, n]
+    Gregorian::Week[self, n]
   end
   
   def weeks
