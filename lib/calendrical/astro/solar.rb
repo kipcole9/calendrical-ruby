@@ -80,13 +80,13 @@ module Calendrical
       end
 
       # Return sunset time in Urbana, Ill, on Gregorian date 'gdate'."""
-      def urbana_sunset(gdate = self)
-        sunset(URBANA, gdate = self.fixed)
+      def urbana_sunset(gdate = self.fixed)
+        sunset(URBANA, gdate)
       end
 
       # Return sunset time in Urbana, Ill, on Gregorian date 'gdate'."""
-      def urbana_sunrise(gdate = self)
-        sunrise(URBANA, gdate.fixed = self.fixed)
+      def urbana_sunrise(gdate = self.fixed)
+        sunrise(URBANA, gdate)
       end
 
       # from eq 13.38 pag. 191

@@ -79,13 +79,13 @@ class Calendar
     range.present? ? range.first.fixed : fixed
   end
   
+  def to_date
+    to_gregorian.to_date
+  end
+  
   # Convert a fixed date to the current calendar
   def to_calendar(*args)
     raise "Implement to_calendar in inherited class"
-  end
-  
-  def to_date
-    to_gregorian.to_date
   end
 
   def to_gregorian
@@ -165,6 +165,7 @@ class Calendar
     Calendrical::Moment.new(super, location)
   end
   
+  # Moonrise
   def moonrise(location = GREENWHICH, date = self.fixed)
     Calendrical::Moment.new(super, location)
   end
@@ -212,7 +213,6 @@ class Calendar
   
   def config(*args)
     ThirteenWeekQuarter.config(*args)
-
   end
   
 protected

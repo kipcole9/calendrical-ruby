@@ -35,16 +35,6 @@ module ThirteenWeekQuarter
     def default!
       config {|c| }
     end
-  
-    def national_retail_federation!
-      config do |c|
-        c.calendar_type      = :'454'        # one of 445, 454, 544 defining weeks in a quarter
-        c.starts_or_ends     = :ends         # define the :start of the year, or the :end of the year
-        c.first_last_nearest = :last         # :first, :last, :nearest (:nearest to :start or :end of :month)
-        c.day_of_week        = :saturday     # start (or end) the year on this day
-        c.month_name         = :january      # start (or end) the year in this month
-      end
-    end
 
     def cisco!
       config do |c|
@@ -56,11 +46,13 @@ module ThirteenWeekQuarter
       end
     end
     
-  private
     def config(*args)
       yield self
+      validate_configuration!
       self
     end
+    
+  private
      
     def validate_configuration!
       raise(Calendrical::DayError,    "Invalid day of week '#{day_of_week}'. Valid days are '#{valid_days}'.") unless valid_days.include?(day_of_week.to_s.upcase.to_sym)

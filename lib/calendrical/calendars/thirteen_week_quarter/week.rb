@@ -2,12 +2,12 @@ module ThirteenWeekQuarter
   class Week < Gregorian::Week    
     def initialize(year, week)
       super
-      raise(Calendrical::InvalidWeek, "Year #{year} is not a long year, there is no week 53") if !Year.long_year?(year) && week == 53
+      raise(Calendrical::InvalidWeek, "Year #{year} is not a long year, there is no week 53") if !Year[year].long_year? && week == 53
     end
 
     def +(other)
       start_date = start_of_week + (other * 7)
-      week_number = ((start_date.to_fixed - Year[start_date.year].new_year.to_fixed) / 7) + 1
+      week_number = ((start_date - Year[start_date.year].new_year) / 7) + 1
       Week[start_date.year, week_number]
     end
 
