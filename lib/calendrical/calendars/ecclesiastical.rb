@@ -9,33 +9,33 @@ module Calendrical
     # see lines 939-943 in calendrica-3.0.cl
     # Return the fixed date of Christmas in Gregorian year 'g_year'.
     def christmas(g_year = self.year)
-      in_calling_calendar(Gregorian::Date[g_year, DECEMBER, 25])
+      in_calling_calendar(::Calendar::Gregorian::Date[g_year, DECEMBER, 25])
     end
     
     # see lines 1268-1272 in calendrica-3.0.cl
     # Return the list of zero or one fixed dates of Eastern Orthodox Christmas
     # in Gregorian year 'g_year'.
     def eastern_orthodox_christmas(g_year = self.year)
-      in_calling_calendar(Julian::Date[g_year, DECEMBER, 25])
+      in_calling_calendar(::Calendar::Julian::Date[g_year, DECEMBER, 25])
     end
 
     # see lines 945-951 in calendrica-3.0.cl
     # Return the fixed date of Advent in Gregorian year 'g_year'
     # (the Sunday closest to November 30).
     def advent(g_year = self.year)
-      in_calling_calendar(Gregorian::Date[kday_nearest(SUNDAY, date(g_year, NOVEMBER, 30))])
+      in_calling_calendar(::Calendar::Gregorian::Date[kday_nearest(SUNDAY, date(g_year, NOVEMBER, 30))])
     end
 
     # see lines 953-957 in calendrica-3.0.cl
     # Return the fixed date of Epiphany in U.S. in Gregorian year 'g_year'
     # (the first Sunday after January 1).
     def epiphany(g_year = self.year)
-      in_calling_calendar(Gregorian::Date[g_year, JANUARY, 2].first_kday(SUNDAY))
+      in_calling_calendar(::Calendar::Gregorian::Date[g_year, JANUARY, 2].first_kday(SUNDAY))
     end
 
     # Return fixed date of Epiphany in Italy in Gregorian year 'g_year'.
     def epiphany_italy(g_year = self.year)
-      in_calling_calendar(Gregorian::Date[g_year, JANUARY, 6])
+      in_calling_calendar(::Calendar::Gregorian::Date[g_year, JANUARY, 6])
     end
     
     # see lines 1371-1385 in calendrica-3.0.cl
@@ -47,7 +47,7 @@ module Calendrical
     def julian_paschal_moon(g_year = self.year)
       shifted_epact = (14 + 11 * (g_year % 19)) % 30
       j_year        = g_year > 0 ? g_year : g_year - 1
-      Julian::Date[j_year, APRIL, 19] - shifted_epact
+      ::Calendar::Julian::Date[j_year, APRIL, 19] - shifted_epact
     end
 
     # see lines 1401-1426 in calendrica-3.0.cl
@@ -60,7 +60,7 @@ module Calendrical
       century = quotient(g_year, 100) + 1
       shifted_epact = (14 + 11 * (g_year % 19) - quotient(3 * century, 4) + quotient(5 + (8 * century), 25)) % 30
       adjusted_epact = ((shifted_epact == 0) || ((shifted_epact == 1) && (10 < (g_year % 19)))) ? (shifted_epact + 1) : shifted_epact
-      Gregorian::Date(g_year, APRIL, 19) - adjusted_epact
+      ::Calendar::Gregorian::Date(g_year, APRIL, 19) - adjusted_epact
     end
     
     # see lines 5903-5918 in calendrica-3.0.cl
@@ -72,9 +72,9 @@ module Calendrical
     end
 
     def astronomical_paschal_moon(g_year = self.year)
-      jan1 = Gregorian::Date[g_year, JANUARY, 1].fixed
+      jan1 = ::Calendar::Gregorian::Date[g_year, JANUARY, 1].fixed
       equinox = solar_longitude_after(SPRING, jan1)
-      Gregorian::Date[apparent_from_local(local_from_universal(lunar_phase_at_or_after(FULL_MOON, equinox), JERUSALEM), JERUSALEM).floor]
+      ::Calendar::Gregorian::Date[apparent_from_local(local_from_universal(lunar_phase_at_or_after(FULL_MOON, equinox), JERUSALEM), JERUSALEM).floor]
     end
     
     # see lines 1429-1431 in calendrica-3.0.cl
@@ -90,7 +90,7 @@ module Calendrical
   protected
   
     def in_calling_calendar(date)
-      calendar_class = Object.const_get("#{self.class.name.split('::').first}::Date")
+      calendar_class = Object.const_get("Calendar::#{self.class.name.split('::')[1]}::Date")
       calendar_class[date]
     end
 

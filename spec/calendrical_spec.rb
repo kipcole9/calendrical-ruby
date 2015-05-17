@@ -8,37 +8,37 @@ describe 'Calendrical' do
   end
   
   it 'does a round trip to fixed and back to calendar for Gregorian' do
-    expect(Gregorian::Date[base_date]).to eq(Gregorian::Date[2015,5,5])
-    expect(Gregorian::Date[Gregorian::Date[base_date].elements]).to eq(Gregorian::Date[base_date])
+    expect(Calendar::Gregorian::Date[base_date]).to eq(Calendar::Gregorian::Date[2015,5,5])
+    expect(Calendar::Gregorian::Date[Calendar::Gregorian::Date[base_date].elements]).to eq(Calendar::Gregorian::Date[base_date])
   end
   
   it 'does a round trip to fixed and back to calendar for Julian' do
-    expect(Julian::Date[base_date].to_gregorian).to eq(Gregorian::Date[2015,5,5])   
-    expect(Julian::Date[Julian::Date[base_date].elements]).to eq(Julian::Date[base_date])
+    expect(Calendar::Julian::Date[base_date].to_gregorian).to eq(Calendar::Gregorian::Date[2015,5,5])   
+    expect(Calendar::Julian::Date[Calendar::Julian::Date[base_date].elements]).to eq(Calendar::Julian::Date[base_date])
   end
   
   it 'does a round trip to fixed and back to calendar for French Revolutionary' do
-    expect(FrenchRevolutionary::Date[base_date].to_gregorian).to eq(Gregorian::Date[2015,5,5])   
-    expect(FrenchRevolutionary::Date[FrenchRevolutionary::Date[base_date].elements]).to eq(FrenchRevolutionary::Date[base_date])
+    expect(Calendar::FrenchRevolutionary::Date[base_date].to_gregorian).to eq(Calendar::Gregorian::Date[2015,5,5])   
+    expect(Calendar::FrenchRevolutionary::Date[Calendar::FrenchRevolutionary::Date[base_date].elements]).to eq(Calendar::FrenchRevolutionary::Date[base_date])
   end
   
   it 'does a round trip to fixed and back to calendar for Coptic' do
-    expect(Coptic::Date[base_date].to_gregorian).to eq(Gregorian::Date[2015,5,5])   
-    expect(Coptic::Date[Coptic::Date[base_date].elements]).to eq(Coptic::Date[base_date])
+    expect(Calendar::Coptic::Date[base_date].to_gregorian).to eq(Calendar::Gregorian::Date[2015,5,5])   
+    expect(Calendar::Coptic::Date[Calendar::Coptic::Date[base_date].elements]).to eq(Calendar::Coptic::Date[base_date])
   end
   
   it 'does a round trip to fixed and back to calendar for Epytian' do
-    expect(Egyptian::Date[base_date].to_gregorian).to eq(Gregorian::Date[2015,5,5])   
-    expect(Egyptian::Date[Egyptian::Date[base_date].elements]).to eq(Egyptian::Date[base_date])
+    expect(Calendar::Egyptian::Date[base_date].to_gregorian).to eq(Calendar::Gregorian::Date[2015,5,5])   
+    expect(Calendar::Egyptian::Date[Calendar::Egyptian::Date[base_date].elements]).to eq(Calendar::Egyptian::Date[base_date])
   end    
   
   it 'does a round trip to fixed and back to calendar for Etheopian' do
-    expect(Etheopian::Date[base_date].to_gregorian).to eq(Gregorian::Date[2015,5,5])   
-    expect(Etheopian::Date[Etheopian::Date[base_date].elements]).to eq(Etheopian::Date[base_date])
+    expect(Calendar::Etheopian::Date[base_date].to_gregorian).to eq(Calendar::Gregorian::Date[2015,5,5])   
+    expect(Calendar::Etheopian::Date[Calendar::Etheopian::Date[base_date].elements]).to eq(Calendar::Etheopian::Date[base_date])
   end
   
   it 'does a round trip to fixed and back to calendar for Chinese' do
-    expect(Chinese::Date[base_date].to_gregorian).to eq(Gregorian::Date[2015,5,5])   
-    expect(Chinese::Date[Chinese::Date[base_date].elements]).to eq(Chinese::Date[base_date])
+    expect(Calendar::Chinese::Date[base_date].to_gregorian).to eq(Calendar::Gregorian::Date[2015,5,5])   
+    expect(Calendar::Chinese::Date[Calendar::Chinese::Date[base_date].elements]).to eq(Calendar::Chinese::Date[base_date])
   end  
 end

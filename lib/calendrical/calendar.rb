@@ -92,12 +92,12 @@ module Calendrical
     def to_gregorian
       if range.present?
         if range.first == range.last
-          Gregorian::Date[range.first.to_fixed]
+          ::Calendar::Gregorian::Date[range.first.to_fixed]
         else
-          Gregorian::Date[range.first.to_fixed]..Gregorian::Date[range.last.to_fixed]
+          ::Calendar::Gregorian::Date[range.first.to_fixed]..::Calendar::Gregorian::Date[range.last.to_fixed]
         end
       else
-        Gregorian::Date[to_fixed]
+        ::Calendar::Gregorian::Date[to_fixed]
       end
     end
 
