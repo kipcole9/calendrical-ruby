@@ -3,7 +3,7 @@ module Egyptian
     Egyptian::Date[*args]
   end
   
-  class Date < Calendar
+  class Date < Calendrical::Calendar
     extend Calendrical::Mpf
     extend Calendrical::Days
   
@@ -36,7 +36,7 @@ module Egyptian
       yyear = 1 + quotient(days, 365)
       mmonth = 1 + quotient((days % 365), 30)
       dday = days - (365*(yyear - 1)) - (30*(mmonth - 1)) + 1
-      Calendar::Date.new(yyear, mmonth, dday)
+      Calendrical::Calendar::Date.new(yyear, mmonth, dday)
     end
   end
 end

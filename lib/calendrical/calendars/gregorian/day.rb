@@ -1,5 +1,5 @@
 module Gregorian
-  class Date < Calendar
+  class Date < Calendrical::Calendar
     include Calendrical::Dates
   
     def inspect
@@ -61,7 +61,7 @@ module Gregorian
                     end)
       month = quotient((12 * (prior_days + correction)) + 373, 367)
       day = 1 + f_date - date(yyear, month, 1).fixed
-      Calendar::Date.new(yyear, month, day)
+      Calendrical::Calendar::Date.new(yyear, month, day)
     end
 
   protected

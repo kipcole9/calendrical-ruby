@@ -3,7 +3,7 @@ module Coptic
     Coptic::Date[*args]
   end
   
-  class Date < Calendar
+  class Date < Calendrical::Calendar
     # see lines 1281-1284 in calendrica-3.0.cl
     def self.epoch
       Julian::Date[284, AUGUST, 29].fixed
@@ -44,7 +44,7 @@ module Coptic
       yyear  = quotient((4 * (f_date - epoch) + 1463), 1461.0)
       mmonth = 1 + quotient(f_date - date(yyear, 1, 1).fixed, 30.0)
       dday   = f_date + 1 - date(yyear, mmonth, 1).fixed
-      Calendar::Date.new(yyear, mmonth, dday)
+      Calendrical::Calendar::Date.new(yyear, mmonth, dday)
     end
 
     # see lines 1362-1366 in calendrica-3.0.cl

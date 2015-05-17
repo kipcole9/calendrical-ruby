@@ -5,7 +5,7 @@ module FrenchRevolutionary
     FrenchRevolutionary::Date[*args]
   end
   
-  class Date < Calendar
+  class Date < Calendrical::Calendar
     # see lines 4222-4226 in calendrica-3.0.cl
     # Fixed date of start of the French Revolutionary calendar.
     def self.epoch

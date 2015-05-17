@@ -3,7 +3,7 @@ module Etheopian
     Etheopian::Date[*args]
   end
   
-  class Date < Calendar
+  class Date < Calendrical::Calendar
     using Calendrical::Numeric
     
     # see lines 1325-1328 in calendrica-3.0.cl
@@ -31,7 +31,7 @@ module Etheopian
     # see lines 1341-1345 in calendrica-3.0.cl
     # Return the Ethiopic date equivalent of fixed date 'date'.
     def to_calendar(f_date = self.fixed)
-      Calendar::Date.new(*Coptic::Date[f_date + Coptic::Date.epoch - Etheopian::Date.epoch].to_calendar)
+      Calendrical::Calendar::Date.new(*Coptic::Date[f_date + Coptic::Date.epoch - Etheopian::Date.epoch].to_calendar)
     end
   end
 end

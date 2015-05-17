@@ -1,5 +1,5 @@
 module Julian
-  class Date < Calendar
+  class Date < Calendrical::Calendar
     # include Calendrical::Kday
     # include Calendrical::Dates
   
@@ -52,7 +52,7 @@ module Julian
                    end
       mmonth      = quotient(12*(prior_days + correction) + 373, 367)
       dday        = 1 + (f_date - date(yyear, mmonth, 1).fixed)
-      Calendar::Date.new(yyear, mmonth, dday)
+      Calendrical::Calendar::Date.new(yyear, mmonth, dday)
     end
   end
 end

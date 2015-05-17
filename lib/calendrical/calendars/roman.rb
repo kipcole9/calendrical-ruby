@@ -1,4 +1,4 @@
-class RomanCalendar < JulianCalendar
+class Roman::Calendar < Julian::Calendar
   # see lines 1113-1116 in calendrica-3.0.cl
   KALENDS = 1
   NONES   = 2

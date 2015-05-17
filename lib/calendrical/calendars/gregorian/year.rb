@@ -1,4 +1,4 @@
-class Gregorian::Year < Calendar
+class Gregorian::Year < Calendrical::Calendar
   attr_accessor :year, :fixed
 
   include Calendrical::Kday

@@ -1,4 +1,4 @@
-class Gregorian::Month < Calendar
+class Gregorian::Month < Calendrical::Calendar
   attr_accessor :year, :month, :fixed
   MONTHS_IN_YEAR = 12
   

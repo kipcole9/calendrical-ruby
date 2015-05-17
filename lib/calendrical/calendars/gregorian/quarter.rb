@@ -1,4 +1,4 @@
-class Gregorian::Quarter < Calendar
+class Gregorian::Quarter < Calendrical::Calendar
   attr_accessor :year, :quarter, :fixed
   QUARTERS_IN_YEAR = 4
   LAST_QUARTER = 4

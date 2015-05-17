@@ -3,7 +3,7 @@ module Chinese
     Chinese::Date[*args]
   end
     
-  class Date < Calendar
+  class Date < Calendrical::Calendar
     extend Calendrical::Epoch
     using Calendrical::Numeric
     

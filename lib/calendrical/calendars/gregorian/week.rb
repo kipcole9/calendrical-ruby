@@ -1,4 +1,4 @@
-class Gregorian::Week < Calendar
+class Gregorian::Week < Calendrical::Calendar
   attr_accessor :year, :week, :start_day, :end_day, :fixed
     
   def initialize(year, week, start_day = nil, end_day = nil, quarter = nil)

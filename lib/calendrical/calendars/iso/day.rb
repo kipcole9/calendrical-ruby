@@ -1,5 +1,5 @@
 module Iso
-  class Date < Calendar
+  class Date < Calendrical::Calendar
     Date = Struct.new(:year, :week, :day)
     delegate :year, :week, :day, to: :elements
   

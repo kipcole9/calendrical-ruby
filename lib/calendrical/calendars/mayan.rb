@@ -1,4 +1,4 @@
-class MayanCalendar < Calendar
+class Mayan::Calendar < Calendrical::Calendar
   # see lines 2039-2044 in calendrica-3.0.cl
   MAYAN_EPOCH = fixed_from_jd(584283)
   
