@@ -1,5 +1,6 @@
 require "calendrical/version"
-require "calendrical/calendar"
+require "calendrical/calendrical"
+require "calendrical/calendars/calendar"
 require "calendrical/calendars/ecclesiastical.rb"
 require "calendrical/calendars/gregorian.rb"
 require "calendrical/calendars/julian.rb"

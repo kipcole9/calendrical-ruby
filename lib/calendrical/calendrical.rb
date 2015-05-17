@@ -43,7 +43,7 @@ module Calendrical
     def initialize(*args)
       args = [::Date.today] unless args.present?
       if args.first.is_a?(::Date)
-        set_fixed(Gregorian::Date[args.first.year, args.first.month, args.first.day].to_fixed)
+        set_fixed(::Calendar::Gregorian::Date[args.first.year, args.first.month, args.first.day].to_fixed)
         set_elements(to_calendar(self.fixed))
       elsif args.first.is_a?(self.class)
         dup_instance(args.first)
