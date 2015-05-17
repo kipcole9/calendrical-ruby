@@ -12,7 +12,7 @@ module Calendar
         super
         raise(Calendrical::InvalidWeek, "Year #{year} is not a long ISO year, there is no week 53") if !long_year?(year) && week == 53
         raise(Calendrical::InvalidWeek, "Week must be between 1 and 52, or 53 for a long ISO year") unless (1..53).include? week    
-        raise(Calendrical::InvalidDay, "Day must be between 1 and 7") unless (1..7).include? day
+        raise(Calendrical::InvalidDay, "Day must be between 1 and 7") unless (1..days_in_week).include? day
       end
   
       def self.epoch
@@ -44,7 +44,7 @@ module Calendar
       def to_calendar(date = self.fixed)
         approx = Gregorian::Date[date - 3].year #gregorian_year_from_fixed(date - 3)
         year   = date >= date(approx + 1, 1, 1).fixed ? approx + 1 : approx
-        week   = 1 + quotient(date - date(year, 1, 1).fixed, 7)
+        week   = 1 + quotient(date - date(year, 1, 1).fixed, days_in_week)
         day    = amod(date - rd(0), 7)
         Date.new(year, week, day)
       end

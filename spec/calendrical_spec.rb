@@ -40,5 +40,12 @@ describe 'Calendrical' do
   it 'does a round trip to fixed and back to calendar for Chinese' do
     expect(Calendar::Chinese::Date[base_date].to_gregorian).to eq(Calendar::Gregorian::Date[2015,5,5])   
     expect(Calendar::Chinese::Date[Calendar::Chinese::Date[base_date].elements]).to eq(Calendar::Chinese::Date[base_date])
-  end  
+  end 
+  
+  it 'should be accessible via the Calendar module with default Gregorian' do
+    expect(Calendar::Date[]).to eq(Calendar::Gregorian::Date[])
+    expect(Calendar::Year[2015]).to eq(Calendar::Gregorian::Year[2015])
+    expect(Calendar::Quarter[2015, 1]).to eq(Calendar::Gregorian::Quarter[2015, 1])
+    expect(Calendar::Month[2015, 10]).to eq(Calendar::Gregorian::Month[2015, 10])
+  end 
 end

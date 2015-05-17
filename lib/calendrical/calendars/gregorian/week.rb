@@ -27,8 +27,8 @@ module Calendar
     end 
 
     def +(other)
-      start_date = start_of_week + (other * 7)
-      week_number = ((start_date.to_fixed - Year[start_date.year].new_year.to_fixed) / 7) + 1
+      start_date = start_of_week + (other * days_in_week)
+      week_number = ((start_date.to_fixed - Year[start_date.year].new_year.to_fixed) / days_in_week) + 1
       Week[start_date.year, week_number]
     end
   
@@ -37,7 +37,7 @@ module Calendar
     end
 
     def start_of_week
-      start_day || year.new_year + ((week - 1) * 7)
+      start_day || year.new_year + ((week - 1) * days_in_week)
     end
   
     def end_of_week
@@ -45,7 +45,7 @@ module Calendar
     end
   
     def weeks
-      (start_of_week.fixed / 7.0).ceil
+      (start_of_week.fixed.to_f / days_in_week).ceil
     end
   end
 end

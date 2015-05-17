@@ -6,7 +6,7 @@ module Calendar
   
     def initialize(year, quarter)
       raise(Calendrical::InvalidQuarter, "Invalid quarter '#{quarter}' which must be between 1 and 4 inclusive") unless (1..4).include?(quarter.to_i)
-      @year = year
+      @year = year.is_a?(Fixnum) ? Gregorian::Year(year) : year
       @quarter = quarter.to_i
     end
   
@@ -53,7 +53,7 @@ module Calendar
     end
   
     def week(n)
-      start_day = range.first + ((n - 1) * 7)
+      start_day = range.first + ((n - 1) * days_in_week)
       raise(Calendrical::InvalidWeek, "Week #{n} doesn't lie within quarter #{quarter}'s range of #{range}") \
         unless range.include?(start_day)
       end_day = [start_day + 6, range.last].min
@@ -61,7 +61,7 @@ module Calendar
     end
   
     def weeks
-      days / 7.0
+      days.to_f / days_in_week
     end
   
   protected

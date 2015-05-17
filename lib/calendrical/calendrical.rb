@@ -139,7 +139,19 @@ module Calendrical
     def epoch
       self.class.epoch
     end
-  
+
+    def quarters_in_year
+      4
+    end
+
+    def months_in_year
+      12
+    end
+    
+    def days_in_week
+      7
+    end
+    
     def sunrise(location = GREENWHICH, date = self.fixed)
       Calendrical::Moment.new(super, location)
     end

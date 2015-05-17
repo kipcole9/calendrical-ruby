@@ -1,11 +1,10 @@
 module Calendar
   class Gregorian::Month < Calendrical::Calendar
     attr_accessor :year, :month, :fixed
-    MONTHS_IN_YEAR = 12
   
     def initialize(year, month)
       raise(Calendrical::InvalidMonth, "Invalid month '#{month}' which must be between 1 and 12 inclusive") unless (1..12).include?(month.to_i)
-      @year = year
+      @year = year.is_a?(Fixnum) ? Gregorian::Year(year) : year
       @month = month.to_i
     end
   
@@ -31,8 +30,8 @@ module Calendar
 
     def +(other)
       absolute_months = months + other
-      new_year = absolute_months / MONTHS_IN_YEAR
-      new_month = absolute_quarters % MONTHS_IN_YEAR
+      new_year = absolute_months / months_in_year
+      new_month = absolute_quarters % months_in_year
       if new_month == 0
         new_month = DECEMBER
         new_year = new_year - 1
@@ -56,7 +55,7 @@ module Calendar
     end
   
     def week(n)
-      start_day = range.first + ((n - 1) * 7)
+      start_day = range.first + ((n - 1) * days_in_week)
       raise(Calendrical::InvalidWeek, "Week #{n} doesn't lie within month #{month}'s range of #{range}") \
         unless range.include?(start_day)
       end_day = [start_day + 6, range.last].min
@@ -64,13 +63,13 @@ module Calendar
     end
   
     def weeks
-      days / 7.0
+      days.to_f / days_in_week
     end
   
   protected
   
     def months
-      year.year * MONTHS_IN_YEAR + month
+      year.year * months_in_year + month
     end
 
   end
