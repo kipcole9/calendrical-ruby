@@ -10,6 +10,7 @@ module Calendrical
       # see lines 460-467 in calendrica-3.0.errata.cl
       # Return the standard time of moonrise on fixed, date,
       # and location, location.
+      # TODO Not sure moonrise is calculating the right result
       def moonrise(location, date)
         t = universal_from_standard(date, location)
         waning = (lunar_phase(t) > 180.degrees)

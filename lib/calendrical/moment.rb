@@ -9,7 +9,7 @@ module Calendrical
     end
     
     def to_time
-      d = Gregorian::Date[date]
+      d = ::Calendar::Gregorian::Date[date]
       c = clock
       Time.new(d.year, d.month, d.day, c.first, c.second, c.third, zone)
     end

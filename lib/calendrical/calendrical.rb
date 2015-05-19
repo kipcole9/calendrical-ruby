@@ -152,34 +152,34 @@ module Calendrical
       7
     end
     
-    def sunrise(location = GREENWHICH, date = self.fixed)
+    def sunrise(location = GREENWICH, date = self.fixed)
       Calendrical::Moment.new(super, location)
     end
 
-    def sunset(location = GREENWHICH, date = self.fixed)
+    def sunset(location = GREENWICH, date = self.fixed)
       Calendrical::Moment.new(super, location)
     end
 
     # Solstice
-    def december_solstice(location = GREENWHICH, g_year = self.year)
+    def december_solstice(location = GREENWICH, g_year = self.year)
       Calendrical::Moment.new(super, location)
     end
   
-    def june_solstice(location = GREENWHICH, g_year = self.year)
+    def june_solstice(location = GREENHICH, g_year = self.year)
       Calendrical::Moment.new(super, location)
     end
   
     # Equinox
-    def march_equinox(location = GREENWHICH, g_year = self.year)
+    def march_equinox(location = GREENWICH, g_year = self.year)
       Calendrical::Moment.new(super, location)
     end
   
-    def september_equinox(location = GREENWHICH, g_year = self.year)
+    def september_equinox(location = GREENWICH, g_year = self.year)
       Calendrical::Moment.new(super, location)
     end
   
     # Moonrise
-    def moonrise(location = GREENWHICH, date = self.fixed)
+    def moonrise(location = GREENWICH, date = self.fixed)
       Calendrical::Moment.new(super, location)
     end
 
