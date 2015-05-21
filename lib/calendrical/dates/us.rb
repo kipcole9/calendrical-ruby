@@ -52,7 +52,7 @@ module Calendrical
       # see lines 959-974 in calendrica-3.0.cl
       # Return the list of Fridays within range 'range' of fixed dates that
       # are day 13 of the relevant Gregorian months.
-      def unlucky_fridays_in_range(range)
+      def unlucky_fridays_in_range(range = self.range)
         a    = range.first
         b    = range.last
         fri  = kday_on_or_after(FRIDAY, a)

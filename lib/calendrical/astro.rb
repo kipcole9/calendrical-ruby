@@ -146,7 +146,7 @@ module Calendrical
     # see lines 440-451 in calendrica-3.0.errata.cl
     # Return refraction angle at location 'location' and time 'tee'.
     def refraction(tee, location)
-      h     = [0.meters, location.elevation.to_f].max
+      h     = [0.meters, location.elevation].max
       cap_R = 6.372E6.meters
       dip   = arccos_degrees(cap_R / (cap_R + h))
       angle(0, 50, 0) + dip + 19.secs * Math.sqrt(h)

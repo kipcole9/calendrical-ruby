@@ -18,7 +18,7 @@ module Calendrical
   
     attr_accessor :elements
     delegate :day, :month, :year, to: :elements
-    delegate :first, :last, :begin, :end, :each, :each_with_index, to: :range
+    delegate :first, :last, :begin, :end, :each, :each_with_index, :step, :select, to: :range
   
     using Calendrical::Numeric
 
@@ -150,6 +150,18 @@ module Calendrical
     
     def days_in_week
       7
+    end
+    
+    def weekdays
+      select {|d| d.day_of_week >= MONDAY && d.day_of_week <= FRIDAY}
+    end
+    
+    def weekends
+      select {|d| d.day_of_week == SATURDAY || d.day_of_week == SUNDAY}
+    end
+    
+    def days_of_week(day)
+      (first_kday(day)..last).step(7).to_a
     end
     
     def sunrise(location = GREENWICH, date = self.fixed)
